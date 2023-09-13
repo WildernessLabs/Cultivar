@@ -1,0 +1,22 @@
+[
+  {
+    "text": "Relay 1",
+    "id": "relay1",
+    "type": "OnOff"
+  },
+  {
+    "text": "Relay 2",
+    "id": "relay2",
+    "type": "OnOff"
+  },
+  {
+    "text": "Relay 3",
+    "id": "relay3",
+    "type": "OnOff"
+  },
+  {
+    "text": "Relay 4",
+    "id": "relay4",
+    "type": "OnOff"
+  }
+]
