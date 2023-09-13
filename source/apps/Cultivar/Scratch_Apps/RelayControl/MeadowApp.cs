@@ -4,6 +4,7 @@ using Meadow.Foundation;
 using Meadow.Foundation.Displays.UI;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
+using Meadow.Foundation.Relays;
 using Meadow.Foundation.Sensors.Buttons;
 using Meadow.Peripherals.Displays;
 using Meadow.Peripherals.Sensors.Buttons;
@@ -19,18 +20,26 @@ namespace RelayControl
     // Change F7FeatherV2 to F7FeatherV1 for V1.x boards
     public class MeadowApp : App<F7CoreComputeV2>
     {
-        private IProjectLabHardware projectLab;
-        private DisplayScreen screen;
-        private RelayControlScreen _menu;
+        IProjectLabHardware projectLab;
+        DisplayScreen screen;
+        RelayControlScreen _menu;
 
         TextDisplayMenu relayMenu;
+        ElectromagneticRelayModule relayModule;
 
         public override Task Initialize()
         {
+            // create the project lab hardware
+            Resolver.Log.Info("Loading project lab hardware...");
             projectLab = ProjectLab.Create();
 
             //screen = new DisplayScreen(projectLab.Display, RotationType._270Degrees);
 
+            // instantiate the relay board
+            Resolver.Log.Info("Loading relay board...");
+            relayModule = new ElectromagneticRelayModule(Device.CreateI2cBus(), 0x20);
+
+            // load our relay text display menu
             LoadTextDisplayRelayMenuScreen();
 
             return base.Initialize();
