@@ -81,7 +81,7 @@
                     <TextBlock
                         Grid.Row="1"
                         Grid.Column="1" LetterSpacing="-1"
-                        Text="23°C"
+                        Text="{Binding CurrentTemperature}"
                         Foreground="Black"
                         FontSize="50"
                         FontWeight="Bold"
@@ -136,7 +136,7 @@
                     <TextBlock
                         Grid.Row="1"
                         Grid.Column="1"
-                        Text="98%"
+                        Text="{Binding CurrentHumidity}"
                         Foreground="Black"
                         FontSize="50"
                         FontWeight="Bold"
@@ -191,7 +191,7 @@
                     <TextBlock
                         Grid.Row="1"
                         Grid.Column="1"
-                        Text="65%"
+                        Text="{Binding CurrentSoilMoisture}"
                         Foreground="Black"
                         FontSize="50"
                         FontWeight="Bold"

@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Reactive;
+using System.Threading.Tasks;
 
 namespace Cultivar_reTerminal.ViewModels
 {
@@ -36,6 +37,27 @@ namespace Cultivar_reTerminal.ViewModels
             set => this.RaiseAndSetIfChanged(ref _isSprinklerOn, value);
         }
 
+        private string _currentTemperature;
+        public string CurrentTemperature
+        {
+            get => _currentTemperature;
+            set => this.RaiseAndSetIfChanged(ref _currentTemperature, value);
+        }
+
+        private string _currentHumidity;
+        public string CurrentHumidity
+        {
+            get => _currentHumidity;
+            set => this.RaiseAndSetIfChanged(ref _currentHumidity, value);
+        }
+
+        private string _currentSoilMoisture;
+        public string CurrentSoilMoisture
+        {
+            get => _currentSoilMoisture;
+            set => this.RaiseAndSetIfChanged(ref _currentSoilMoisture, value);
+        }
+
         public ReactiveCommand<Unit, Unit> ToggleLightsCommand { get; set; }
 
         public ReactiveCommand<Unit, Unit> ToggleHeaterCommand { get; set; }
@@ -67,6 +89,22 @@ namespace Cultivar_reTerminal.ViewModels
                 Series1.Add(new DataPoint(i, (Math.Sin(i / 4.0) * 2) + 1.5));
                 Series2.Add(new DataPoint(i, Math.Cos(i / 3.0)));
                 Series3.Add(new DataPoint(i, Math.Cos(i / 6.0) * 50));
+            }
+
+            _ = SimulateCurrentConditions();
+        }
+
+        async Task SimulateCurrentConditions() 
+        {
+            var random = new Random();
+
+            while(true)
+            {
+                CurrentTemperature = $"{ random.Next(23, 28) }°C";
+                CurrentHumidity = $"{ random.Next(92, 97) }%";
+                CurrentSoilMoisture = $"{ random.Next(75, 80) }%";
+
+                await Task.Delay(TimeSpan.FromSeconds(5));
             }
         }
 
