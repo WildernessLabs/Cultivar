@@ -42,72 +42,54 @@
             Grid.Row="0"
             Grid.Column="0"
             CornerRadius="5"
-            BorderThickness="5"
+            BorderThickness="7"
+            BorderBrush="#EBA77F" 
+            Padding="10"
             Background="White"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Classes.IsUpdated="{Binding IsTemperatureChartVisible}"
-            Classes.NotUpdated="{Binding !IsTemperatureChartVisible}"
             BoxShadow="-5 5 20 #80000000"
             Margin="14,14,7,7">
-            <Border.Styles>
-                <Style Selector="Border.IsUpdated">
-                    <Style.Setters>
-                        <Setter Property="BorderBrush" Value="#EBA77F"/>
-                    </Style.Setters>
-                </Style>
-                <Style Selector="Border.NotUpdated">
-                    <Style.Setters>
-                        <Setter Property="BorderBrush" Value="#EBA77F"/>
-                    </Style.Setters>
-                </Style>
-            </Border.Styles>
-            <Button
-                Command="{Binding ViewTemperatureChartCommand}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="Transparent">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                    <TextBlock
-                        Grid.Row="0"
-                        Text="Temperature"
-                        Foreground="Black"
-                        FontSize="25"
-                        FontWeight="SemiBold"
-                        Margin="5,5,0,0"
-                        Opacity="0.7"
-                        HorizontalAlignment="Left" />
-                    <StackPanel
+                <TextBlock
+                    Grid.Row="0"
+                    Text="Temperature"
+                    Foreground="Black"
+                    FontSize="25"
+                    FontWeight="SemiBold"
+                    Margin="5,5,0,0"
+                    Opacity="0.7"
+                    HorizontalAlignment="Left" />
+                <StackPanel
+                    Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+                    <Image
                         Grid.Row="1"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center">
-                        <Image
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Height="60"
-                            Opacity="0.6"
-                            Source="/Assets/icon-temp.png"
-                            Margin="0,0,12,0"
-                            HorizontalAlignment="Right"
-                        VerticalAlignment="Center" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1" LetterSpacing="-1"
-                            Text="23°C"
-                            Foreground="Black"
-                            FontSize="50"
-                            FontWeight="Bold"
-                            Opacity="0.6"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Grid>
-            </Button>
+                        Grid.Column="0"
+                        Height="60"
+                        Opacity="0.6"
+                        Source="/Assets/icon-temp.png"
+                        Margin="0,0,12,0"
+                        HorizontalAlignment="Right"
+                    VerticalAlignment="Center" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1" LetterSpacing="-1"
+                        Text="23°C"
+                        Foreground="Black"
+                        FontSize="50"
+                        FontWeight="Bold"
+                        Opacity="0.6"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Humidity -->
@@ -115,72 +97,54 @@
             Grid.Row="1"
             Grid.Column="0"
             CornerRadius="5"
-            BorderThickness="5"
+            BorderThickness="7"
+            BorderBrush="#71C3E4" 
+            Padding="10"
             Background="White"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Classes.IsUpdated="{Binding IsHumidityChartVisible}"
-            Classes.NotUpdated="{Binding !IsHumidityChartVisible}"
             BoxShadow="-5 5 20 #80000000"
             Margin="14,7,7,7">
-            <Border.Styles>
-                <Style Selector="Border.IsUpdated">
-                    <Style.Setters>
-                        <Setter Property="BorderBrush" Value="#71C3E4"/>
-                    </Style.Setters>
-                </Style>
-                <Style Selector="Border.NotUpdated">
-                    <Style.Setters>
-                        <Setter Property="BorderBrush" Value="#71C3E4"/>
-                    </Style.Setters>
-                </Style>
-            </Border.Styles>
-            <Button
-                Command="{Binding ViewHumidityChartCommand}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="Transparent">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                    <TextBlock
-                        Grid.Row="0"
-                        Text="Humidity"
-                        Foreground="Black"
-                        FontSize="25"
-                        FontWeight="SemiBold"
-                        Margin="5,5,0,0"
-                        Opacity="0.7"
-                        HorizontalAlignment="Left" />
-                    <StackPanel
+                <TextBlock
+                    Grid.Row="0"
+                    Text="Humidity"
+                    Foreground="Black"
+                    FontSize="25"
+                    FontWeight="SemiBold"
+                    Margin="5,5,0,0"
+                    Opacity="0.7"
+                    HorizontalAlignment="Left" />
+                <StackPanel
+                    Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+                    <Image
                         Grid.Row="1"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center">
-                        <Image
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Height="60"
-                            Opacity="0.6"
-                            Source="/Assets/icon-humidity.png"
-                            Margin="0,0,12,0"
-                            HorizontalAlignment="Right"
-                        VerticalAlignment="Center" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Text="98%"
-                            Foreground="Black"
-                            FontSize="50"
-                            FontWeight="Bold"
-                            Opacity="0.6"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Grid>
-            </Button>
+                        Grid.Column="0"
+                        Height="60"
+                        Opacity="0.6"
+                        Source="/Assets/icon-humidity.png"
+                        Margin="0,0,12,0"
+                        HorizontalAlignment="Right"
+                    VerticalAlignment="Center" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Text="98%"
+                        Foreground="Black"
+                        FontSize="50"
+                        FontWeight="Bold"
+                        Opacity="0.6"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Soil Moisture -->
@@ -188,72 +152,54 @@
             Grid.Row="2"
             Grid.Column="0"
             CornerRadius="5"
-            BorderThickness="5"
+            BorderThickness="7"
+            BorderBrush="#B7C085" 
+            Padding="10"
             Background="White"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Classes.IsUpdated="{Binding IsSoilMoistureChartVisible}"
-            Classes.NotUpdated="{Binding !IsSoilMoistureChartVisible}"
             BoxShadow="-5 5 20 #80000000"
             Margin="14,7,7,7">
-            <Border.Styles>
-                <Style Selector="Border.IsUpdated">
-                    <Style.Setters>
-                        <Setter Property="BorderBrush" Value="#B7C085"/>
-                    </Style.Setters>
-                </Style>
-                <Style Selector="Border.NotUpdated">
-                    <Style.Setters>
-                        <Setter Property="BorderBrush" Value="#B7C085"/>
-                    </Style.Setters>
-                </Style>
-            </Border.Styles>
-            <Button
-                Command="{Binding ViewSoilMoistureChartCommand}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="Transparent">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                    <TextBlock
-                        Grid.Row="0"
-                        Text="Soil Moisture"
-                        Foreground="Black"
-                        FontSize="25"
-                        FontWeight="SemiBold"
-                        Margin="5,5,0,0"
-                        Opacity="0.7"
-                        HorizontalAlignment="Left" />
-                    <StackPanel
+                <TextBlock
+                    Grid.Row="0"
+                    Text="Soil Moisture"
+                    Foreground="Black"
+                    FontSize="25"
+                    FontWeight="SemiBold"
+                    Margin="5,5,0,0"
+                    Opacity="0.7"
+                    HorizontalAlignment="Left" />
+                <StackPanel
+                    Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+                    <Image
                         Grid.Row="1"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center">
-                        <Image
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Height="60"
-                            Opacity="0.6"
-                            Source="/Assets/icon-soil.png"
-                            Margin="0,0,5,0"
-                            HorizontalAlignment="Right"
-                        VerticalAlignment="Center" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Text="65%"
-                            Foreground="Black"
-                            FontSize="50"
-                            FontWeight="Bold"
-                            Opacity="0.6"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Grid>
-            </Button>
+                        Grid.Column="0"
+                        Height="60"
+                        Opacity="0.6"
+                        Source="/Assets/icon-soil.png"
+                        Margin="0,0,5,0"
+                        HorizontalAlignment="Right"
+                    VerticalAlignment="Center" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Text="65%"
+                        Foreground="Black"
+                        FontSize="50"
+                        FontWeight="Bold"
+                        Opacity="0.6"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Lights -->
@@ -711,6 +657,8 @@
                 </oxy:Plot.Axes>
                 <oxy:Plot.Series>
                     <oxy:LineSeries
+                        Color="#EBA77F"
+                        StrokeThickness="5"
                         ItemsSource="{Binding Series1}"
                         YAxisKey="Primary"
                         DataFieldX="X"
@@ -718,6 +666,8 @@
                 </oxy:Plot.Series>
                 <oxy:Plot.Series>
                     <oxy:LineSeries
+                        Color="#71C3E4"
+                        StrokeThickness="5"
                         ItemsSource="{Binding Series2}"
                         YAxisKey="Primary"
                         DataFieldX="X"
@@ -725,6 +675,8 @@
                 </oxy:Plot.Series>
                 <oxy:Plot.Series>
                     <oxy:LineSeries
+                        Color="#B7C085"
+                        StrokeThickness="5"
                         ItemsSource="{Binding Series3}"
                         YAxisKey="Secondary"
                         DataFieldX="X"
