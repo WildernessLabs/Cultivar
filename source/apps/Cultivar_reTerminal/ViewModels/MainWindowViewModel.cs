@@ -1,7 +1,7 @@
 ﻿using OxyPlot;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -66,9 +66,11 @@ namespace Cultivar_reTerminal.ViewModels
 
         public ReactiveCommand<Unit, Unit> ToggleSprinklerCommand { get; set; }
 
-        public IList<DataPoint> Series1 { get; set; }
-        public IList<DataPoint> Series2 { get; set; }
-        public IList<DataPoint> Series3 { get; set; }
+        public ObservableCollection<DataPoint> TemperatureLogs { get; set; }
+
+        public ObservableCollection<DataPoint> HumidityLogs { get; set; }
+
+        public ObservableCollection<DataPoint> SoilMoistureLogs { get; set; }
 
         public MainWindowViewModel()
         {
@@ -80,37 +82,76 @@ namespace Cultivar_reTerminal.ViewModels
 
             ToggleSprinklerCommand = ReactiveCommand.Create(ToggleSprinkler);
 
-            Series1 = new List<DataPoint>();
-            Series2 = new List<DataPoint>();
-            Series3 = new List<DataPoint>();
+            TemperatureLogs = new ObservableCollection<DataPoint>();
 
-            for (var i = 0; i < 50; i++)
-            {
-                Series1.Add(new DataPoint(i, (Math.Sin(i / 4.0) * 2) + 1.5));
-                Series2.Add(new DataPoint(i, Math.Cos(i / 3.0)));
-                Series3.Add(new DataPoint(i, Math.Cos(i / 6.0) * 50));
-            }
+            HumidityLogs = new ObservableCollection<DataPoint>();
+
+            SoilMoistureLogs = new ObservableCollection<DataPoint>();
+
+            //for (; _sampleNumber < 50;)
+            //{
+            //    Add();
+            //}
 
             _ = SimulateCurrentConditions();
         }
 
-        async Task SimulateCurrentConditions() 
+
+        private int _sampleNumber = 50;
+        private void Add()
+        {
+            TemperatureLogs.Add(new DataPoint(_sampleNumber, (Math.Sin(_sampleNumber / 4.0) * 2) + 1.5));
+            HumidityLogs.Add(new DataPoint(_sampleNumber, Math.Cos(_sampleNumber / 3.0)));
+            SoilMoistureLogs.Add(new DataPoint(_sampleNumber, Math.Cos(_sampleNumber / 6.0) * 50));
+
+            _sampleNumber++;
+
+            // just an example of a moving window
+            while (TemperatureLogs.Count > 55)
+            {
+                TemperatureLogs.RemoveAt(0);
+                HumidityLogs.RemoveAt(0);
+                SoilMoistureLogs.RemoveAt(0);
+            }
+        }
+
+        async Task SimulateCurrentConditions()
         {
             var random = new Random();
 
-            while(true)
+            int i = 0;
+
+            while (true)
             {
-                CurrentTemperature = $"{ random.Next(23, 28) }°C";
-                CurrentHumidity = $"{ random.Next(92, 97) }%";
-                CurrentSoilMoisture = $"{ random.Next(75, 80) }%";
+                double temp = random.Next(23, 28) + random.NextDouble();
+                int h = random.Next(92, 97);
+                double sm = random.Next(75, 77) + random.NextDouble();
+
+                CurrentTemperature = $"{temp:N0}°C";
+                CurrentHumidity = $"{h}%";
+                CurrentSoilMoisture = $"{sm:N0}%";
+
+                TemperatureLogs.Add(new DataPoint(i, temp));
+                HumidityLogs.Add(new DataPoint(i, h));
+                SoilMoistureLogs.Add(new DataPoint(i, sm));
 
                 await Task.Delay(TimeSpan.FromSeconds(5));
+
+                if (i > 50)
+                {
+                    TemperatureLogs.RemoveAt(0);
+                    HumidityLogs.RemoveAt(0);
+                    SoilMoistureLogs.RemoveAt(0);
+                }
+
+                i++;
             }
         }
 
         public void ToggleLights()
         {
             IsLightsOn = !IsLightsOn;
+            Add();
         }
 
         public void ToggleHeater()

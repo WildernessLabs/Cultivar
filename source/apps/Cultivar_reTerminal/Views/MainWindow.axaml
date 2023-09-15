@@ -622,7 +622,7 @@
                         AxislineColor="Black"
                         AxislineThickness="3"
                         AxislineStyle="Solid"
-                        AxisDistance="15"
+                        AxisDistance="15" 
                         TickStyle="Inside"
                         FontSize="20"
                         MajorGridlineStyle="None"
@@ -659,7 +659,7 @@
                     <oxy:LineSeries
                         Color="#EBA77F"
                         StrokeThickness="5"
-                        ItemsSource="{Binding Series1}"
+                        ItemsSource="{Binding TemperatureLogs}"
                         YAxisKey="Primary"
                         DataFieldX="X"
                         DataFieldY="Y" />
@@ -668,8 +668,8 @@
                     <oxy:LineSeries
                         Color="#71C3E4"
                         StrokeThickness="5"
-                        ItemsSource="{Binding Series2}"
-                        YAxisKey="Primary"
+                        ItemsSource="{Binding HumidityLogs}"
+                        YAxisKey="Secondary"
                         DataFieldX="X"
                         DataFieldY="Y" />
                 </oxy:Plot.Series>
@@ -677,7 +677,7 @@
                     <oxy:LineSeries
                         Color="#B7C085"
                         StrokeThickness="5"
-                        ItemsSource="{Binding Series3}"
+                        ItemsSource="{Binding SoilMoistureLogs}"
                         YAxisKey="Secondary"
                         DataFieldX="X"
                         DataFieldY="Y" />
