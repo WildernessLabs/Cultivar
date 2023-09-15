@@ -88,31 +88,7 @@ namespace Cultivar_reTerminal.ViewModels
 
             SoilMoistureLogs = new ObservableCollection<DataPoint>();
 
-            //for (; _sampleNumber < 50;)
-            //{
-            //    Add();
-            //}
-
             _ = SimulateCurrentConditions();
-        }
-
-
-        private int _sampleNumber = 50;
-        private void Add()
-        {
-            TemperatureLogs.Add(new DataPoint(_sampleNumber, (Math.Sin(_sampleNumber / 4.0) * 2) + 1.5));
-            HumidityLogs.Add(new DataPoint(_sampleNumber, Math.Cos(_sampleNumber / 3.0)));
-            SoilMoistureLogs.Add(new DataPoint(_sampleNumber, Math.Cos(_sampleNumber / 6.0) * 50));
-
-            _sampleNumber++;
-
-            // just an example of a moving window
-            while (TemperatureLogs.Count > 55)
-            {
-                TemperatureLogs.RemoveAt(0);
-                HumidityLogs.RemoveAt(0);
-                SoilMoistureLogs.RemoveAt(0);
-            }
         }
 
         async Task SimulateCurrentConditions()
@@ -123,8 +99,8 @@ namespace Cultivar_reTerminal.ViewModels
 
             while (true)
             {
-                double temp = random.Next(23, 28) + random.NextDouble();
-                int h = random.Next(92, 97);
+                double temp = random.Next(26, 28) + random.NextDouble();
+                int h = random.Next(95, 97);
                 double sm = random.Next(75, 77) + random.NextDouble();
 
                 CurrentTemperature = $"{temp:N0}°C";
@@ -151,7 +127,6 @@ namespace Cultivar_reTerminal.ViewModels
         public void ToggleLights()
         {
             IsLightsOn = !IsLightsOn;
-            Add();
         }
 
         public void ToggleHeater()
