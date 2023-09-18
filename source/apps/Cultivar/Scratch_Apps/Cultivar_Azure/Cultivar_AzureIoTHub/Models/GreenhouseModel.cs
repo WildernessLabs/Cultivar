@@ -2,11 +2,11 @@
 {
     public class GreenhouseModel
     {
-        public string Temperature { get; set; }
+        public double Temperature { get; set; }
 
-        public string Humidity { get; set; }
+        public double Humidity { get; set; }
 
-        public string SoilMoisture { get; set; }
+        public double SoilMoisture { get; set; }
 
         public bool IsLightOn { get; set; }
 

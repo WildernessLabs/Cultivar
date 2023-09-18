@@ -35,9 +35,9 @@ namespace Cultivar_AzureIotHub
         {
             var model = new GreenhouseModel()
             {
-                Temperature = $"{e.New.Temperature.Value.Celsius:N2}°C",
-                Humidity = $"{e.New.Humidity.Value.Percent:N2}°C",
-                SoilMoisture = $"{e.New.Humidity.Value.Percent - 10:N2}°C",
+                Temperature = e.New.Temperature.Value.Celsius,
+                Humidity = e.New.Humidity.Value.Percent,
+                SoilMoisture = e.New.Humidity.Value.Percent - 10,
                 IsLightOn = IsLightOn,
                 IsHeaterOn = IsHeaterOn,
                 IsSprinklerOn = IsSprinklerOn,
@@ -47,7 +47,7 @@ namespace Cultivar_AzureIotHub
             Resolver.Log.Info($"Reading {DateTime.Now} - " +
                 $"Temperature: {e.New.Temperature.Value.Celsius:N2}°C, " +
                 $"Humidity: {e.New.Humidity.Value.Percent:N2}%, " +
-                $"SoilMoisture: {e.New.Humidity.Value.Percent - 10:N2}atm, " +
+                $"SoilMoisture: {e.New.Humidity.Value.Percent - 10:N2}%, " +
                 $"IsLightOn: {IsLightOn}, " +
                 $"IsHeaterOn: {IsHeaterOn}, " +
                 $"IsSprinklerOn: {IsSprinklerOn}, " +

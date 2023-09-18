@@ -50,18 +50,24 @@ namespace Cultivar_AzureFunction
 
                     var dataMessage = (JObject)JsonConvert.DeserializeObject(jsonString);
 
-                    // get our device id, temp and humidity from the object
+                    // get our device id and greenhouse data
                     string deviceId = (string)deviceMessage["systemProperties"]["iothub-connection-device-id"];
                     var temperature = dataMessage["Temperature"];
                     var humidity = dataMessage["Humidity"];
-                    var pressure = dataMessage["Pressure"];
-                    var volume = dataMessage["Volume"];
+                    var soilMoisture = dataMessage["SoilMoisture"];
+                    var isLightOn = dataMessage["IsLightOn"];
+                    var isHeaterOn = dataMessage["IsHeaterOn"];
+                    var isSprinklerOn = dataMessage["IsSprinklerOn"];
+                    var isVentilationOn = dataMessage["IsVentilationOn"];
 
                     var updateTwinData = new JsonPatchDocument();
                     updateTwinData.AppendReplace("/Temperature", temperature.Value<double>());
                     updateTwinData.AppendReplace("/Humidity", humidity.Value<double>());
-                    updateTwinData.AppendReplace("/Pressure", pressure.Value<double>());
-                    updateTwinData.AppendReplace("/Volume", pressure.Value<double>());
+                    updateTwinData.AppendReplace("/SoilMoisture", soilMoisture.Value<double>());
+                    updateTwinData.AppendReplace("/IsLightOn", isLightOn.Value<bool>());
+                    updateTwinData.AppendReplace("/IsHeaterOn", isLightOn.Value<bool>());
+                    updateTwinData.AppendReplace("/IsSprinklerOn", isLightOn.Value<bool>());
+                    updateTwinData.AppendReplace("/IsVentilationOn", isLightOn.Value<bool>());
 
                     await client.UpdateDigitalTwinAsync(deviceId, updateTwinData);
                 }
