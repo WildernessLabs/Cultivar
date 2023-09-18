@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using static Meadow.Foundation.Relays.ElectromagneticRelayModule;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace RelayControl
@@ -87,6 +88,26 @@ namespace RelayControl
         private void RelayMenu_ValueChanged(object sender, ValueChangedEventArgs e)
         {
             Resolver.Log.Info($"menu item '{e.ItemID}' changed to {e.Value}");
+
+            int relayIndex = e.ItemID switch
+            {
+                "relay1" => 1,
+                "relay2" => 2,
+                "relay3" => 3,
+                "relay4" => 4,
+                _ => 0,
+            };
+
+            bool intendedState = e.Value switch
+            {
+                "On" => true,
+                "Off" => false,
+                _ => false,
+            };
+
+            Resolver.Log.Info($"Turning relay {relayIndex} to {e.Value}.");
+            if (relayIndex > 0) { relayModule.SetRelayState((RelayIndex)relayIndex, intendedState); }
+            
         }
 
         private void RelayMenu_Selected(object sender, MenuSelectedEventArgs e)
@@ -129,6 +150,7 @@ namespace RelayControl
             Resolver.Log.Info("Enabling menu.");
             relayMenu.Enable();
 
+            Resolver.Log.Info("Run() returning.");
             return;
         }
 
