@@ -1,0 +1,15 @@
+<Application 
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Cultivar_reTerminal"
+    x:Class="Cultivar_reTerminal.App">
+    
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+    
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml"/>
+    </Application.Styles>
+</Application>
