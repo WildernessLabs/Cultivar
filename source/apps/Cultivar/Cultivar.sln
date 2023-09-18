@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External_Projects", "Extern
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudStuff", "Scratch_Apps\CloudStuff\CloudStuff.csproj", "{1EE4393B-D5F4-47CB-97E5-36154E867158}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scheduler", "Scratch_Apps\Scheduler\Scheduler.csproj", "{D18522B9-B145-429E-9562-311E844B64F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{1EE4393B-D5F4-47CB-97E5-36154E867158}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EE4393B-D5F4-47CB-97E5-36154E867158}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EE4393B-D5F4-47CB-97E5-36154E867158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D18522B9-B145-429E-9562-311E844B64F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D18522B9-B145-429E-9562-311E844B64F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D18522B9-B145-429E-9562-311E844B64F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D18522B9-B145-429E-9562-311E844B64F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -35,5 +41,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{33DA4C72-9613-49F5-98E0-E2BABBC73637} = {18F35D11-B5FE-4800-8559-26A98B2328CB}
 		{1EE4393B-D5F4-47CB-97E5-36154E867158} = {18F35D11-B5FE-4800-8559-26A98B2328CB}
+		{D18522B9-B145-429E-9562-311E844B64F5} = {18F35D11-B5FE-4800-8559-26A98B2328CB}
 	EndGlobalSection
 EndGlobal
