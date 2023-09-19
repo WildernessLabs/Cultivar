@@ -15,7 +15,7 @@ namespace RelayControl
     public class MeadowApp : App<F7CoreComputeV2>
     {
         IProjectLabHardware projectLab;
-        DisplayScreen screen;
+        readonly DisplayScreen screen;
         RelayControlScreen _menu;
 
         TextDisplayMenu relayMenu;
@@ -31,7 +31,7 @@ namespace RelayControl
 
             // instantiate the relay board
             Resolver.Log.Info("Loading relay board...");
-            relayModule = new ElectromagneticRelayModule(Device.CreateI2cBus(), 0x27);
+            relayModule = new ElectromagneticRelayModule(projectLab.I2cBus, 0x27);
 
             // load our relay text display menu
             LoadTextDisplayRelayMenuScreen();
@@ -48,7 +48,8 @@ namespace RelayControl
 
             // create the graphics canvas (MicroGraphics) and set a font
             // this creates an ITextDisplay compatible object
-            var graphicsCanvas = new MicroGraphics(projectLab.Display) {
+            var graphicsCanvas = new MicroGraphics(projectLab.Display)
+            {
                 CurrentFont = new Font12x20()
             };
 
@@ -63,15 +64,18 @@ namespace RelayControl
 
             // setup the button handlers to drive the menu
             Resolver.Log.Info("Setting up button handlers.");
-            projectLab.DownButton.Clicked += (s, e) => {
+            projectLab.DownButton.Clicked += (s, e) =>
+            {
                 Resolver.Log.Info("Down Clicked.");
                 relayMenu.Next();
             };
-            projectLab.RightButton.Clicked += (s, e) => {
+            projectLab.RightButton.Clicked += (s, e) =>
+            {
                 Resolver.Log.Info("Right Clicked.");
                 relayMenu.Select();
             };
-            projectLab.UpButton.Clicked += (s, e) => {
+            projectLab.UpButton.Clicked += (s, e) =>
+            {
                 Resolver.Log.Info("Up Clicked.");
                 relayMenu.Previous();
             };
@@ -99,7 +103,7 @@ namespace RelayControl
 
             Resolver.Log.Info($"Turning relay {relayIndex} to {e.Value}/{intendedState}.");
             if (relayIndex >= 0) { relayModule.Relays[relayIndex].IsOn = intendedState; }
-            
+
         }
 
         private void RelayMenu_Selected(object sender, MenuSelectedEventArgs e)
