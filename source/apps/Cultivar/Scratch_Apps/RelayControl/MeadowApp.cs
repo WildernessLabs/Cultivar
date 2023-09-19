@@ -31,7 +31,7 @@ namespace RelayControl
 
             // instantiate the relay board
             Resolver.Log.Info("Loading relay board...");
-            relayModule = new ElectromagneticRelayModule(projectLab.I2cBus, 0x27);
+            relayModule = new ElectromagneticRelayModule(projectLab.QwiicConnector.I2cBus, 0x27);
 
             // load our relay text display menu
             LoadTextDisplayRelayMenuScreen();
