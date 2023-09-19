@@ -7,8 +7,8 @@ namespace RelayControl.UI
 {
     public class RelayControlScreen
     {
-        private DisplayLabel[] labels;
-        private DisplayBox highlightBox;
+        private readonly DisplayLabel[] labels;
+        private readonly Box highlightBox;
 
         private const int ItemHeight = 30;
 
@@ -29,7 +29,7 @@ namespace RelayControl.UI
             var height = ItemHeight;
 
             // we compose the screen from the back forward, so put the box on first
-            highlightBox = new DisplayBox(0, -1, screen.Width, ItemHeight + 2)
+            highlightBox = new Box(0, -1, screen.Width, ItemHeight + 2)
             {
                 ForeColor = SelectionColor,
                 Filled = true,
@@ -45,7 +45,7 @@ namespace RelayControl.UI
                     width: screen.Width,
                     height: height)
                 {
-                    Text = $"Relay #{i+1}",
+                    Text = $"Relay #{i + 1}",
                     Font = MenuFont,
                     BackColor = Color.Transparent,
                     VerticalAlignment = VerticalAlignment.Center,

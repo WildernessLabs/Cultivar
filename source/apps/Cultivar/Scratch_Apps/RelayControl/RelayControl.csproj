@@ -6,10 +6,10 @@
     <AssemblyName>App</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.F7" Version="*" />
-    <PackageReference Include="Meadow.Foundation" Version="*" />
-    <PackageReference Include="Meadow.Foundation.Graphics.MicroLayout" Version="1.3.0" />
-    <PackageReference Include="Meadow.ProjectLab" Version="1.3.0" />
+    <PackageReference Include="Meadow.F7" Version="1.3.2.3-beta" />
+    <PackageReference Include="Meadow.Foundation" Version="1.3.2.3-beta" />
+    <PackageReference Include="Meadow.Foundation.Graphics.MicroLayout" Version="1.3.2.3-beta" />
+    <PackageReference Include="Meadow.ProjectLab" Version="1.3.2.3-beta" />
     <PackageReference Include="Meadow.Foundation.Relays.ElectromagneticRelayModule" Version="1.3.2.3-beta" />
     <PackageReference Include="Meadow.Foundation.Displays.TextDisplayMenu" Version="1.3.2.3-beta" />
   </ItemGroup>
