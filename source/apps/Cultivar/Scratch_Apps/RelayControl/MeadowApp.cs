@@ -106,7 +106,7 @@ namespace RelayControl
             };
 
             Resolver.Log.Info($"Turning relay {relayIndex} to {e.Value}.");
-            if (relayIndex > 0) { relayModule.SetRelayState((RelayIndex)relayIndex, intendedState); }
+            if (relayIndex > 0) { relayModule.Relays[relayIndex].IsOn = intendedState; }
             
         }
 
