@@ -1,20 +1,13 @@
 ﻿using Meadow;
 using Meadow.Devices;
-using Meadow.Foundation;
 using Meadow.Foundation.Displays.UI;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Foundation.Relays;
-using Meadow.Foundation.Sensors.Buttons;
-using Meadow.Peripherals.Displays;
-using Meadow.Peripherals.Sensors.Buttons;
 using RelayControl.UI;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using static Meadow.Foundation.Relays.ElectromagneticRelayModule;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace RelayControl
 {
@@ -38,7 +31,7 @@ namespace RelayControl
 
             // instantiate the relay board
             Resolver.Log.Info("Loading relay board...");
-            relayModule = new ElectromagneticRelayModule(Device.CreateI2cBus(), 0x20);
+            relayModule = new ElectromagneticRelayModule(Device.CreateI2cBus(), 0x27);
 
             // load our relay text display menu
             LoadTextDisplayRelayMenuScreen();
@@ -82,7 +75,6 @@ namespace RelayControl
                 Resolver.Log.Info("Up Clicked.");
                 relayMenu.Previous();
             };
-
         }
 
         private void RelayMenu_ValueChanged(object sender, ValueChangedEventArgs e)
