@@ -55,10 +55,10 @@ namespace Cultivar_AzureIotHub
                         $"\"Temperature\":{reading.Temperature}," +
                         $"\"Humidity\":{reading.Humidity}," +
                         $"\"SoilMoisture\":{reading.SoilMoisture}," +
-                        $"\"IsLightOn\":{reading.IsLightOn}," +
-                        $"\"IsHeaterOn\":{reading.IsHeaterOn}," +
-                        $"\"IsSprinklerOn\":{reading.IsSprinklerOn}," +
-                        $"\"IsVentilationOn\":{reading.IsVentilationOn}" +
+                        $"\"IsLightOn\":{reading.IsLightOn.ToString().ToLower()}," +
+                        $"\"IsHeaterOn\":{reading.IsHeaterOn.ToString().ToLower()}," +
+                        $"\"IsSprinklerOn\":{reading.IsSprinklerOn.ToString().ToLower()}," +
+                        $"\"IsVentilationOn\":{reading.IsVentilationOn.ToString().ToLower()}" +
                         $"}}";
 
                 var payloadBytes = Encoding.UTF8.GetBytes(messagePayload);
