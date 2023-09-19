@@ -79,6 +79,11 @@ namespace RelayControl
                 Resolver.Log.Info("Up Clicked.");
                 relayMenu.Previous();
             };
+            projectLab.LeftButton.Clicked += (s, e) =>
+            {
+                Resolver.Log.Info("Left Clicked.");
+                relayMenu.Back();
+            };
         }
 
         private void RelayMenu_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -101,7 +106,7 @@ namespace RelayControl
                 _ => false,
             };
 
-            Resolver.Log.Info($"Turning relay {relayIndex} to {e.Value}/{intendedState}.");
+            Resolver.Log.Info($"Turning relay {relayIndex + 1} to {e.Value}/{intendedState}.");
             if (relayIndex >= 0) { relayModule.Relays[relayIndex].IsOn = intendedState; }
 
         }
