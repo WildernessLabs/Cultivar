@@ -91,11 +91,11 @@ namespace RelayControl
 
             int relayIndex = e.ItemID switch
             {
-                "relay1" => 1,
-                "relay2" => 2,
-                "relay3" => 3,
-                "relay4" => 4,
-                _ => 0,
+                "relay1" => 0,
+                "relay2" => 1,
+                "relay3" => 2,
+                "relay4" => 3,
+                _ => -1,
             };
 
             bool intendedState = e.Value switch
@@ -105,8 +105,8 @@ namespace RelayControl
                 _ => false,
             };
 
-            Resolver.Log.Info($"Turning relay {relayIndex} to {e.Value}.");
-            if (relayIndex > 0) { relayModule.Relays[relayIndex].IsOn = intendedState; }
+            Resolver.Log.Info($"Turning relay {relayIndex} to {e.Value}/{intendedState}.");
+            if (relayIndex >= 0) { relayModule.Relays[relayIndex].IsOn = intendedState; }
             
         }
 
