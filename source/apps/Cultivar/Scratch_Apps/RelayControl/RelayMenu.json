@@ -1,22 +1,26 @@
 [
   {
-    "text": "Relay 1",
+    "text": "Relay 1 {value}",
     "id": "relay1",
-    "type": "OnOff"
+    "type": "OnOff",
+    "value": "Off"
   },
   {
-    "text": "Relay 2",
+    "text": "Relay 2 {value}",
     "id": "relay2",
-    "type": "OnOff"
+    "type": "OnOff",
+    "value": "Off"
   },
   {
-    "text": "Relay 3",
+    "text": "Relay 3 {value}",
     "id": "relay3",
-    "type": "OnOff"
+    "type": "OnOff",
+    "value": "Off"
   },
   {
-    "text": "Relay 4",
+    "text": "Relay 4 {value}",
     "id": "relay4",
-    "type": "OnOff"
+    "type": "OnOff",
+    "value": "Off"
   }
 ]
