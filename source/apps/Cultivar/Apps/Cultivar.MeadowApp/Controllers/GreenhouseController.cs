@@ -29,7 +29,7 @@ namespace Cultivar.MeadowApp.Controllers
         {
             this.Hardware = greenhouseHardware;
 
-            cloudLogger = new CloudLogger();
+            cloudLogger = new CloudLogger(LogLevel.Warning);
             Resolver.Log.AddProvider(cloudLogger);
             Resolver.Services.Add(cloudLogger);
 
@@ -145,7 +145,8 @@ namespace Cultivar.MeadowApp.Controllers
             Resolver.Log.Info($"Logging to cloud.");
             try
             {
-                cloudLogger.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
+                var cl = Resolver.Services.Get<CloudLogger>();
+                cl.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
                 {
                     { "TemperatureCelsius", e.New.Temperature?.Celsius },
                     { "HumidityPercentage", e.New.Humidity?.Percent },
