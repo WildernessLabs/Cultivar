@@ -127,26 +127,38 @@ namespace Cultivar_reTerminal.ViewModels
 
         public async void ToggleLights()
         {
-            var res = await RestClient.SendCommand();
+            var res = await RestClient.SendCommand(CultivarCommands.LightControl, !IsLightsOn);
             if (res)
             {
                 IsLightsOn = !IsLightsOn;
             }
         }
 
-        public void ToggleHeater()
+        public async void ToggleHeater()
         {
-            IsHeaterOn = !IsHeaterOn;
+            var res = await RestClient.SendCommand(CultivarCommands.HeaterControl, !IsHeaterOn);
+            if (res)
+            {
+                IsHeaterOn = !IsHeaterOn;
+            }
         }
 
-        public void ToggleVentilation()
+        public async void ToggleVentilation()
         {
-            IsVentilationOn = !IsVentilationOn;
+            var res = await RestClient.SendCommand(CultivarCommands.FanControl, !IsVentilationOn);
+            if (res)
+            {
+                IsVentilationOn = !IsVentilationOn;
+            }
         }
 
-        public void ToggleSprinkler()
+        public async void ToggleSprinkler()
         {
-            IsSprinklerOn = !IsSprinklerOn;
+            var res = await RestClient.SendCommand(CultivarCommands.ValveControl, !IsSprinklerOn);
+            if (res)
+            {
+                IsSprinklerOn = !IsSprinklerOn;
+            }
         }
     }
 }

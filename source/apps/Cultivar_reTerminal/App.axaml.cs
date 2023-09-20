@@ -33,12 +33,4 @@ namespace Cultivar_reTerminal
             base.OnFrameworkInitializationCompleted();
         }
     }
-
-    public enum CultivarCommands
-    {
-        FanControl,
-        HeaterControl,
-        LightControl,
-        ValveControl
-    }
 }

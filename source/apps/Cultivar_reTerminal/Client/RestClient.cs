@@ -9,10 +9,11 @@ namespace Cultivar_reTerminal.Client
     {
         static string meadowCloudUri = "https://staging.meadowcloud.dev/";
         static string apiKey = "mcdev_HSAnsb2zNkw3X8Yq7tOaehpoul4_uV22i4x5dedRCCXQgawAH5Ft5U1JW4D56HK9107ThP";
+        static string deviceId = "27-00-1E-00-0D-50-4B-55-30-38-31-20";
 
         static RestClient() { }
 
-        public static async Task<bool> SendCommand()
+        public static async Task<bool> SendCommand(CultivarCommands command, bool relayState)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -24,10 +25,10 @@ namespace Cultivar_reTerminal.Client
                     string jsonString = $"" +
                         $"{{" +
                             $"\"deviceIds\": [" +
-                                $"\"27-00-1E-00-0D-50-4B-55-30-38-31-20\"]," +
-                            $"\"commandName\": \"lightcontrol\"," +
+                                $"\"{deviceId}\"]," +
+                            $"\"commandName\": \"{command}\"," +
                             $"\"args\": {{     " +
-                                $"\"relaystate\": true" +
+                                $"\"relaystate\": {relayState}" +
                             $"}}," +
                             $"\"qos\": 0" +
                         $"}}";
