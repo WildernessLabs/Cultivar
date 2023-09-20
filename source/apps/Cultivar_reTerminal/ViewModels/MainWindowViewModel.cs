@@ -1,4 +1,5 @@
-﻿using OxyPlot;
+﻿using Cultivar_reTerminal.Client;
+using OxyPlot;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -124,9 +125,13 @@ namespace Cultivar_reTerminal.ViewModels
             }
         }
 
-        public void ToggleLights()
+        public async void ToggleLights()
         {
-            IsLightsOn = !IsLightsOn;
+            var res = await RestClient.SendCommand();
+            if (res)
+            {
+                IsLightsOn = !IsLightsOn;
+            }
         }
 
         public void ToggleHeater()
