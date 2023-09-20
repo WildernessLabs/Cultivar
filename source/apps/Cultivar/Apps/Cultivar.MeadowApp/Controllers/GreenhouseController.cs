@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cultivar.MeadowApp.UI;
 using Meadow;
 using Meadow.Foundation;
 using Meadow.Foundation.Audio;
+using Meadow.Logging;
 using Meadow.Units;
 
 namespace Cultivar.MeadowApp.Controllers
@@ -20,11 +22,18 @@ namespace Cultivar.MeadowApp.Controllers
 
         protected DisplayController displayController;
         protected MicroAudio audio;
+        CloudLogger cloudLogger;
 
 
         public GreenhouseController(IGreenhouseHardware greenhouseHardware)
         {
             this.Hardware = greenhouseHardware;
+
+            cloudLogger = new CloudLogger();
+            Resolver.Log.AddProvider(cloudLogger);
+            Resolver.Services.Add(cloudLogger);
+
+            Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
 
             Hardware.RgbLed?.SetColor(Color.Blue);
 
@@ -132,6 +141,19 @@ namespace Cultivar.MeadowApp.Controllers
             if (displayController != null)
             {
                 displayController.AtmosphericConditions = e.New;
+            }
+            Resolver.Log.Info($"Logging to cloud.");
+            try
+            {
+                cloudLogger.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
+                {
+                    { "TemperatureCelsius", e.New.Temperature?.Celsius },
+                    { "HumidityPercentage", e.New.Humidity?.Percent },
+                    { "PressureMillibar", e.New.Pressure?.Millibar }
+                });
+            }
+            catch (Exception ex) {
+                Resolver.Log.Info($"Err: {ex.Message}");
             }
         }
 
