@@ -14,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="UI\" />
+    <None Remove="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="meadow.config.yaml">
@@ -28,5 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UI\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 </Project>
