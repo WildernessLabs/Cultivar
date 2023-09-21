@@ -8,30 +8,52 @@ using Meadow.Foundation.Relays;
 using Meadow.Foundation.Sensors.Accelerometers;
 using Meadow.Foundation.Sensors.Atmospheric;
 using Meadow.Foundation.Sensors.Light;
+using Meadow.Foundation.Sensors.Moisture;
 using Meadow.Hardware;
 using Meadow.Modbus;
 using Meadow.Peripherals.Relays;
 using Meadow.Peripherals.Sensors.Buttons;
+using Meadow.Peripherals.Sensors.Moisture;
+using Meadow.Units;
 
 namespace Cultivar.Hardware
 {
     public class ProductionBetaHardware : IGreenhouseHardware
     {
         protected IProjectLabHardware ProjectLab { get; set; }
-        protected ElectromagneticRelayModule relayModule { get; set; }
+        protected ElectromagneticRelayModule RelayModule { get; set; }
+        public Capacitive MoistureSensor { get; set; }
 
         public ProductionBetaHardware(IProjectLabHardware projectLab)
         {
             this.ProjectLab = projectLab;
 
+            Resolver.Log.Info($"getting the CCM ref");
+            var ccm = Resolver.Device as F7CoreComputeV2;
+
             // instantiate the relay board
             Resolver.Log.Info("Loading relay board...");
-            relayModule = new ElectromagneticRelayModule(projectLab.QwiicConnector.I2cBus, 0x27);
+            RelayModule = new ElectromagneticRelayModule(projectLab.QwiicConnector.I2cBus, 0x27);
 
-            this.VentFan = relayModule.Relays[0];
-            this.Heater = relayModule.Relays[1];
-            this.Lights = relayModule.Relays[2];
-            this.IrrigationLines = relayModule.Relays[3];
+            // assign the relay shortcuts
+            this.VentFan = RelayModule.Relays[0];
+            this.Heater = RelayModule.Relays[1];
+            this.Lights = RelayModule.Relays[2];
+            this.IrrigationLines = RelayModule.Relays[3];
+
+
+            // capacitive moisture sensor
+            if (ccm is not null)
+            {
+                Resolver.Log.Info($"creating the capacitive moisture sensor");
+                MoistureSensor = new Capacitive(
+                    ccm.Pins.A04,
+                    minimumVoltageCalibration: new Voltage(2.84f),
+                    maximumVoltageCalibration: new Voltage(1.63f)
+                );
+                Resolver.Log.Info($"success!");
+            }
+
         }
 
         public IRelay? VentFan { get; protected set; }
