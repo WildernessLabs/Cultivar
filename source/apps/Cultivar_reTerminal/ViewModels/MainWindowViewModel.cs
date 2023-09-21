@@ -88,7 +88,27 @@ namespace Cultivar_reTerminal.ViewModels
 
             SoilMoistureLogs = new ObservableCollection<Pnl>();
 
-            _ = SimulateCurrentConditions();
+            //_ = SimulateCurrentConditions();
+            _ = GetGreenhouseData();
+        }
+
+        async Task GetGreenhouseData()
+        {
+            var sensorReadings = await RestClient.GetSensorReadings();
+
+            if (sensorReadings != null && sensorReadings.Count > 0)
+            {
+                foreach (var reading in sensorReadings)
+                {
+                    TemperatureLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.TemperatureCelsius));
+                    HumidityLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.HumidityPercentage));
+                    SoilMoistureLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.HumidityPercentage - 10));
+                }
+
+                CurrentTemperature = $"{TemperatureLogs[0].Value:N0}°C";
+                CurrentHumidity = $"{HumidityLogs[0].Value:N0}%";
+                CurrentSoilMoisture = $"{SoilMoistureLogs[0].Value:N0}%";
+            }
         }
 
         async Task SimulateCurrentConditions()
@@ -124,11 +144,13 @@ namespace Cultivar_reTerminal.ViewModels
 
         public async void ToggleLights()
         {
-            var res = await RestClient.SendCommand(CultivarCommands.LightControl, !IsLightsOn);
-            if (res)
-            {
-                IsLightsOn = !IsLightsOn;
-            }
+            var s = await RestClient.GetSensorReadings();
+
+            //var res = await RestClient.SendCommand(CultivarCommands.LightControl, !IsLightsOn);
+            //if (res)
+            //{
+            //    IsLightsOn = !IsLightsOn;
+            //}
         }
 
         public async void ToggleHeater()

@@ -9,10 +9,6 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaXaml Remove="Models\**" />
-    <Compile Remove="Models\**" />
-    <EmbeddedResource Remove="Models\**" />
-    <None Remove="Models\**" />
     <None Remove=".gitignore" />
     <None Remove="Assets\icon-fans.png" />
     <None Remove="Assets\icon-heater.png" />
