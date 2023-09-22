@@ -22,7 +22,7 @@ namespace RelayControl.UI
                 {
                     ForeColor = Color.White
                 },
-                new DisplayLabel(15, 20, 290, 40)
+                new Label(15, 20, 290, 40)
                 {
                     Text = "Cultivar",
                     TextColor = WildernessLabsColors.AzureBlue,

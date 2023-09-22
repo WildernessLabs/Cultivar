@@ -7,7 +7,7 @@ namespace RelayControl.UI
 {
     public class RelayControlScreen
     {
-        private readonly DisplayLabel[] labels;
+        private readonly Label[] labels;
         private readonly Box highlightBox;
 
         private const int ItemHeight = 30;
@@ -21,7 +21,7 @@ namespace RelayControl.UI
 
         public RelayControlScreen(DisplayScreen screen)
         {
-            labels = new DisplayLabel[4];
+            labels = new Label[4];
             var relayCount = 4;
 
             var x = 2;
@@ -39,7 +39,7 @@ namespace RelayControl.UI
 
             for (var i = 0; i < relayCount; i++)
             {
-                labels[i] = new DisplayLabel(
+                labels[i] = new Label(
                     left: x,
                     top: i * height,
                     width: screen.Width,

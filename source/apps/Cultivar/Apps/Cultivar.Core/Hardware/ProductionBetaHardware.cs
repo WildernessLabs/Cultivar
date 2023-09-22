@@ -1,5 +1,4 @@
-﻿using System;
-using Meadow;
+﻿using Meadow;
 using Meadow.Devices;
 using Meadow.Foundation.Audio;
 using Meadow.Foundation.Graphics;
@@ -13,7 +12,6 @@ using Meadow.Hardware;
 using Meadow.Modbus;
 using Meadow.Peripherals.Relays;
 using Meadow.Peripherals.Sensors.Buttons;
-using Meadow.Peripherals.Sensors.Moisture;
 using Meadow.Units;
 
 namespace Cultivar.Hardware
@@ -33,7 +31,7 @@ namespace Cultivar.Hardware
 
             // instantiate the relay board
             Resolver.Log.Info("Loading relay board...");
-            RelayModule = new ElectromagneticRelayModule(projectLab.QwiicConnector.I2cBus, 0x27);
+            RelayModule = new ElectromagneticRelayModule(projectLab.Qwiic.I2cBus, 0x25);
 
             // assign the relay shortcuts
             this.VentFan = RelayModule.Relays[0];
@@ -98,13 +96,14 @@ namespace Cultivar.Hardware
 
         public UartConnector GroveUart => this.ProjectLab.GroveUart;
 
-        public I2cConnector QwiicConnector => this.ProjectLab.QwiicConnector;
+        public I2cConnector Qwiic => this.ProjectLab.Qwiic;
+
+        public IOTerminalConnector IOTerminal => this.ProjectLab.IOTerminal;
 
         public IGraphicsDisplay? Display => this.ProjectLab.Display;
 
         public ModbusRtuClient GetModbusRtuClient(
             int baudRate = 19200, int dataBits = 8, Parity parity = Parity.None, StopBits stopBits = StopBits.One)
                 => this.ProjectLab.GetModbusRtuClient(baudRate, dataBits, parity, stopBits);
-
     }
 }

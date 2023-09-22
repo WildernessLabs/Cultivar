@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Meadow.F7" Version="*" />
     <PackageReference Include="Meadow.Foundation" Version="*" />
-    <PackageReference Include="Meadow.ProjectLab" Version="1.3.0" />
+    <PackageReference Include="Meadow.ProjectLab" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <None Include="meadow.config.yaml">
