@@ -10,6 +10,7 @@ using Meadow.Logging;
 using Meadow.Units;
 using Meadow.Foundation.Sensors.Moisture;
 using Meadow.Devices;
+using Cultivar.Commands;
 
 namespace Cultivar.MeadowApp.Controllers
 {
@@ -27,7 +28,7 @@ namespace Cultivar.MeadowApp.Controllers
         protected MicroAudio audio;
         CloudLogger cloudLogger;
 
-        protected TimeSpan UpdateInterval = TimeSpan.FromSeconds(30);
+        protected TimeSpan UpdateInterval = TimeSpan.FromSeconds(60);
 
         public GreenhouseController(IGreenhouseHardware greenhouseHardware)
         {
@@ -62,12 +63,84 @@ namespace Cultivar.MeadowApp.Controllers
             if (Hardware.MotionSensor is { } bmi270) { bmi270.Updated += Bmi270Updated; }
 
             //---- moisture sensor
-            if (Hardware.MoistureSensor is { } moisture)
-            {
-                moisture.Updated += MoistureUpdated;
-            }
+            if (Hardware.MoistureSensor is { } moisture) { moisture.Updated += MoistureUpdated; }
 
             //---- buttons
+            this.WireUpButtons();
+
+            //---- commands
+            this.SubscribeToCommands();
+
+            //---- heartbeat
+            Resolver.Log.Info("Initialization complete");
+        }
+
+
+        public Task Run()
+        {
+            _ = audio.PlaySystemSound(SystemSoundEffect.Success);
+
+            //---- BH1750 Light Sensor
+            if (Hardware.LightSensor is { } bh1750) { bh1750.StartUpdating(UpdateInterval); }
+
+            //---- BME688 Atmospheric sensor
+            if (Hardware.EnvironmentalSensor is { } bme688) { bme688.StartUpdating(UpdateInterval); }
+
+            //---- BMI270 Accel/IMU
+            if (Hardware.MotionSensor is { } bmi270) { bmi270.StartUpdating(UpdateInterval); }
+
+            //---- moisture
+            if (Hardware.MoistureSensor is { } moisture) { moisture.StartUpdating(UpdateInterval); }
+
+            displayController?.Update();
+
+            Resolver.Log.Info("starting blink");
+            _ = Hardware.RgbLed?.StartBlink(WildernessLabsColors.PearGreen, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(2000), 0.5f);
+
+
+            return Task.CompletedTask;
+        }
+
+        void SubscribeToCommands()
+        {
+            Resolver.CommandService.Subscribe<Fan>(c =>
+            {
+                Resolver.Log.Info($"Received fan control: {c.IsOn}");
+                Hardware.VentFan.IsOn = c.IsOn;
+            });
+
+            Resolver.CommandService.Subscribe<Heater>(c =>
+            {
+                Resolver.Log.Info($"Received heater control: {c.IsOn}");
+                Hardware.Heater.IsOn = c.IsOn;
+            });
+
+            Resolver.CommandService.Subscribe<Lights>(c =>
+            {
+                Resolver.Log.Info($"Received light control: {c.IsOn}");
+                Hardware.Lights.IsOn = c.IsOn;
+            });
+
+            Resolver.CommandService.Subscribe<Irrigation>(c =>
+            {
+                Resolver.Log.Info($"Received valve control: {c.IsOn}");
+                Hardware.IrrigationLines.IsOn = c.IsOn;
+            });
+
+            //Resolver.CommandService.Subscribe(c =>
+            //{
+            //    Resolver.Log.Info($"Received command: {c.CommandName} with args {c.Arguments}");
+            //});
+
+            //Resolver.CommandService.Subscribe<FanControl>(e =>
+            //{
+            //    Resolver.Log.Trace($"Received fan control: {e.RelayState}");
+            //});
+
+        }
+
+        void WireUpButtons()
+        {
             if (Hardware.RightButton is { } rightButton)
             {
                 rightButton.PressStarted += (s, e) =>
@@ -121,38 +194,7 @@ namespace Cultivar.MeadowApp.Controllers
                     Hardware.IrrigationLines.IsOn = false;
                 };
             }
-
-            //---- heartbeat
-            Resolver.Log.Info("Initialization complete");
-
         }
-
-
-        public Task Run()
-        {
-            _ = audio.PlaySystemSound(SystemSoundEffect.Success);
-
-            //---- BH1750 Light Sensor
-            if (Hardware.LightSensor is { } bh1750) { bh1750.StartUpdating(UpdateInterval); }
-
-            //---- BME688 Atmospheric sensor
-            if (Hardware.EnvironmentalSensor is { } bme688) { bme688.StartUpdating(UpdateInterval); }
-
-            //---- BMI270 Accel/IMU
-            if (Hardware.MotionSensor is { } bmi270) { bmi270.StartUpdating(UpdateInterval); }
-
-            //---- moisture
-            if (Hardware.MoistureSensor is { } moisture) { moisture.StartUpdating(UpdateInterval); }
-
-            displayController?.Update();
-
-            Resolver.Log.Info("starting blink");
-            _ = Hardware.RgbLed?.StartBlink(WildernessLabsColors.PearGreen, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(2000), 0.5f);
-
-
-            return Task.CompletedTask;
-        }
-
 
         //==== HANDLERS
         //TODO: would be nice to wait until a full set of readings has been made and send together.
