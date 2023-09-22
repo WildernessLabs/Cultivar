@@ -26,12 +26,14 @@ namespace Cultivar.Hardware
         {
             this.ProjectLab = projectLab;
 
-            Resolver.Log.Info($"getting the CCM ref");
-            var ccm = Resolver.Device as F7CoreComputeV2;
+            //Resolver.Log.Info($"getting the CCM ref");
+            //var ccm = Resolver.Device as F7CoreComputeV2;
 
             // instantiate the relay board
             Resolver.Log.Info("Loading relay board...");
-            RelayModule = new ElectromagneticRelayModule(projectLab.Qwiic.I2cBus, 0x25);
+            byte relayAddress = ElectromagneticRelayModule.GetAddressFromPins(false, false, true);
+            Resolver.Log.Info($"relay address: {relayAddress:x}");
+            RelayModule = new ElectromagneticRelayModule(projectLab.Qwiic.I2cBus, relayAddress);
 
             // assign the relay shortcuts
             this.VentFan = RelayModule.Relays[0];
@@ -41,16 +43,17 @@ namespace Cultivar.Hardware
 
 
             // capacitive moisture sensor
-            if (ccm is not null)
-            {
+            //if (ccm is not null)
+            //{
                 Resolver.Log.Info($"creating the capacitive moisture sensor");
                 MoistureSensor = new Capacitive(
-                    ccm.Pins.A04,
+                    projectLab.IOTerminal.Pins.A1,
+                    //ccm.Pins.A04,
                     minimumVoltageCalibration: new Voltage(2.84f),
                     maximumVoltageCalibration: new Voltage(1.63f)
                 );
                 Resolver.Log.Info($"success!");
-            }
+            //}
 
         }
 
