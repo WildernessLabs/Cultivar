@@ -26,9 +26,6 @@ namespace Cultivar.Hardware
         {
             this.ProjectLab = projectLab;
 
-            //Resolver.Log.Info($"getting the CCM ref");
-            //var ccm = Resolver.Device as F7CoreComputeV2;
-
             // instantiate the relay board
             Resolver.Log.Info("Loading relay board...");
             byte relayAddress = ElectromagneticRelayModule.GetAddressFromPins(false, false, true);
@@ -42,18 +39,14 @@ namespace Cultivar.Hardware
             this.IrrigationLines = RelayModule.Relays[3];
 
 
-            // capacitive moisture sensor
-            //if (ccm is not null)
-            //{
-                Resolver.Log.Info($"creating the capacitive moisture sensor");
-                MoistureSensor = new Capacitive(
-                    projectLab.IOTerminal.Pins.A1,
-                    //ccm.Pins.A04,
-                    minimumVoltageCalibration: new Voltage(2.84f),
-                    maximumVoltageCalibration: new Voltage(1.63f)
-                );
-                Resolver.Log.Info($"success!");
-            //}
+            Resolver.Log.Info($"creating the capacitive moisture sensor");
+            MoistureSensor = new Capacitive(
+                projectLab.IOTerminal.Pins.A1,
+                //ccm.Pins.A04,
+                minimumVoltageCalibration: new Voltage(2.84f),
+                maximumVoltageCalibration: new Voltage(1.63f)
+            );
+            Resolver.Log.Info($"success!");
 
         }
 
