@@ -88,8 +88,19 @@ namespace Cultivar.MeadowApp.UI
             }
         } bool wifiConnected = false;
 
+        public string CloudConnectionStatus
+        {
+            get => cloudConnectionStatus;
+            set
+            {
+                cloudConnectionStatus = value;
+                Update();
+            }
+        } private string cloudConnectionStatus;
+
         bool isUpdating = false;
         bool needsUpdate = false;
+        
 
         public DisplayController(IGraphicsDisplay display) {
             graphics = new MicroGraphics(display)
@@ -137,6 +148,10 @@ namespace Cultivar.MeadowApp.UI
             // wifi
             graphics.DrawText(x: 2, y: 20, $"Wifi {(WiFiConnected ? "" : "Not " )}Connected", WildernessLabsColors.AzureBlue);
 
+            // cloud connection status
+            graphics.DrawText(x: 100, y: 0, "Cloud:", WildernessLabsColors.AzureBlue);
+            graphics.DrawText(x: 170, y: 0, cloudConnectionStatus, WildernessLabsColors.ChileanFire);
+            
             // Atmospheric conditions
             if (AtmosphericConditions is { } conditions) {
                 if (conditions.Temperature is { } temp) {

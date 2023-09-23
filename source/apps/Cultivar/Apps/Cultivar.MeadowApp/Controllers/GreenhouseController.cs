@@ -12,6 +12,7 @@ using Meadow.Foundation.Sensors.Moisture;
 using Meadow.Devices;
 using Cultivar.Commands;
 using Meadow.Hardware;
+using Meadow.Update;
 
 namespace Cultivar.MeadowApp.Controllers
 {
@@ -71,6 +72,10 @@ namespace Cultivar.MeadowApp.Controllers
 
             //---- commands
             this.SubscribeToCommands();
+            
+            //---- cloud status
+            displayController.CloudConnectionStatus = Resolver.UpdateService.State.ToString();
+            this.SubscribeToCloudConnectionEvents();
 
             // wifi events
             var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
@@ -119,6 +124,14 @@ namespace Cultivar.MeadowApp.Controllers
 
 
             return Task.CompletedTask;
+        }
+
+        void SubscribeToCloudConnectionEvents()
+        {
+            Resolver.UpdateService.OnStateChanged += (sender, state) =>
+            {
+                displayController.CloudConnectionStatus = state.ToString();
+            };
         }
 
         void SubscribeToCommands()
