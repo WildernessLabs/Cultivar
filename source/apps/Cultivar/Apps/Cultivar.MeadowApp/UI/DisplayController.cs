@@ -41,43 +41,43 @@ namespace Cultivar.MeadowApp.UI
         }
         (Acceleration3D? Acceleration3D, AngularVelocity3D? AngularVelocity3D, Temperature? Temperature) accelerationConditions;
 
-        public bool UpButtonState {
-            get => upButtonState;
+        public bool FanState {
+            get => _fanState;
             set
             {
-                upButtonState = value;
+                _fanState = value;
                 Update();
             }
         }
-        bool upButtonState = false;
+        bool _fanState = false;
 
-        public bool DownButtonState {
-            get => downButtonState;
+        public bool IrrigationState {
+            get => _irrigationState;
             set
             {
-                downButtonState = value;
+                _irrigationState = value;
                 Update();
             }
         }
-        bool downButtonState = false;
+        bool _irrigationState = false;
 
-        public bool LeftButtonState {
-            get => leftButtonState;
+        public bool LightsState {
+            get => _lightsState;
             set {
-                leftButtonState = value;
+                _lightsState = value;
                 Update();
             }
         }
-        bool leftButtonState = false;
+        bool _lightsState = false;
 
-        public bool RightButtonState {
-            get => rightButtonState;
+        public bool HeaterState {
+            get => _heaterState;
             set {
-                rightButtonState = value;
+                _heaterState = value;
                 Update();
             }
         }
-        bool rightButtonState = false;
+        bool _heaterState = false;
 
         public bool WiFiConnected
         {
@@ -165,10 +165,10 @@ namespace Cultivar.MeadowApp.UI
                 }
             }
 
-            DrawStatus("Left:", $"{(LeftButtonState ? "pressed" : "released")}", WildernessLabsColors.ChileanFire, 200);
-            DrawStatus("Down:", $"{(DownButtonState ? "pressed" : "released")}", WildernessLabsColors.ChileanFire, 180);
-            DrawStatus("Up:", $"{(UpButtonState ? "pressed" : "released")}", WildernessLabsColors.ChileanFire, 160);
-            DrawStatus("Right:", $"{(RightButtonState ? "pressed" : "released")}", WildernessLabsColors.ChileanFire, 220);
+            DrawStatus("Lights:", $"{(LightsState ? "On" : "Off")}", WildernessLabsColors.ChileanFire, 200);
+            DrawStatus("Irrigation:", $"{(IrrigationState ? "On" : "Off")}", WildernessLabsColors.ChileanFire, 180);
+            DrawStatus("Vent Fan:", $"{(FanState ? "On" : "Off")}", WildernessLabsColors.ChileanFire, 160);
+            DrawStatus("Heater:", $"{(HeaterState ? "On" : "Off")}", WildernessLabsColors.ChileanFire, 220);
         }
     }
 }

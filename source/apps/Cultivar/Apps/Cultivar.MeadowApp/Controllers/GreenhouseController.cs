@@ -89,6 +89,8 @@ namespace Cultivar.MeadowApp.Controllers
             {
                 displayController.WiFiConnected = false;
             };
+            
+            //Resolver.UpdateService.State
 
             //---- heartbeat
             Resolver.Log.Info("Initialization complete");
@@ -124,24 +126,28 @@ namespace Cultivar.MeadowApp.Controllers
             Resolver.CommandService.Subscribe<Fan>(c =>
             {
                 Resolver.Log.Info($"Received fan control: {c.IsOn}");
+                displayController.FanState = c.IsOn;
                 Hardware.VentFan.IsOn = c.IsOn;
             });
 
             Resolver.CommandService.Subscribe<Heater>(c =>
             {
                 Resolver.Log.Info($"Received heater control: {c.IsOn}");
+                displayController.HeaterState = c.IsOn;
                 Hardware.Heater.IsOn = c.IsOn;
             });
 
             Resolver.CommandService.Subscribe<Lights>(c =>
             {
                 Resolver.Log.Info($"Received light control: {c.IsOn}");
+                displayController.LightsState = c.IsOn;
                 Hardware.Lights.IsOn = c.IsOn;
             });
 
             Resolver.CommandService.Subscribe<Irrigation>(c =>
             {
                 Resolver.Log.Info($"Received valve control: {c.IsOn}");
+                displayController.IrrigationState = c.IsOn;
                 Hardware.IrrigationLines.IsOn = c.IsOn;
             });
 
@@ -163,13 +169,13 @@ namespace Cultivar.MeadowApp.Controllers
             {
                 rightButton.PressStarted += (s, e) =>
                 {
-                    displayController.RightButtonState = true;
-                    Hardware.VentFan.IsOn = true;
+                    displayController.HeaterState = true;
+                    Hardware.Heater.IsOn = true;
                 };
                 rightButton.PressEnded += (s, e) =>
                 {
-                    displayController.RightButtonState = false;
-                    Hardware.VentFan.IsOn = false;
+                    displayController.HeaterState = false;
+                    Hardware.Heater.IsOn = false;
                 };
             }
 
@@ -177,25 +183,25 @@ namespace Cultivar.MeadowApp.Controllers
             {
                 downButton.PressStarted += (s, e) =>
                 {
-                    displayController.DownButtonState = true;
-                    Hardware.Heater.IsOn = true;
+                    displayController.IrrigationState = true;
+                    Hardware.IrrigationLines.IsOn = true;
                 };
                 downButton.PressEnded += (s, e) =>
                 {
-                    displayController.DownButtonState = false;
-                    Hardware.Heater.IsOn = false;
+                    displayController.IrrigationState = false;
+                    Hardware.IrrigationLines.IsOn = false;
                 };
             }
             if (Hardware.LeftButton is { } leftButton)
             {
                 leftButton.PressStarted += (s, e) =>
                 {
-                    displayController.LeftButtonState = true;
+                    displayController.LightsState = true;
                     Hardware.Lights.IsOn = true;
                 };
                 leftButton.PressEnded += (s, e) =>
                 {
-                    displayController.LeftButtonState = false;
+                    displayController.LightsState = false;
                     Hardware.Lights.IsOn = false;
                 };
             }
@@ -203,13 +209,13 @@ namespace Cultivar.MeadowApp.Controllers
             {
                 upButton.PressStarted += (s, e) =>
                 {
-                    displayController.UpButtonState = true;
-                    Hardware.IrrigationLines.IsOn = true;
+                    displayController.FanState = true;
+                    Hardware.VentFan.IsOn = true;
                 };
                 upButton.PressEnded += (s, e) =>
                 {
-                    displayController.UpButtonState = false;
-                    Hardware.IrrigationLines.IsOn = false;
+                    displayController.FanState = false;
+                    Hardware.VentFan.IsOn = false;
                 };
             }
         }
