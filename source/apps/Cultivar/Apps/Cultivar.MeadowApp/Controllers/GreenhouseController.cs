@@ -11,6 +11,7 @@ using Meadow.Units;
 using Meadow.Foundation.Sensors.Moisture;
 using Meadow.Devices;
 using Cultivar.Commands;
+using Meadow.Hardware;
 
 namespace Cultivar.MeadowApp.Controllers
 {
@@ -71,14 +72,31 @@ namespace Cultivar.MeadowApp.Controllers
             //---- commands
             this.SubscribeToCommands();
 
+            // wifi events
+            var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            if (wifi.IsConnected)
+            {
+                displayController.WiFiConnected = true;
+            }
+            wifi.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
+            {
+                Resolver.Log.Info("Joined network");
+                Console.WriteLine($"IP Address: {networkAdapter.IpAddress}.");
+                displayController.WiFiConnected = true;
+                _ = audio.PlaySystemSound(SystemSoundEffect.Chime);
+            };
+            wifi.NetworkDisconnected += sender =>
+            {
+                displayController.WiFiConnected = false;
+            };
+
             //---- heartbeat
             Resolver.Log.Info("Initialization complete");
         }
 
-
         public Task Run()
         {
-            _ = audio.PlaySystemSound(SystemSoundEffect.Success);
+            _ = audio.PlaySystemSound(SystemSoundEffect.Fanfare);
 
             //---- BH1750 Light Sensor
             if (Hardware.LightSensor is { } bh1750) { bh1750.StartUpdating(UpdateInterval); }

@@ -1,4 +1,5 @@
-﻿using Meadow;
+﻿using System;
+using Meadow;
 using Meadow.Devices;
 using Meadow.Foundation.Audio;
 using Meadow.Foundation.Graphics;
@@ -19,7 +20,7 @@ namespace Cultivar.Hardware
     public class ProductionBetaHardware : IGreenhouseHardware
     {
         protected IProjectLabHardware ProjectLab { get; set; }
-        protected ElectromagneticRelayModule RelayModule { get; set; }
+        protected ElectromagneticRelayModule? RelayModule { get; set; }
         public Capacitive MoistureSensor { get; set; }
 
         public ProductionBetaHardware(IProjectLabHardware projectLab)
@@ -30,14 +31,23 @@ namespace Cultivar.Hardware
             Resolver.Log.Info("Loading relay board...");
             byte relayAddress = ElectromagneticRelayModule.GetAddressFromPins(false, false, true);
             Resolver.Log.Info($"relay address: {relayAddress:x}");
-            RelayModule = new ElectromagneticRelayModule(projectLab.Qwiic.I2cBus, relayAddress);
+            try
+            {
+                RelayModule = new ElectromagneticRelayModule(projectLab.Qwiic.I2cBus, relayAddress);
+            }
+            catch (Exception ex)
+            {
+                Resolver.Log.Error($"Could not instantiate relay.");
+            }
 
             // assign the relay shortcuts
-            this.VentFan = RelayModule.Relays[0];
-            this.Heater = RelayModule.Relays[1];
-            this.Lights = RelayModule.Relays[2];
-            this.IrrigationLines = RelayModule.Relays[3];
-
+            if (RelayModule is { } rm)
+            {
+                this.VentFan = rm.Relays[0];
+                this.Heater = rm.Relays[1];
+                this.Lights = rm.Relays[2];
+                this.IrrigationLines = rm.Relays[3];
+            }
 
             Resolver.Log.Info($"creating the capacitive moisture sensor");
             MoistureSensor = new Capacitive(
@@ -47,7 +57,6 @@ namespace Cultivar.Hardware
                 maximumVoltageCalibration: new Voltage(1.63f)
             );
             Resolver.Log.Info($"success!");
-
         }
 
         public IRelay? VentFan { get; protected set; }

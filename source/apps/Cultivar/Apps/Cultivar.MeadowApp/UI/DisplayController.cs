@@ -41,9 +41,7 @@ namespace Cultivar.MeadowApp.UI
         }
         (Acceleration3D? Acceleration3D, AngularVelocity3D? AngularVelocity3D, Temperature? Temperature) accelerationConditions;
 
-
-        public bool UpButtonState
-        {
+        public bool UpButtonState {
             get => upButtonState;
             set
             {
@@ -53,8 +51,7 @@ namespace Cultivar.MeadowApp.UI
         }
         bool upButtonState = false;
 
-        public bool DownButtonState
-        {
+        public bool DownButtonState {
             get => downButtonState;
             set
             {
@@ -64,33 +61,37 @@ namespace Cultivar.MeadowApp.UI
         }
         bool downButtonState = false;
 
-        public bool LeftButtonState
-        {
+        public bool LeftButtonState {
             get => leftButtonState;
-            set
-            {
+            set {
                 leftButtonState = value;
                 Update();
             }
         }
         bool leftButtonState = false;
 
-        public bool RightButtonState
-        {
+        public bool RightButtonState {
             get => rightButtonState;
-            set
-            {
+            set {
                 rightButtonState = value;
                 Update();
             }
         }
         bool rightButtonState = false;
 
+        public bool WiFiConnected
+        {
+            get => wifiConnected;
+            set {
+                wifiConnected = value;
+                Update();
+            }
+        } bool wifiConnected = false;
+
         bool isUpdating = false;
         bool needsUpdate = false;
 
-        public DisplayController(IGraphicsDisplay display)
-        {
+        public DisplayController(IGraphicsDisplay display) {
             graphics = new MicroGraphics(display)
             {
                 CurrentFont = new Font12x16()
@@ -130,40 +131,36 @@ namespace Cultivar.MeadowApp.UI
 
         void Draw()
         {
-            graphics.DrawText(x: 2, y: 0, "Hello PROJ LAB!", WildernessLabsColors.AzureBlue);
+            // title
+            graphics.DrawText(x: 2, y: 0, "Cultivar", WildernessLabsColors.PearGreen);
 
-            if (AtmosphericConditions is { } conditions)
-            {
-                if (conditions.Temperature is { } temp)
-                {
+            // wifi
+            graphics.DrawText(x: 2, y: 20, $"Wifi {(WiFiConnected ? "" : "Not " )}Connected", WildernessLabsColors.AzureBlue);
+
+            // Atmospheric conditions
+            if (AtmosphericConditions is { } conditions) {
+                if (conditions.Temperature is { } temp) {
                     DrawStatus("Temperature:", $"{temp.Celsius:N1}C", WildernessLabsColors.GalleryWhite, 35);
                 }
-
-                if (conditions.Pressure is { } pressure)
-                {
+                if (conditions.Pressure is { } pressure) {
                     DrawStatus("Pressure:", $"{pressure.StandardAtmosphere:N1}atm", WildernessLabsColors.GalleryWhite, 55);
                 }
-
-                if (conditions.Humidity is { } humidity)
-                {
+                if (conditions.Humidity is { } humidity) {
                     DrawStatus("Humidity:", $"{humidity.Percent:N1}%", WildernessLabsColors.GalleryWhite, 75);
                 }
             }
 
-            if (LightConditions is { } light)
-            {
+            // light
+            if (LightConditions is { } light) {
                 DrawStatus("Lux:", $"{light:N0}Lux", WildernessLabsColors.GalleryWhite, 95);
             }
 
-            if (AccelerationConditions is { } acceleration)
-            {
-                if (acceleration.Acceleration3D is { } accel3D)
-                {
+            // accel
+            if (AccelerationConditions is { } acceleration) {
+                if (acceleration.Acceleration3D is { } accel3D) {
                     DrawStatus("Accel:", $"{accel3D.X.Gravity:0.#},{accel3D.Y.Gravity:0.#},{accel3D.Z.Gravity:0.#}g", WildernessLabsColors.AzureBlue, 115);
                 }
-
-                if (acceleration.AngularVelocity3D is { } angular3D)
-                {
+                if (acceleration.AngularVelocity3D is { } angular3D) {
                     DrawStatus("Gyro:", $"{angular3D.X:0},{angular3D.Y:0},{angular3D.Z:0}rpm", WildernessLabsColors.AzureBlue, 135);
                 }
             }
