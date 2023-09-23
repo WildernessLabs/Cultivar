@@ -6,7 +6,7 @@ namespace Cultivar.MeadowApp.UI
 {
     public class DisplayController
     {
-        readonly MicroGraphics graphics;
+        readonly MicroGraphics canvas;
 
         public (Temperature? Temperature, RelativeHumidity? Humidity, Pressure? Pressure, Resistance? GasResistance)? AtmosphericConditions
         {
@@ -103,12 +103,12 @@ namespace Cultivar.MeadowApp.UI
         
 
         public DisplayController(IGraphicsDisplay display) {
-            graphics = new MicroGraphics(display)
+            canvas = new MicroGraphics(display)
             {
                 CurrentFont = new Font12x16()
             };
 
-            graphics.Clear(true);
+            canvas.Clear(true);
         }
 
         public void Update()
@@ -121,9 +121,9 @@ namespace Cultivar.MeadowApp.UI
 
             isUpdating = true;
 
-            graphics.Clear();
+            canvas.Clear();
             Draw();
-            graphics.Show();
+            canvas.Show();
 
             isUpdating = false;
 
@@ -136,38 +136,41 @@ namespace Cultivar.MeadowApp.UI
 
         void DrawStatus(string label, string value, Color color, int yPosition)
         {
-            graphics.DrawText(x: 2, y: yPosition, label, color: color);
-            graphics.DrawText(x: graphics.Width - 2, y: yPosition, value, alignmentH: HorizontalAlignment.Right, color: color);
+            canvas.DrawText(x: 2, y: yPosition, label, color: color);
+            canvas.DrawText(x: canvas.Width - 2, y: yPosition, value, alignmentH: HorizontalAlignment.Right, color: color);
         }
 
         void Draw()
         {
+            // draw background
+            canvas.DrawRectangle(0,0, canvas.Width, canvas.Height, WildernessLabsColors.SandriftLight, true);
+            
             // title
-            graphics.DrawText(x: 2, y: 0, "Cultivar", WildernessLabsColors.PearGreen);
+            canvas.DrawText(x: 2, y: 0, "Cultivar", WildernessLabsColors.PearGreenDark);
 
             // wifi
-            graphics.DrawText(x: 2, y: 20, $"Wifi {(WiFiConnected ? "" : "Not " )}Connected", WildernessLabsColors.AzureBlue);
+            canvas.DrawText(x: 2, y: 20, $"Wifi {(WiFiConnected ? "" : "Not " )}Connected", WildernessLabsColors.AzureBlue);
 
             // cloud connection status
-            graphics.DrawText(x: 100, y: 0, "Cloud:", WildernessLabsColors.AzureBlue);
-            graphics.DrawText(x: 170, y: 0, cloudConnectionStatus, WildernessLabsColors.ChileanFire);
+            canvas.DrawText(x: 100, y: 0, "Cloud:", WildernessLabsColors.AzureBlue);
+            canvas.DrawText(x: 170, y: 0, cloudConnectionStatus, WildernessLabsColors.ChileanFire);
             
             // Atmospheric conditions
             if (AtmosphericConditions is { } conditions) {
                 if (conditions.Temperature is { } temp) {
-                    DrawStatus("Temperature:", $"{temp.Celsius:N1}C", WildernessLabsColors.GalleryWhite, 35);
+                    DrawStatus("Temperature:", $"{temp.Celsius:N1}C", WildernessLabsColors.MetallicBronzeDark, 35);
                 }
                 if (conditions.Pressure is { } pressure) {
-                    DrawStatus("Pressure:", $"{pressure.StandardAtmosphere:N1}atm", WildernessLabsColors.GalleryWhite, 55);
+                    DrawStatus("Pressure:", $"{pressure.StandardAtmosphere:N1}atm", WildernessLabsColors.MetallicBronzeDark, 55);
                 }
                 if (conditions.Humidity is { } humidity) {
-                    DrawStatus("Humidity:", $"{humidity.Percent:N1}%", WildernessLabsColors.GalleryWhite, 75);
+                    DrawStatus("Humidity:", $"{humidity.Percent:N1}%", WildernessLabsColors.MetallicBronzeDark, 75);
                 }
             }
 
             // light
             if (LightConditions is { } light) {
-                DrawStatus("Lux:", $"{light:N0}Lux", WildernessLabsColors.GalleryWhite, 95);
+                DrawStatus("Lux:", $"{light:N0}Lux", WildernessLabsColors.MetallicBronzeDark, 95);
             }
 
             // accel
