@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cultivar.MeadowApp", "Apps\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cultivar.Core", "Apps\Cultivar.Core\Cultivar.Core.csproj", "{DC72D456-5F76-40E4-AD0A-D0C312932F47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.Foundation.Core", "..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj", "{3D9D2438-9AD0-44DB-A422-4D2C989FA1D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DC72D456-5F76-40E4-AD0A-D0C312932F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC72D456-5F76-40E4-AD0A-D0C312932F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC72D456-5F76-40E4-AD0A-D0C312932F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D9D2438-9AD0-44DB-A422-4D2C989FA1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D9D2438-9AD0-44DB-A422-4D2C989FA1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D9D2438-9AD0-44DB-A422-4D2C989FA1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D9D2438-9AD0-44DB-A422-4D2C989FA1D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,5 +64,6 @@ Global
 		{D18522B9-B145-429E-9562-311E844B64F5} = {18F35D11-B5FE-4800-8559-26A98B2328CB}
 		{D2783B3A-FB28-4FAC-8D97-8AAD5D95ECAD} = {04FDB621-B754-4414-9AAF-BCF7DEBA902F}
 		{DC72D456-5F76-40E4-AD0A-D0C312932F47} = {04FDB621-B754-4414-9AAF-BCF7DEBA902F}
+		{3D9D2438-9AD0-44DB-A422-4D2C989FA1D1} = {4DBDBC5C-CC90-4872-A326-8494ABDDB82D}
 	EndGlobalSection
 EndGlobal

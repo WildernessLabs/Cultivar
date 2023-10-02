@@ -12,6 +12,7 @@ using Meadow.Foundation.Sensors.Moisture;
 using Meadow.Devices;
 using Cultivar.Commands;
 using Meadow.Hardware;
+using Meadow.Peripherals.Relays;
 using Meadow.Update;
 
 namespace Cultivar.MeadowApp.Controllers
@@ -55,23 +56,14 @@ namespace Cultivar.MeadowApp.Controllers
                 Resolver.Log.Trace("DisplayController up");
             }
 
-            //---- BH1750 Light Sensor
             if (Hardware.LightSensor is { } bh1750) { bh1750.Updated += Bh1750Updated; }
-
-            //---- BME688 Atmospheric sensor
             if (Hardware.EnvironmentalSensor is { } bme688) { bme688.Updated += Bme688Updated; }
-
-            //---- BMI270 Accel/IMU
             if (Hardware.MotionSensor is { } bmi270) { bmi270.Updated += Bmi270Updated; }
-
-            //---- moisture sensor
             if (Hardware.MoistureSensor is { } moisture) { moisture.Updated += MoistureUpdated; }
 
-            //---- buttons
-            this.WireUpButtons();
-
-            //---- commands
-            this.SubscribeToCommands();
+            WireUpButtons();
+            SubscribeToCommands();
+            //HandleRelayChanges();
             
             //---- cloud status
             displayController.CloudConnectionStatus = Resolver.UpdateService.State.ToString();
@@ -95,9 +87,6 @@ namespace Cultivar.MeadowApp.Controllers
                 displayController.WiFiConnected = false;
             };
             
-            //Resolver.UpdateService.State
-
-            //---- heartbeat
             Resolver.Log.Info("Initialization complete");
         }
 
@@ -121,7 +110,6 @@ namespace Cultivar.MeadowApp.Controllers
 
             Resolver.Log.Info("starting blink");
             _ = Hardware.RgbLed?.StartBlink(WildernessLabsColors.PearGreen, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(2000), 0.5f);
-
 
             return Task.CompletedTask;
         }
@@ -183,12 +171,39 @@ namespace Cultivar.MeadowApp.Controllers
                 rightButton.PressStarted += (s, e) =>
                 {
                     displayController.HeaterState = true;
-                    Hardware.Heater.IsOn = true;
+                    //Hardware.Heater.IsOn = true;
+                    
+                    Resolver.Log.Trace($"relay changed, IsHeaterOn:true");
+                    try
+                    {
+                        var cl = Resolver.Services.Get<CloudLogger>();
+                        cl.LogEvent(110, "relay change", new Dictionary<string, object>()
+                        {
+                            { "IsHeaterOn", true }
+                        });
+                    }
+                    catch (Exception ex) {
+                        Resolver.Log.Info($"Err: {ex.Message}");
+                    }
+                    
                 };
                 rightButton.PressEnded += (s, e) =>
                 {
                     displayController.HeaterState = false;
-                    Hardware.Heater.IsOn = false;
+                    //Hardware.Heater.IsOn = false;
+                    
+                    Resolver.Log.Trace($"relay changed, IsHeaterOn:false");
+                    try
+                    {
+                        var cl = Resolver.Services.Get<CloudLogger>();
+                        cl.LogEvent(110, "relay change", new Dictionary<string, object>()
+                        {
+                            { "IsHeaterOn", false }
+                        });
+                    }
+                    catch (Exception ex) {
+                        Resolver.Log.Info($"Err: {ex.Message}");
+                    }
                 };
             }
 
@@ -260,7 +275,7 @@ namespace Cultivar.MeadowApp.Controllers
                 cl.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
                 {
                     { "TemperatureCelsius", e.New.Temperature?.Celsius },
-                    { "HumidityPercentage", e.New.Humidity?.Percent },
+                    { "HumidityPercent", e.New.Humidity?.Percent },
                     { "PressureMillibar", e.New.Pressure?.Millibar }
                 });
             }
@@ -310,5 +325,31 @@ namespace Cultivar.MeadowApp.Controllers
             }
         }
 
+        void HandleRelayChanges()
+        {
+            RegisterRelayChange(Hardware.VentFan, "IsVentilationOn");
+            RegisterRelayChange(Hardware.Heater, "IsHeaterOn");
+            RegisterRelayChange(Hardware.Lights, "IsLightOn");
+            RegisterRelayChange(Hardware.IrrigationLines, "IsIrrigationOn");
+        }
+
+        private void RegisterRelayChange(IRelay relay, string eventName)
+        {
+            relay.OnRelayChanged += (sender, relayState) =>
+            {
+                Resolver.Log.Trace($"relay changed, {eventName}:{relayState}");
+                try
+                {
+                    var cl = Resolver.Services.Get<CloudLogger>();
+                    cl.LogEvent(110, "relay change", new Dictionary<string, object>()
+                    {
+                        { eventName, relayState }
+                    });
+                }
+                catch (Exception ex) {
+                    Resolver.Log.Info($"Err: {ex.Message}");
+                }
+            };
+        }
     }
 }
