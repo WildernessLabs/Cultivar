@@ -144,7 +144,8 @@ namespace Cultivar_reTerminal.ViewModels
 
         public async void ToggleLights()
         {
-            var s = await RestClient.GetSensorReadings();
+            //var s = await RestClient.GetSensorReadings();
+            await DigitalTwinClient.GetDigitalTwinData();
 
             //var res = await RestClient.SendCommand(CultivarCommands.LightControl, !IsLightsOn);
             //if (res)
