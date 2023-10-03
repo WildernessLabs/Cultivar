@@ -94,20 +94,36 @@ namespace Cultivar_reTerminal.ViewModels
 
         async Task GetGreenhouseData()
         {
-            var sensorReadings = await RestClient.GetSensorReadings();
+            //var sensorReadings = await RestClient.GetSensorReadings();
 
-            if (sensorReadings != null && sensorReadings.Count > 0)
+            //if (sensorReadings != null && sensorReadings.Count > 0)
+            //{
+            //    foreach (var reading in sensorReadings)
+            //    {
+            //        TemperatureLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.TemperatureCelsius));
+            //        HumidityLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.HumidityPercentage));
+            //        SoilMoistureLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.HumidityPercentage - 10));
+            //    }
+
+            //    CurrentTemperature = $"{TemperatureLogs[0].Value:N0}°C";
+            //    CurrentHumidity = $"{HumidityLogs[0].Value:N0}%";
+            //    CurrentSoilMoisture = $"{SoilMoistureLogs[0].Value:N0}%";
+            //}
+
+            while (true)
             {
-                foreach (var reading in sensorReadings)
+                var sensorReading = await DigitalTwinClient.GetDigitalTwinData();
+                if (sensorReading != null)
                 {
-                    TemperatureLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.TemperatureCelsius));
-                    HumidityLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.HumidityPercentage));
-                    SoilMoistureLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.HumidityPercentage - 10));
+                    CurrentTemperature = $"{sensorReading.TemperatureCelsius:N0}°C";
+                    CurrentHumidity = $"{sensorReading.HumidityPercentage:N0}%";
+                    CurrentSoilMoisture = $"{sensorReading.SoilMoisturePercentage:N0}%";
+                    IsLightsOn = sensorReading.IsLightOn;
+                    IsHeaterOn = sensorReading.IsHeaterOn;
+                    IsSprinklerOn = sensorReading.IsSprinklerOn;
+                    IsVentilationOn = sensorReading.IsVentilationOn;
                 }
-
-                CurrentTemperature = $"{TemperatureLogs[0].Value:N0}°C";
-                CurrentHumidity = $"{HumidityLogs[0].Value:N0}%";
-                CurrentSoilMoisture = $"{SoilMoistureLogs[0].Value:N0}%";
+                await Task.Delay(TimeSpan.FromSeconds(3));
             }
         }
 
@@ -145,9 +161,9 @@ namespace Cultivar_reTerminal.ViewModels
         public async void ToggleLights()
         {
             //var s = await RestClient.GetSensorReadings();
-            await DigitalTwinClient.GetDigitalTwinData();
+            //await DigitalTwinClient.GetDigitalTwinData();
 
-            //var res = await RestClient.SendCommand(CultivarCommands.LightControl, !IsLightsOn);
+            var res = await RestClient.SendCommand(CultivarCommands.LightControl, !IsLightsOn);
             //if (res)
             //{
             //    IsLightsOn = !IsLightsOn;
@@ -157,28 +173,28 @@ namespace Cultivar_reTerminal.ViewModels
         public async void ToggleHeater()
         {
             var res = await RestClient.SendCommand(CultivarCommands.HeaterControl, !IsHeaterOn);
-            if (res)
-            {
-                IsHeaterOn = !IsHeaterOn;
-            }
+            //if (res)
+            //{
+            //    IsHeaterOn = !IsHeaterOn;
+            //}
         }
 
         public async void ToggleVentilation()
         {
             var res = await RestClient.SendCommand(CultivarCommands.FanControl, !IsVentilationOn);
-            if (res)
-            {
-                IsVentilationOn = !IsVentilationOn;
-            }
+            //if (res)
+            //{
+            //    IsVentilationOn = !IsVentilationOn;
+            //}
         }
 
         public async void ToggleSprinkler()
         {
             var res = await RestClient.SendCommand(CultivarCommands.ValveControl, !IsSprinklerOn);
-            if (res)
-            {
-                IsSprinklerOn = !IsSprinklerOn;
-            }
+            //if (res)
+            //{
+            //    IsSprinklerOn = !IsSprinklerOn;
+            //}
         }
     }
 

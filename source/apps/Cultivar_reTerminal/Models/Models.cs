@@ -3,6 +3,17 @@ using System.Collections.Generic;
 
 namespace Cultivar_reTerminal.Models
 {
+    public class GreenhouseModel
+    {
+        public double TemperatureCelsius { get; set; }
+        public double HumidityPercentage { get; set; }
+        public double SoilMoisturePercentage { get; set; }
+        public bool IsLightOn { get; set; }
+        public bool IsHeaterOn { get; set; }
+        public bool IsSprinklerOn { get; set; }
+        public bool IsVentilationOn { get; set; }
+    }
+
     public class MeasurementData
     {
         public double TemperatureCelsius { get; set; }
