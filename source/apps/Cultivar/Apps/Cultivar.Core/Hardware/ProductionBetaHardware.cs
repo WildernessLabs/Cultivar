@@ -1,5 +1,4 @@
-﻿using System;
-using Meadow;
+﻿using Meadow;
 using Meadow.Devices;
 using Meadow.Foundation.Audio;
 using Meadow.Foundation.Graphics;
@@ -14,6 +13,7 @@ using Meadow.Modbus;
 using Meadow.Peripherals.Relays;
 using Meadow.Peripherals.Sensors.Buttons;
 using Meadow.Units;
+using System;
 
 namespace Cultivar.Hardware
 {
@@ -106,6 +106,8 @@ namespace Cultivar.Hardware
         public IOTerminalConnector IOTerminal => this.ProjectLab.IOTerminal;
 
         public IGraphicsDisplay? Display => this.ProjectLab.Display;
+
+        public DisplayConnector DisplayHeader => throw new NotImplementedException();
 
         public ModbusRtuClient GetModbusRtuClient(
             int baudRate = 19200, int dataBits = 8, Parity parity = Parity.None, StopBits stopBits = StopBits.One)
