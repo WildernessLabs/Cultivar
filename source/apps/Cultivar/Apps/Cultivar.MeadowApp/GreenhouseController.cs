@@ -1,5 +1,5 @@
 ﻿using Cultivar.Commands;
-using Cultivar.MeadowApp.UI;
+using Cultivar.MeadowApp.Controllers;
 using Meadow;
 using Meadow.Foundation;
 using Meadow.Foundation.Audio;
@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Cultivar.MeadowApp.Controllers
+namespace Cultivar.MeadowApp
 {
     public class GreenhouseController
     {
@@ -23,16 +23,15 @@ namespace Cultivar.MeadowApp.Controllers
 
         protected IGreenhouseHardware Hardware { get; set; }
 
-        //protected DisplayController displayController
-        protected DisplayController2 displayController2;
+        protected DisplayController displayController;
         protected MicroAudio audio;
-        CloudLogger cloudLogger;
+        protected CloudLogger cloudLogger;
 
         protected TimeSpan UpdateInterval = TimeSpan.FromSeconds(60);
 
         public GreenhouseController(IGreenhouseHardware greenhouseHardware)
         {
-            this.Hardware = greenhouseHardware;
+            Hardware = greenhouseHardware;
 
             cloudLogger = new CloudLogger(LogLevel.Warning);
             Resolver.Log.AddProvider(cloudLogger);
@@ -40,23 +39,20 @@ namespace Cultivar.MeadowApp.Controllers
 
             Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
 
-            Hardware.RgbLed?.SetColor(Color.Blue);
+            Hardware.RgbLed?.SetColor(Color.Red);
+
+            if (Hardware.Display is { } display)
+            {
+                Resolver.Log.Trace("Creating DisplayController");
+                displayController = new DisplayController(display);
+                Resolver.Log.Trace("DisplayController up");
+            }
 
             Hardware.Speaker?.SetVolume(0.5f);
             audio = new MicroAudio(Hardware.Speaker);
 
-            //---- display controller (handles display updates)
-            if (Hardware.Display is { } display)
-            {
-                Resolver.Log.Trace("Creating DisplayController");
-                //displayController = new DisplayController(display);
-                displayController2 = new DisplayController2(display);
-                Resolver.Log.Trace("DisplayController up");
-            }
-
-            if (Hardware.LightSensor is { } bh1750) { bh1750.Updated += Bh1750Updated; }
             if (Hardware.EnvironmentalSensor is { } bme688) { bme688.Updated += Bme688Updated; }
-            if (Hardware.MotionSensor is { } bmi270) { bmi270.Updated += Bmi270Updated; }
+
             if (Hardware.MoistureSensor is { } moisture) { moisture.Updated += MoistureUpdated; }
 
             WireUpButtons();
@@ -65,60 +61,39 @@ namespace Cultivar.MeadowApp.Controllers
 
             //---- cloud status
             //displayController.CloudConnectionStatus = Resolver.UpdateService.State.ToString();
-            this.SubscribeToCloudConnectionEvents();
+            SubscribeToCloudConnectionEvents();
 
             // wifi events
             var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             if (wifi.IsConnected)
             {
-                //displayController.WiFiConnected = true;
+                displayController.UpdateWifi(true);
             }
             wifi.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
             {
                 Resolver.Log.Info("Joined network");
                 Console.WriteLine($"IP Address: {networkAdapter.IpAddress}.");
-                //displayController.WiFiConnected = true;
+                displayController.UpdateWifi(true);
                 _ = audio.PlaySystemSound(SystemSoundEffect.Chime);
             };
             wifi.NetworkDisconnected += sender =>
             {
-                //displayController.WiFiConnected = false;
+                displayController.UpdateWifi(false);
             };
 
             Resolver.Log.Info("Initialization complete");
-        }
-
-        public Task Run()
-        {
-            _ = audio.PlaySystemSound(SystemSoundEffect.Fanfare);
-
-            //---- BH1750 Light Sensor
-            if (Hardware.LightSensor is { } bh1750) { bh1750.StartUpdating(UpdateInterval); }
-
-            //---- BME688 Atmospheric sensor
-            if (Hardware.EnvironmentalSensor is { } bme688) { bme688.StartUpdating(UpdateInterval); }
-
-            //---- BMI270 Accel/IMU
-            if (Hardware.MotionSensor is { } bmi270) { bmi270.StartUpdating(UpdateInterval); }
-
-            //---- moisture
-            if (Hardware.MoistureSensor is { } moisture) { moisture.StartUpdating(UpdateInterval); }
-
-            //displayController?.Update();
-
-            _ = displayController2.Run();
-
-            Resolver.Log.Info("starting blink");
-            _ = Hardware.RgbLed?.StartBlink(WildernessLabsColors.PearGreen, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(2000), 0.5f);
-
-            return Task.CompletedTask;
         }
 
         void SubscribeToCloudConnectionEvents()
         {
             Resolver.UpdateService.OnStateChanged += (sender, state) =>
             {
-                //displayController.CloudConnectionStatus = state.ToString();
+                if (state.ToString() == "Connected")
+                {
+                    displayController.UpdateSync(true);
+                }
+
+                //displayController.UpdateStatus(state.ToString());
             };
         }
 
@@ -127,28 +102,28 @@ namespace Cultivar.MeadowApp.Controllers
             Resolver.CommandService.Subscribe<Fan>(c =>
             {
                 Resolver.Log.Info($"Received fan control: {c.IsOn}");
-                //displayController.FanState = c.IsOn;
+                displayController.UpdateVents(c.IsOn);
                 Hardware.VentFan.IsOn = c.IsOn;
             });
 
             Resolver.CommandService.Subscribe<Heater>(c =>
             {
                 Resolver.Log.Info($"Received heater control: {c.IsOn}");
-                //displayController.HeaterState = c.IsOn;
+                displayController.UpdateHeater(c.IsOn);
                 Hardware.Heater.IsOn = c.IsOn;
             });
 
             Resolver.CommandService.Subscribe<Lights>(c =>
             {
                 Resolver.Log.Info($"Received light control: {c.IsOn}");
-                //displayController.LightsState = c.IsOn;
+                displayController.UpdateLights(c.IsOn);
                 Hardware.Lights.IsOn = c.IsOn;
             });
 
             Resolver.CommandService.Subscribe<Irrigation>(c =>
             {
                 Resolver.Log.Info($"Received valve control: {c.IsOn}");
-                //displayController.IrrigationState = c.IsOn;
+                displayController.UpdateWater(c.IsOn);
                 Hardware.IrrigationLines.IsOn = c.IsOn;
             });
 
@@ -161,7 +136,6 @@ namespace Cultivar.MeadowApp.Controllers
             //{
             //    Resolver.Log.Trace($"Received fan control: {e.RelayState}");
             //});
-
         }
 
         void WireUpButtons()
@@ -209,69 +183,76 @@ namespace Cultivar.MeadowApp.Controllers
             //    };
             //}
 
-            //if (Hardware.DownButton is { } downButton)
-            //{
-            //    downButton.PressStarted += (s, e) =>
-            //    {
-            //        displayController.IrrigationState = true;
-            //        Hardware.IrrigationLines.IsOn = true;
-            //    };
-            //    downButton.PressEnded += (s, e) =>
-            //    {
-            //        displayController.IrrigationState = false;
-            //        Hardware.IrrigationLines.IsOn = false;
-            //    };
-            //}
-            //if (Hardware.LeftButton is { } leftButton)
-            //{
-            //    leftButton.PressStarted += (s, e) =>
-            //    {
-            //        displayController.LightsState = true;
-            //        Hardware.Lights.IsOn = true;
-            //    };
-            //    leftButton.PressEnded += (s, e) =>
-            //    {
-            //        displayController.LightsState = false;
-            //        Hardware.Lights.IsOn = false;
-            //    };
-            //}
-            //if (Hardware.UpButton is { } upButton)
-            //{
-            //    upButton.PressStarted += (s, e) =>
-            //    {
-            //        displayController.FanState = true;
-            //        Hardware.VentFan.IsOn = true;
-            //    };
-            //    upButton.PressEnded += (s, e) =>
-            //    {
-            //        displayController.FanState = false;
-            //        Hardware.VentFan.IsOn = false;
-            //    };
-            //}
+            if (Hardware.DownButton is { } downButton)
+            {
+                Resolver.Log.Info($"DownButton");
+
+                downButton.PressStarted += (s, e) =>
+                {
+                    Resolver.Log.Info($"downButton.PressStarted");
+                    displayController.UpdateWater(true);
+                    Hardware.IrrigationLines.IsOn = true;
+                };
+                downButton.PressEnded += (s, e) =>
+                {
+                    Resolver.Log.Info($"downButton.PressEnded");
+                    displayController.UpdateWater(false);
+                    Hardware.IrrigationLines.IsOn = false;
+                };
+            }
+            if (Hardware.LeftButton is { } leftButton)
+            {
+                Resolver.Log.Info($"LeftButton");
+
+                leftButton.PressStarted += (s, e) =>
+                {
+                    Resolver.Log.Info($"leftButton.PressStarted");
+                    displayController.UpdateLights(true);
+                    Hardware.Lights.IsOn = true;
+                };
+                leftButton.PressEnded += (s, e) =>
+                {
+                    Resolver.Log.Info($"leftButton.PressEnded");
+                    displayController.UpdateLights(false);
+                    Hardware.Lights.IsOn = false;
+                };
+            }
+            if (Hardware.UpButton is { } upButton)
+            {
+                Resolver.Log.Info($"UpButton");
+
+                upButton.PressStarted += (s, e) =>
+                {
+                    Resolver.Log.Info($"upButton.PressStarted");
+                    displayController.UpdateVents(true);
+                    Hardware.VentFan.IsOn = true;
+                };
+                upButton.PressEnded += (s, e) =>
+                {
+                    Resolver.Log.Info($"upButton.PressEnded");
+                    displayController.UpdateVents(false);
+                    Hardware.VentFan.IsOn = false;
+                };
+            }
         }
 
         //==== HANDLERS
         //TODO: would be nice to wait until a full set of readings has been made and send together.
         // but that woudl be pretty difficult to synchronize over time
 
-        private void Bmi270Updated(object sender, IChangeResult<(Acceleration3D? Acceleration3D, AngularVelocity3D? AngularVelocity3D, Temperature? Temperature)> e)
-        {
-            Resolver.Log.Info($"BMI270: {e.New.Acceleration3D.Value.X.Gravity:0.0},{e.New.Acceleration3D.Value.Y.Gravity:0.0},{e.New.Acceleration3D.Value.Z.Gravity:0.0}g");
-            //if (displayController != null)
-            //{
-            //    displayController.AccelerationConditions = e.New;
-            //}
-        }
-
         private void Bme688Updated(object sender, IChangeResult<(Temperature? Temperature, RelativeHumidity? Humidity, Pressure? Pressure, Resistance? GasResistance)> e)
         {
             Resolver.Log.Info($"BME688: {(int)e.New.Temperature?.Celsius}C - {(int)e.New.Humidity?.Percent}% - {(int)e.New.Pressure?.Millibar}mbar");
-            //if (displayController != null)
-            //{
-            displayController2.UpdateTemperature(e.New.Temperature.Value.Celsius);
-            displayController2.UpdateHumidity(e.New.Humidity.Value.Percent);
-            //}
+
+            if (displayController != null)
+            {
+                displayController.UpdateTemperature(e.New.Temperature.Value.Celsius);
+                displayController.UpdateHumidity(e.New.Humidity.Value.Percent);
+                displayController.UpdateSoilMoisture(e.New.Humidity.Value.Percent - 10);
+            }
+
             Resolver.Log.Info($"Logging BME688 reading to cloud.");
+
             try
             {
                 var cl = Resolver.Services.Get<CloudLogger>();
@@ -290,8 +271,12 @@ namespace Cultivar.MeadowApp.Controllers
 
         private void MoistureUpdated(object sender, IChangeResult<double> result)
         {
-            string oldValue = (result.Old is { } old) ? $"{old:n2}" : "n/a"; // C# 8 pattern matching
+            string oldValue = result.Old is { } old ? $"{old:n2}" : "n/a"; // C# 8 pattern matching
+
             Resolver.Log.Info($"Moisture Updated - New: {result.New}, Old: {oldValue}");
+
+            //displayController.UpdateHumidity(result.New);
+
             Resolver.Log.Info($"Logging Moisture reading to cloud.");
             try
             {
@@ -307,29 +292,7 @@ namespace Cultivar.MeadowApp.Controllers
             }
         }
 
-        private void Bh1750Updated(object sender, IChangeResult<Illuminance> e)
-        {
-            Resolver.Log.Info($"BH1750: {e.New.Lux}");
-            //if (displayController != null)
-            //{
-            //    displayController.LightConditions = e.New;
-            //}
-            Resolver.Log.Info($"Logging Light sensor reading to cloud.");
-            try
-            {
-                var cl = Resolver.Services.Get<CloudLogger>();
-                cl.LogEvent(110, "Light Sensor", new Dictionary<string, object>()
-                {
-                    { "LightLux", e.New.Lux },
-                });
-            }
-            catch (Exception ex)
-            {
-                Resolver.Log.Info($"Err: {ex.Message}");
-            }
-        }
-
-        void HandleRelayChanges()
+        private void HandleRelayChanges()
         {
             RegisterRelayChange(Hardware.VentFan, "IsVentilationOn");
             RegisterRelayChange(Hardware.Heater, "IsHeaterOn");
@@ -355,6 +318,21 @@ namespace Cultivar.MeadowApp.Controllers
                     Resolver.Log.Info($"Err: {ex.Message}");
                 }
             };
+        }
+
+        public Task Run()
+        {
+            _ = audio.PlaySystemSound(SystemSoundEffect.Fanfare);
+
+            if (Hardware.EnvironmentalSensor is { } bme688) { bme688.StartUpdating(UpdateInterval); }
+
+            if (Hardware.MoistureSensor is { } moisture) { moisture.StartUpdating(UpdateInterval); }
+
+            Resolver.Log.Info("starting blink");
+
+            _ = Hardware.RgbLed?.StartBlink(WildernessLabsColors.PearGreen, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(2000), 0.5f);
+
+            return Task.CompletedTask;
         }
     }
 }

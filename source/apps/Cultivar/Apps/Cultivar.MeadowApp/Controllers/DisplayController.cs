@@ -3,9 +3,9 @@ using Meadow.Foundation.Graphics.MicroLayout;
 using System;
 using System.Threading.Tasks;
 
-namespace Cultivar.MeadowApp.UI
+namespace Cultivar.MeadowApp.Controllers
 {
-    public class DisplayController2
+    public class DisplayController
     {
         DisplayScreen screen;
 
@@ -36,7 +36,7 @@ namespace Cultivar.MeadowApp.UI
 
         protected Picture ledHeater { get; set; }
 
-        public DisplayController2(IGraphicsDisplay _display)
+        public DisplayController(IGraphicsDisplay _display)
         {
             screen = new DisplayScreen(_display, RotationType._270Degrees);
 
@@ -50,16 +50,16 @@ namespace Cultivar.MeadowApp.UI
 
             StatusLabel = new Label(2, 6, 12, 16)
             {
-                Text = "Hello Meadow",
+                Text = "Connected",
                 Font = new Font12x20(),
                 TextColor = Meadow.Foundation.Color.Black
             };
             screen.Controls.Add(StatusLabel);
 
-            wifi = new Picture(286, 3, 30, 21, imgWifi);
+            wifi = new Picture(286, 3, 30, 21, imgWifiFade);
             screen.Controls.Add(wifi);
 
-            sync = new Picture(260, 3, 21, 21, imgSync);
+            sync = new Picture(260, 3, 21, 21, imgSyncFade);
             screen.Controls.Add(sync);
 
             screen.Controls.Add(new Label(5, 32, 12, 16)
@@ -103,7 +103,7 @@ namespace Cultivar.MeadowApp.UI
 
             TemperatureLabel = new Label(50, 70, 12, 16, ScaleFactor.X2)
             {
-                Text = "31",
+                Text = "0",
                 Font = new Font12x16(),
                 TextColor = Meadow.Foundation.Color.White,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -111,7 +111,7 @@ namespace Cultivar.MeadowApp.UI
             screen.Controls.Add(TemperatureLabel);
             HumidityLabel = new Label(155, 70, 12, 16, ScaleFactor.X2)
             {
-                Text = "33",
+                Text = "0",
                 Font = new Font12x16(),
                 TextColor = Meadow.Foundation.Color.White,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -119,7 +119,7 @@ namespace Cultivar.MeadowApp.UI
             screen.Controls.Add(HumidityLabel);
             SoilMoistureLabel = new Label(260, 70, 12, 16, ScaleFactor.X2)
             {
-                Text = "23",
+                Text = "0",
                 Font = new Font12x16(),
                 TextColor = Meadow.Foundation.Color.White,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -165,7 +165,7 @@ namespace Cultivar.MeadowApp.UI
                 TextColor = Meadow.Foundation.Color.Black
             });
 
-            ledHeater = new Picture(168, 188, 46, 46, imgGreen)
+            ledHeater = new Picture(168, 188, 46, 46, imgRed)
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
