@@ -50,7 +50,7 @@ namespace Cultivar.MeadowApp.Controllers
 
             StatusLabel = new Label(2, 6, 12, 16)
             {
-                Text = "Connected",
+                Text = "Hello",
                 Font = new Font12x20(),
                 TextColor = Meadow.Foundation.Color.Black
             };
@@ -126,7 +126,7 @@ namespace Cultivar.MeadowApp.Controllers
             };
             screen.Controls.Add(SoilMoistureLabel);
 
-            ledLights = new Picture(8, 128, 46, 46, imgGreen)
+            ledLights = new Picture(8, 128, 46, 46, imgRed)
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -139,7 +139,7 @@ namespace Cultivar.MeadowApp.Controllers
                 TextColor = Meadow.Foundation.Color.Black
             });
 
-            ledWater = new Picture(168, 128, 46, 46, imgGreen)
+            ledWater = new Picture(168, 128, 46, 46, imgRed)
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -152,7 +152,7 @@ namespace Cultivar.MeadowApp.Controllers
                 TextColor = Meadow.Foundation.Color.Black
             });
 
-            ledVents = new Picture(8, 188, 46, 46, imgGreen)
+            ledVents = new Picture(8, 188, 46, 46, imgRed)
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,

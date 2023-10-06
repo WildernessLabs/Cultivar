@@ -12,13 +12,13 @@ namespace Cultivar
     {
         Capacitive MoistureSensor { get; }
 
-        IGraphicsDisplay Display { get; }
+        IGraphicsDisplay? Display { get; }
 
-        RgbPwmLed RgbLed { get; }
+        RgbPwmLed? RgbLed { get; }
 
-        Bme688 EnvironmentalSensor { get; }
+        Bme688? EnvironmentalSensor { get; }
 
-        PiezoSpeaker Speaker { get; }
+        PiezoSpeaker? Speaker { get; }
 
         IButton? LeftButton { get; }
 

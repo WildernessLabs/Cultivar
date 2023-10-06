@@ -15,9 +15,33 @@ namespace Cultivar.Hardware
 {
     public class ProductionBetaHardware : IGreenhouseHardware
     {
+        protected ElectromagneticRelayModule? RelayModule { get; set; }
+
+        public IRelay? VentFan { get; protected set; }
+
+        public IRelay? Heater { get; protected set; }
+
+        public IRelay? IrrigationLines { get; protected set; }
+
+        public IRelay? Lights { get; protected set; }
+
         protected IProjectLabHardware projectLab { get; set; }
 
-        protected ElectromagneticRelayModule? RelayModule { get; set; }
+        public Bme688? EnvironmentalSensor => projectLab.EnvironmentalSensor;
+
+        public PiezoSpeaker? Speaker => projectLab.Speaker;
+
+        public RgbPwmLed? RgbLed => projectLab.RgbLed;
+
+        public IButton? LeftButton => projectLab.LeftButton;
+
+        public IButton? RightButton => projectLab.RightButton;
+
+        public IButton? UpButton => projectLab.UpButton;
+
+        public IButton? DownButton => projectLab.DownButton;
+
+        public IGraphicsDisplay? Display => projectLab.Display;
 
         public Capacitive MoistureSensor { get; set; }
 
@@ -37,7 +61,7 @@ namespace Cultivar.Hardware
             }
             catch (Exception ex)
             {
-                Resolver.Log.Error($"Could not instantiate relay.");
+                Resolver.Log.Error($"Could not instantiate relay: {ex.Message}");
             }
 
             // assign the relay shortcuts
@@ -56,31 +80,8 @@ namespace Cultivar.Hardware
                 minimumVoltageCalibration: new Voltage(2.84f),
                 maximumVoltageCalibration: new Voltage(1.63f)
             );
+
             Resolver.Log.Info($"success!");
         }
-
-        public IRelay? VentFan { get; protected set; }
-
-        public IRelay? Heater { get; protected set; }
-
-        public IRelay? IrrigationLines { get; protected set; }
-
-        public IRelay? Lights { get; protected set; }
-
-        public Bme688? EnvironmentalSensor => projectLab.EnvironmentalSensor;
-
-        public PiezoSpeaker Speaker => projectLab.Speaker;
-
-        public RgbPwmLed? RgbLed => projectLab.RgbLed;
-
-        public IButton? LeftButton => projectLab.LeftButton;
-
-        public IButton? RightButton => projectLab.RightButton;
-
-        public IButton? UpButton => projectLab.UpButton;
-
-        public IButton? DownButton => projectLab.DownButton;
-
-        public IGraphicsDisplay? Display => projectLab.Display;
     }
 }
