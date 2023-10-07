@@ -64,7 +64,6 @@ namespace Cultivar.Hardware
                 Resolver.Log.Error($"Could not instantiate relay: {ex.Message}");
             }
 
-            // assign the relay shortcuts
             if (RelayModule is { } rm)
             {
                 VentFan = rm.Relays[0];

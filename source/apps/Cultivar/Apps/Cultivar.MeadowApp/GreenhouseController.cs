@@ -2,7 +2,6 @@
 using Cultivar.MeadowApp.Controllers;
 using Meadow;
 using Meadow.Foundation;
-using Meadow.Foundation.Audio;
 using Meadow.Hardware;
 using Meadow.Logging;
 using Meadow.Peripherals.Relays;
@@ -24,7 +23,7 @@ namespace Cultivar.MeadowApp
         protected IGreenhouseHardware Hardware { get; set; }
 
         protected DisplayController displayController;
-        protected MicroAudio audio;
+        //protected MicroAudio audio;
         protected CloudLogger cloudLogger;
 
         protected TimeSpan UpdateInterval = TimeSpan.FromSeconds(60);
@@ -43,42 +42,50 @@ namespace Cultivar.MeadowApp
 
             if (Hardware.Display is { } display)
             {
-                Resolver.Log.Trace("Creating DisplayController");
                 displayController = new DisplayController(display);
-                Resolver.Log.Trace("DisplayController up");
             }
 
-            Hardware.Speaker?.SetVolume(0.5f);
-            audio = new MicroAudio(Hardware.Speaker);
+            //if (Hardware.Speaker is { } speaker)
+            //{
+            //    speaker.SetVolume(0.5f);
+            //    audio = new MicroAudio(speaker);
+            //}
 
-            if (Hardware.EnvironmentalSensor is { } bme688) { bme688.Updated += Bme688Updated; }
+            if (Hardware.EnvironmentalSensor is { } bme688)
+            {
+                bme688.Updated += Bme688Updated;
+            }
 
-            if (Hardware.MoistureSensor is { } moisture) { moisture.Updated += MoistureUpdated; }
+            if (Hardware.MoistureSensor is { } moisture)
+            {
+                moisture.Updated += MoistureUpdated;
+            }
 
             WireUpButtons();
             SubscribeToCommands();
             //HandleRelayChanges();
 
-            //---- cloud status
-            //displayController.CloudConnectionStatus = Resolver.UpdateService.State.ToString();
+            displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
             SubscribeToCloudConnectionEvents();
 
-            // wifi events
             var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+
             if (wifi.IsConnected)
             {
-                displayController.UpdateWifi(true);
+                displayController?.UpdateWifi(true);
             }
+
             wifi.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
             {
-                Resolver.Log.Info("Joined network");
-                Console.WriteLine($"IP Address: {networkAdapter.IpAddress}.");
-                displayController.UpdateWifi(true);
-                _ = audio.PlaySystemSound(SystemSoundEffect.Chime);
+                Resolver.Log.Info($"Joined network - IP Address: {networkAdapter.IpAddress}");
+
+                displayController?.UpdateWifi(true);
+                //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
             };
+
             wifi.NetworkDisconnected += sender =>
             {
-                displayController.UpdateWifi(false);
+                displayController?.UpdateWifi(false);
             };
 
             Resolver.Log.Info("Initialization complete");
@@ -88,39 +95,31 @@ namespace Cultivar.MeadowApp
         {
             Resolver.UpdateService.OnStateChanged += (sender, state) =>
             {
-                if (state.ToString() == "Connected")
-                {
-                    displayController.UpdateSync(true);
-                }
-
-                //displayController.UpdateStatus(state.ToString());
+                displayController.UpdateStatus(state.ToString());
             };
         }
 
         void SubscribeToCommands()
         {
-            Resolver.CommandService.Subscribe<Fan>(c =>
+            Resolver.CommandService?.Subscribe<Fan>(c =>
             {
                 Resolver.Log.Info($"Received fan control: {c.IsOn}");
                 displayController.UpdateVents(c.IsOn);
                 Hardware.VentFan.IsOn = c.IsOn;
             });
-
-            Resolver.CommandService.Subscribe<Heater>(c =>
+            Resolver.CommandService?.Subscribe<Heater>(c =>
             {
                 Resolver.Log.Info($"Received heater control: {c.IsOn}");
                 displayController.UpdateHeater(c.IsOn);
                 Hardware.Heater.IsOn = c.IsOn;
             });
-
-            Resolver.CommandService.Subscribe<Lights>(c =>
+            Resolver.CommandService?.Subscribe<Lights>(c =>
             {
                 Resolver.Log.Info($"Received light control: {c.IsOn}");
                 displayController.UpdateLights(c.IsOn);
                 Hardware.Lights.IsOn = c.IsOn;
             });
-
-            Resolver.CommandService.Subscribe<Irrigation>(c =>
+            Resolver.CommandService?.Subscribe<Irrigation>(c =>
             {
                 Resolver.Log.Info($"Received valve control: {c.IsOn}");
                 displayController.UpdateWater(c.IsOn);
@@ -140,48 +139,48 @@ namespace Cultivar.MeadowApp
 
         void WireUpButtons()
         {
-            //if (Hardware.RightButton is { } rightButton)
-            //{
-            //    rightButton.PressStarted += (s, e) =>
-            //    {
-            //        displayController.HeaterState = true;
-            //        //Hardware.Heater.IsOn = true;
+            if (Hardware.RightButton is { } rightButton)
+            {
+                rightButton.PressStarted += (s, e) =>
+                {
+                    displayController.UpdateHeater(true);
+                    Hardware.Heater.IsOn = true;
 
-            //        Resolver.Log.Trace($"relay changed, IsHeaterOn:true");
-            //        try
-            //        {
-            //            var cl = Resolver.Services.Get<CloudLogger>();
-            //            cl.LogEvent(110, "relay change", new Dictionary<string, object>()
-            //            {
-            //                { "IsHeaterOn", true }
-            //            });
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Resolver.Log.Info($"Err: {ex.Message}");
-            //        }
+                    Resolver.Log.Trace($"relay changed, IsHeaterOn:true");
+                    try
+                    {
+                        var cl = Resolver.Services.Get<CloudLogger>();
+                        cl.LogEvent(110, "relay change", new Dictionary<string, object>()
+                        {
+                            { "IsHeaterOn", true }
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Resolver.Log.Info($"Err: {ex.Message}");
+                    }
 
-            //    };
-            //    rightButton.PressEnded += (s, e) =>
-            //    {
-            //        displayController.HeaterState = false;
-            //        //Hardware.Heater.IsOn = false;
+                };
+                rightButton.PressEnded += (s, e) =>
+                {
+                    displayController.UpdateHeater(false);
+                    Hardware.Heater.IsOn = false;
 
-            //        Resolver.Log.Trace($"relay changed, IsHeaterOn:false");
-            //        try
-            //        {
-            //            var cl = Resolver.Services.Get<CloudLogger>();
-            //            cl.LogEvent(110, "relay change", new Dictionary<string, object>()
-            //            {
-            //                { "IsHeaterOn", false }
-            //            });
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Resolver.Log.Info($"Err: {ex.Message}");
-            //        }
-            //    };
-            //}
+                    Resolver.Log.Trace($"relay changed, IsHeaterOn:false");
+                    try
+                    {
+                        var cl = Resolver.Services.Get<CloudLogger>();
+                        cl.LogEvent(110, "relay change", new Dictionary<string, object>()
+                        {
+                            { "IsHeaterOn", false }
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Resolver.Log.Info($"Err: {ex.Message}");
+                    }
+                };
+            }
 
             if (Hardware.DownButton is { } downButton)
             {
@@ -236,10 +235,6 @@ namespace Cultivar.MeadowApp
             }
         }
 
-        //==== HANDLERS
-        //TODO: would be nice to wait until a full set of readings has been made and send together.
-        // but that woudl be pretty difficult to synchronize over time
-
         private void Bme688Updated(object sender, IChangeResult<(Temperature? Temperature, RelativeHumidity? Humidity, Pressure? Pressure, Resistance? GasResistance)> e)
         {
             Resolver.Log.Info($"BME688: {(int)e.New.Temperature?.Celsius}C - {(int)e.New.Humidity?.Percent}% - {(int)e.New.Pressure?.Millibar}mbar");
@@ -248,20 +243,23 @@ namespace Cultivar.MeadowApp
             {
                 displayController.UpdateTemperature(e.New.Temperature.Value.Celsius);
                 displayController.UpdateHumidity(e.New.Humidity.Value.Percent);
-                displayController.UpdateSoilMoisture(e.New.Humidity.Value.Percent - 10);
             }
 
             Resolver.Log.Info($"Logging BME688 reading to cloud.");
 
             try
             {
+                displayController.UpdateSync(true);
+
                 var cl = Resolver.Services.Get<CloudLogger>();
-                cl.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
+                cl?.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
                 {
                     { "TemperatureCelsius", e.New.Temperature?.Celsius },
                     { "HumidityPercent", e.New.Humidity?.Percent },
                     { "PressureMillibar", e.New.Pressure?.Millibar }
                 });
+
+                displayController.UpdateSync(false);
             }
             catch (Exception ex)
             {
@@ -275,16 +273,20 @@ namespace Cultivar.MeadowApp
 
             Resolver.Log.Info($"Moisture Updated - New: {result.New}, Old: {oldValue}");
 
-            //displayController.UpdateHumidity(result.New);
+            displayController.UpdateSoilMoisture(result.New);
 
             Resolver.Log.Info($"Logging Moisture reading to cloud.");
             try
             {
+                displayController.UpdateSync(true);
+
                 var cl = Resolver.Services.Get<CloudLogger>();
-                cl.LogEvent(110, "Moisture reading", new Dictionary<string, object>()
+                cl?.LogEvent(110, "Moisture reading", new Dictionary<string, object>()
                 {
                     { "MoisturePercent", result.New },
                 });
+
+                displayController.UpdateSync(false);
             }
             catch (Exception ex)
             {
@@ -308,7 +310,7 @@ namespace Cultivar.MeadowApp
                 try
                 {
                     var cl = Resolver.Services.Get<CloudLogger>();
-                    cl.LogEvent(110, "relay change", new Dictionary<string, object>()
+                    cl?.LogEvent(110, "relay change", new Dictionary<string, object>()
                     {
                         { eventName, relayState }
                     });
@@ -322,15 +324,23 @@ namespace Cultivar.MeadowApp
 
         public Task Run()
         {
-            _ = audio.PlaySystemSound(SystemSoundEffect.Fanfare);
+            //_ = audio.PlaySystemSound(SystemSoundEffect.Fanfare);
 
-            if (Hardware.EnvironmentalSensor is { } bme688) { bme688.StartUpdating(UpdateInterval); }
+            if (Hardware.EnvironmentalSensor is { } bme688)
+            {
+                bme688.StartUpdating(UpdateInterval);
+            }
 
-            if (Hardware.MoistureSensor is { } moisture) { moisture.StartUpdating(UpdateInterval); }
+            if (Hardware.MoistureSensor is { } moisture)
+            {
+                moisture.StartUpdating(UpdateInterval);
+            }
 
-            Resolver.Log.Info("starting blink");
-
-            _ = Hardware.RgbLed?.StartBlink(WildernessLabsColors.PearGreen, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(2000), 0.5f);
+            _ = Hardware.RgbLed?.StartBlink(
+                WildernessLabsColors.PearGreen,
+                TimeSpan.FromMilliseconds(500),
+                TimeSpan.FromMilliseconds(2000),
+                0.5f);
 
             return Task.CompletedTask;
         }
