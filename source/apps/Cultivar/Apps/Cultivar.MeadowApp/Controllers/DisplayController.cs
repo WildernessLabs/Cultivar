@@ -1,20 +1,18 @@
 ﻿using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
-using System;
-using System.Threading.Tasks;
 
 namespace Cultivar.MeadowApp.Controllers
 {
     public class DisplayController
     {
-        DisplayScreen screen;
+        private DisplayScreen screen;
 
-        Image imgWifi = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi.bmp");
-        Image imgSync = Image.LoadFromResource("Cultivar.MeadowApp.img-sync.bmp");
-        Image imgWifiFade = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi-fade.bmp");
-        Image imgSyncFade = Image.LoadFromResource("Cultivar.MeadowApp.img-sync-fade.bmp");
-        Image imgRed = Image.LoadFromResource("Cultivar.MeadowApp.img-red.bmp");
-        Image imgGreen = Image.LoadFromResource("Cultivar.MeadowApp.img-green.bmp");
+        private Image imgWifi = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi.bmp");
+        private Image imgSync = Image.LoadFromResource("Cultivar.MeadowApp.img-sync.bmp");
+        private Image imgWifiFade = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi-fade.bmp");
+        private Image imgSyncFade = Image.LoadFromResource("Cultivar.MeadowApp.img-sync-fade.bmp");
+        private Image imgRed = Image.LoadFromResource("Cultivar.MeadowApp.img-red.bmp");
+        private Image imgGreen = Image.LoadFromResource("Cultivar.MeadowApp.img-green.bmp");
 
         protected Label StatusLabel { get; set; }
 
@@ -194,21 +192,6 @@ namespace Cultivar.MeadowApp.Controllers
             StatusLabel.Text = status;
         }
 
-        public void UpdateTemperature(double temp)
-        {
-            TemperatureLabel.Text = temp.ToString("N0");
-        }
-
-        public void UpdateHumidity(double humidity)
-        {
-            HumidityLabel.Text = humidity.ToString("N0");
-        }
-
-        public void UpdateSoilMoisture(double moisture)
-        {
-            SoilMoistureLabel.Text = moisture.ToString("N0");
-        }
-
         public void UpdateLights(bool on)
         {
             ledLights.Image = on ? imgGreen : imgRed;
@@ -229,29 +212,15 @@ namespace Cultivar.MeadowApp.Controllers
             ledVents.Image = on ? imgGreen : imgRed;
         }
 
-        public async Task Run()
+        public void UpdateReadings(double temp, double humidity, double moisture)
         {
-            bool status = false;
+            screen.BeginUpdate();
 
-            while (true)
-            {
-                var random = new Random();
+            TemperatureLabel.Text = temp.ToString("N0");
+            HumidityLabel.Text = humidity.ToString("N0");
+            SoilMoistureLabel.Text = moisture.ToString("N0");
 
-                UpdateWifi(status);
-                UpdateSync(status);
-
-                UpdateTemperature(random.Next(20, 25));
-                UpdateHumidity(random.Next(30, 35));
-                UpdateSoilMoisture(random.Next(40, 45));
-
-                UpdateLights(status);
-                UpdateHeater(status);
-                UpdateWater(status);
-                UpdateVents(status);
-                status = !status;
-
-                await Task.Delay(1000);
-            }
+            screen.EndUpdate();
         }
     }
 }

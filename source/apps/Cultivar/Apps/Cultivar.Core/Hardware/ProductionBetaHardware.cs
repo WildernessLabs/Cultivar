@@ -53,7 +53,7 @@ namespace Cultivar.Hardware
 
             Resolver.Log.Info("Loading relay board...");
             byte relayAddress = ElectromagneticRelayModule.GetAddressFromPins(false, false, true);
-            Resolver.Log.Info($"relay address: {relayAddress:x}");
+            Resolver.Log.Info($"Relay address: {relayAddress:x}");
 
             try
             {
@@ -72,7 +72,7 @@ namespace Cultivar.Hardware
                 IrrigationLines = rm.Relays[3];
             }
 
-            Resolver.Log.Info($"creating the capacitive moisture sensor");
+            Resolver.Log.Info($"Creating the capacitive moisture sensor");
 
             MoistureSensor = new Capacitive(
                 projectLab.IOTerminal.Pins.A1,
@@ -80,7 +80,7 @@ namespace Cultivar.Hardware
                 maximumVoltageCalibration: new Voltage(1.63f)
             );
 
-            Resolver.Log.Info($"success!");
+            Resolver.Log.Info($"Success!");
         }
     }
 }
