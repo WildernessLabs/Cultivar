@@ -9,15 +9,17 @@
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.Foundation" Version="1.3.2.5-beta" />
-    <PackageReference Include="Meadow.ProjectLab" Version="1.3.2.5-beta" />
-    <PackageReference Include="Meadow.Foundation.Relays.ElectromagneticRelayModule" Version="1.3.2.5-beta" />
-    <PackageReference Include="Meadow.Foundation.Sensors.Moisture.Capacitive" Version="1.3.2.5-beta" />
+    <Compile Remove="Commands\**" />
+    <EmbeddedResource Remove="Commands\**" />
+    <None Remove="Commands\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Commands\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\" />
+    <ProjectReference Include="..\..\..\..\..\..\Meadow.Foundation.CompositeDevices\Source\Relays.ElectromagneticRelayModule\Driver\Relays.ElectromagneticRelayModule.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Graphics.MicroLayout\Driver\Graphics.MicroLayout.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\Sensors.Moisture.Capacitive\Driver\Sensors.Moisture.Capacitive.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\Meadow.ProjectLab\Source\Meadow.ProjectLab\Meadow.ProjectLab.csproj" />
   </ItemGroup>
 </Project>

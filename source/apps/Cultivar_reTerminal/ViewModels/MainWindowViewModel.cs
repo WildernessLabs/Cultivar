@@ -1,4 +1,4 @@
-﻿using OxyPlot;
+﻿using Cultivar_reTerminal.Client;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -66,11 +66,11 @@ namespace Cultivar_reTerminal.ViewModels
 
         public ReactiveCommand<Unit, Unit> ToggleSprinklerCommand { get; set; }
 
-        public ObservableCollection<DataPoint> TemperatureLogs { get; set; }
+        public ObservableCollection<Pnl> TemperatureLogs { get; set; }
 
-        public ObservableCollection<DataPoint> HumidityLogs { get; set; }
+        public ObservableCollection<Pnl> HumidityLogs { get; set; }
 
-        public ObservableCollection<DataPoint> SoilMoistureLogs { get; set; }
+        public ObservableCollection<Pnl> SoilMoistureLogs { get; set; }
 
         public MainWindowViewModel()
         {
@@ -82,23 +82,59 @@ namespace Cultivar_reTerminal.ViewModels
 
             ToggleSprinklerCommand = ReactiveCommand.Create(ToggleSprinkler);
 
-            TemperatureLogs = new ObservableCollection<DataPoint>();
+            TemperatureLogs = new ObservableCollection<Pnl>();
 
-            HumidityLogs = new ObservableCollection<DataPoint>();
+            HumidityLogs = new ObservableCollection<Pnl>();
 
-            SoilMoistureLogs = new ObservableCollection<DataPoint>();
+            SoilMoistureLogs = new ObservableCollection<Pnl>();
 
-            _ = SimulateCurrentConditions();
+            //_ = SimulateCurrentConditions();
+            _ = GetGreenhouseData();
+        }
+
+        async Task GetGreenhouseData()
+        {
+            //var sensorReadings = await RestClient.GetSensorReadings();
+
+            //if (sensorReadings != null && sensorReadings.Count > 0)
+            //{
+            //    foreach (var reading in sensorReadings)
+            //    {
+            //        TemperatureLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.TemperatureCelsius));
+            //        HumidityLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.HumidityPercentage));
+            //        SoilMoistureLogs.Add(new Pnl(reading.record.timestamp, reading.record.measurements.HumidityPercentage - 10));
+            //    }
+
+            //    CurrentTemperature = $"{TemperatureLogs[0].Value:N0}°C";
+            //    CurrentHumidity = $"{HumidityLogs[0].Value:N0}%";
+            //    CurrentSoilMoisture = $"{SoilMoistureLogs[0].Value:N0}%";
+            //}
+
+            while (true)
+            {
+                var sensorReading = await DigitalTwinClient.GetDigitalTwinData();
+                if (sensorReading != null)
+                {
+                    CurrentTemperature = $"{sensorReading.TemperatureCelsius:N0}°C";
+                    CurrentHumidity = $"{sensorReading.HumidityPercentage:N0}%";
+                    CurrentSoilMoisture = $"{sensorReading.SoilMoisturePercentage:N0}%";
+                    IsLightsOn = sensorReading.IsLightOn;
+                    IsHeaterOn = sensorReading.IsHeaterOn;
+                    IsSprinklerOn = sensorReading.IsSprinklerOn;
+                    IsVentilationOn = sensorReading.IsVentilationOn;
+                }
+                await Task.Delay(TimeSpan.FromSeconds(3));
+            }
         }
 
         async Task SimulateCurrentConditions()
         {
             var random = new Random();
 
-            int i = 0;
-
             while (true)
             {
+                var dateTime = DateTime.Now;
+
                 double temp = random.Next(26, 28) + random.NextDouble();
                 int h = random.Next(95, 97);
                 double sm = random.Next(75, 77) + random.NextDouble();
@@ -107,41 +143,75 @@ namespace Cultivar_reTerminal.ViewModels
                 CurrentHumidity = $"{h}%";
                 CurrentSoilMoisture = $"{sm:N0}%";
 
-                TemperatureLogs.Add(new DataPoint(i, temp));
-                HumidityLogs.Add(new DataPoint(i, h));
-                SoilMoistureLogs.Add(new DataPoint(i, sm));
+                TemperatureLogs.Add(new Pnl(dateTime, temp));
+                HumidityLogs.Add(new Pnl(dateTime, h));
+                SoilMoistureLogs.Add(new Pnl(dateTime, sm));
 
-                await Task.Delay(TimeSpan.FromSeconds(5));
+                await Task.Delay(TimeSpan.FromMinutes(1));
 
-                if (i > 50)
+                if (TemperatureLogs.Count > 10)
                 {
                     TemperatureLogs.RemoveAt(0);
                     HumidityLogs.RemoveAt(0);
                     SoilMoistureLogs.RemoveAt(0);
                 }
-
-                i++;
             }
         }
 
-        public void ToggleLights()
+        public async void ToggleLights()
         {
-            IsLightsOn = !IsLightsOn;
+            //var s = await RestClient.GetSensorReadings();
+            //await DigitalTwinClient.GetDigitalTwinData();
+
+            var res = await RestClient.SendCommand(CultivarCommands.LightControl, !IsLightsOn);
+            //if (res)
+            //{
+            //    IsLightsOn = !IsLightsOn;
+            //}
         }
 
-        public void ToggleHeater()
+        public async void ToggleHeater()
         {
-            IsHeaterOn = !IsHeaterOn;
+            var res = await RestClient.SendCommand(CultivarCommands.HeaterControl, !IsHeaterOn);
+            //if (res)
+            //{
+            //    IsHeaterOn = !IsHeaterOn;
+            //}
         }
 
-        public void ToggleVentilation()
+        public async void ToggleVentilation()
         {
-            IsVentilationOn = !IsVentilationOn;
+            var res = await RestClient.SendCommand(CultivarCommands.FanControl, !IsVentilationOn);
+            //if (res)
+            //{
+            //    IsVentilationOn = !IsVentilationOn;
+            //}
         }
 
-        public void ToggleSprinkler()
+        public async void ToggleSprinkler()
         {
-            IsSprinklerOn = !IsSprinklerOn;
+            var res = await RestClient.SendCommand(CultivarCommands.ValveControl, !IsSprinklerOn);
+            //if (res)
+            //{
+            //    IsSprinklerOn = !IsSprinklerOn;
+            //}
+        }
+    }
+
+    public class Pnl
+    {
+        public DateTime Time { get; set; }
+        public double Value { get; set; }
+
+        public Pnl(DateTime time, double value)
+        {
+            Time = time;
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0:HH:mm} {1:0.0}", this.Time, this.Value);
         }
     }
 }

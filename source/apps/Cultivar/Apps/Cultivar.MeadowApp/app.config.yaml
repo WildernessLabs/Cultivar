@@ -4,19 +4,19 @@
 
 # Adjust the level of logging detail.
 Logging:
-  LogLevel:
-    Default: Trace
+    LogLevel:
+        Default: Trace
 Lifecycle:
-  # Control whether Meadow will restart when an unhandled app exception occurs. Combine with Lifecycle > AppFailureRestartDelaySeconds to control restart timing.
-  RestartOnAppFailure: false
-  # # When app set to restart automatically on app failure, 
-  #AppFailureRestartDelaySeconds: 15
+    # Control whether Meadow will restart when an unhandled app exception occurs. Combine with Lifecycle > AppFailureRestartDelaySeconds to control restart timing.
+    RestartOnAppFailure: false
+    # When app set to restart automatically on app failure, 
+    #AppFailureRestartDelaySeconds: 15
 Update:
-  Enabled: true
-  UpdateServer: mqtt-staging.meadowcloud.co
+    Enabled: true
+    UpdateServer: mqtt-staging.meadowcloud.co
 MeadowCloud:
-  Hostname: https://staging.meadowcloud.dev
-  DataHostname: https://collector-staging.meadowcloud.dev
-HealthMetrics:
-  Enabled: true
-  Interval: 5
+    Hostname: https://staging.meadowcloud.dev
+    DataHostname: https://collector-staging.meadowcloud.dev
+# HealthMetrics:
+#     Enabled: true
+#     Interval: 5
