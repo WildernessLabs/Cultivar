@@ -617,7 +617,7 @@
                 Background="Transparent"
                 Margin="10">
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis
+                    <!--<oxy:LinearAxis
                         Title="Time (last X hours)"
                         TitleColor="#555"
                         TitleFontSize="25"
@@ -630,7 +630,23 @@
                         FontSize="20"
                         MajorGridlineStyle="Dash"
                         MajorGridlineColor="#EEE"
-                        MinorGridlineStyle="None" />
+                        MinorGridlineStyle="None" />-->
+                    <oxy:DateTimeAxis 
+                        Title="Time (last X seconds)"
+                        TitleColor="#555"
+                        TitleFontSize="25"
+                        IntervalType="Minutes" 
+                        IntervalLength="60"
+                        Position="Bottom"
+                        AxislineColor="#555"
+                        AxislineThickness="3"
+                        AxislineStyle="Solid"
+                        AxisDistance="15" 
+                        TickStyle="Inside"
+                        FontSize="20"
+                        MajorGridlineStyle="Dash"
+                        MajorGridlineColor="#EEE"
+                        MinorGridlineStyle="None"/>
                     <oxy:LinearAxis
                         Title="Temperature (°C)"
                         TitleColor="#555"
@@ -670,8 +686,8 @@
                         StrokeThickness="5"
                         ItemsSource="{Binding TemperatureLogs}"
                         YAxisKey="Primary"
-                        DataFieldX="X"
-                        DataFieldY="Y" />
+                        DataFieldX="Time"
+                        DataFieldY="Value" />
                 </oxy:Plot.Series>
                 <oxy:Plot.Series>
                     <oxy:LineSeries
@@ -679,8 +695,8 @@
                         StrokeThickness="5"
                         ItemsSource="{Binding HumidityLogs}"
                         YAxisKey="Secondary"
-                        DataFieldX="X"
-                        DataFieldY="Y" />
+                        DataFieldX="Time"
+                        DataFieldY="Value" />
                 </oxy:Plot.Series>
                 <oxy:Plot.Series>
                     <oxy:LineSeries
@@ -688,8 +704,8 @@
                         StrokeThickness="5"
                         ItemsSource="{Binding SoilMoistureLogs}"
                         YAxisKey="Secondary"
-                        DataFieldX="X"
-                        DataFieldY="Y" />
+                        DataFieldX="Time"
+                        DataFieldY="Value" />
                 </oxy:Plot.Series>
             </oxy:Plot>
         </Border>

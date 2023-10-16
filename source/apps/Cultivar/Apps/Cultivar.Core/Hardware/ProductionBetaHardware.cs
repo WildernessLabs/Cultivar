@@ -1,63 +1,21 @@
-﻿using System;
-using Meadow;
+﻿using Meadow;
 using Meadow.Devices;
 using Meadow.Foundation.Audio;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Leds;
 using Meadow.Foundation.Relays;
-using Meadow.Foundation.Sensors.Accelerometers;
 using Meadow.Foundation.Sensors.Atmospheric;
-using Meadow.Foundation.Sensors.Light;
 using Meadow.Foundation.Sensors.Moisture;
-using Meadow.Hardware;
-using Meadow.Modbus;
 using Meadow.Peripherals.Relays;
 using Meadow.Peripherals.Sensors.Buttons;
 using Meadow.Units;
+using System;
 
 namespace Cultivar.Hardware
 {
     public class ProductionBetaHardware : IGreenhouseHardware
     {
-        protected IProjectLabHardware ProjectLab { get; set; }
         protected ElectromagneticRelayModule? RelayModule { get; set; }
-        public Capacitive MoistureSensor { get; set; }
-
-        public ProductionBetaHardware(IProjectLabHardware projectLab)
-        {
-            this.ProjectLab = projectLab;
-
-            // instantiate the relay board
-            Resolver.Log.Info("Loading relay board...");
-            byte relayAddress = ElectromagneticRelayModule.GetAddressFromPins(false, false, true);
-            Resolver.Log.Info($"relay address: {relayAddress:x}");
-            try
-            {
-                RelayModule = new ElectromagneticRelayModule(projectLab.Qwiic.I2cBus, relayAddress);
-            }
-            catch (Exception ex)
-            {
-                Resolver.Log.Error($"Could not instantiate relay.");
-            }
-
-            // assign the relay shortcuts
-            if (RelayModule is { } rm)
-            {
-                this.VentFan = rm.Relays[0];
-                this.Heater = rm.Relays[1];
-                this.Lights = rm.Relays[2];
-                this.IrrigationLines = rm.Relays[3];
-            }
-
-            Resolver.Log.Info($"creating the capacitive moisture sensor");
-            MoistureSensor = new Capacitive(
-                projectLab.IOTerminal.Pins.A1,
-                //ccm.Pins.A04,
-                minimumVoltageCalibration: new Voltage(2.84f),
-                maximumVoltageCalibration: new Voltage(1.63f)
-            );
-            Resolver.Log.Info($"success!");
-        }
 
         public IRelay? VentFan { get; protected set; }
 
@@ -67,48 +25,62 @@ namespace Cultivar.Hardware
 
         public IRelay? Lights { get; protected set; }
 
-        public ISpiBus SpiBus => this.ProjectLab.SpiBus;
+        protected IProjectLabHardware projectLab { get; set; }
 
-        public II2cBus I2cBus => this.ProjectLab.I2cBus;
+        public Bme688? EnvironmentalSensor => projectLab.EnvironmentalSensor;
 
-        public Bh1750? LightSensor => this.ProjectLab.LightSensor;
+        public PiezoSpeaker? Speaker => projectLab.Speaker;
 
-        public Bme688? EnvironmentalSensor => this.ProjectLab.EnvironmentalSensor;
+        public RgbPwmLed? RgbLed => projectLab.RgbLed;
 
-        public Bmi270? MotionSensor => this.ProjectLab.MotionSensor;
+        public IButton? LeftButton => projectLab.LeftButton;
 
-        public PiezoSpeaker? Speaker => this.ProjectLab.Speaker;
+        public IButton? RightButton => projectLab.RightButton;
 
-        public RgbPwmLed? RgbLed => this.ProjectLab.RgbLed;
+        public IButton? UpButton => projectLab.UpButton;
 
-        public IButton? LeftButton => this.ProjectLab.LeftButton;
+        public IButton? DownButton => projectLab.DownButton;
 
-        public IButton? RightButton => this.ProjectLab.RightButton;
+        public IGraphicsDisplay? Display => projectLab.Display;
 
-        public IButton? UpButton => this.ProjectLab.UpButton;
+        public Capacitive MoistureSensor { get; set; }
 
-        public IButton? DownButton => this.ProjectLab.DownButton;
+        public ProductionBetaHardware()
+        {
+            projectLab = ProjectLab.Create();
 
-        public string RevisionString => this.ProjectLab.RevisionString;
+            Resolver.Log.Info($"Running on ProjectLab Hardware {projectLab.RevisionString}");
 
-        public MikroBusConnector MikroBus1 => this.ProjectLab.MikroBus1;
+            Resolver.Log.Info("Loading relay board...");
+            byte relayAddress = ElectromagneticRelayModule.GetAddressFromPins(false, false, true);
+            Resolver.Log.Info($"Relay address: {relayAddress:x}");
 
-        public MikroBusConnector MikroBus2 => this.ProjectLab.MikroBus2;
+            try
+            {
+                RelayModule = new ElectromagneticRelayModule(projectLab.Qwiic.I2cBus, relayAddress);
+            }
+            catch (Exception ex)
+            {
+                Resolver.Log.Error($"Could not instantiate relay: {ex.Message}");
+            }
 
-        public GroveDigitalConnector? GroveDigital => this.ProjectLab.GroveDigital;
+            if (RelayModule is { } rm)
+            {
+                VentFan = rm.Relays[0];
+                Heater = rm.Relays[1];
+                Lights = rm.Relays[2];
+                IrrigationLines = rm.Relays[3];
+            }
 
-        public GroveDigitalConnector GroveAnalog => this.ProjectLab.GroveAnalog;
+            Resolver.Log.Info($"Creating the capacitive moisture sensor");
 
-        public UartConnector GroveUart => this.ProjectLab.GroveUart;
+            MoistureSensor = new Capacitive(
+                projectLab.IOTerminal.Pins.A1,
+                minimumVoltageCalibration: new Voltage(2.84f),
+                maximumVoltageCalibration: new Voltage(1.63f)
+            );
 
-        public I2cConnector Qwiic => this.ProjectLab.Qwiic;
-
-        public IOTerminalConnector IOTerminal => this.ProjectLab.IOTerminal;
-
-        public IGraphicsDisplay? Display => this.ProjectLab.Display;
-
-        public ModbusRtuClient GetModbusRtuClient(
-            int baudRate = 19200, int dataBits = 8, Parity parity = Parity.None, StopBits stopBits = StopBits.One)
-                => this.ProjectLab.GetModbusRtuClient(baudRate, dataBits, parity, stopBits);
+            Resolver.Log.Info($"Success!");
+        }
     }
 }
