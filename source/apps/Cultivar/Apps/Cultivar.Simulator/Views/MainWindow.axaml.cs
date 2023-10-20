@@ -1,4 +1,7 @@
 using Avalonia.Controls;
+using Cultivar;
+using Cultivar.Hardware;
+using Cultivar.MeadowApp;
 using Meadow.Foundation.Graphics;
 using ProjectLabSimulator.Displays;
 using ProjectLabSimulator.ViewModels;
@@ -7,6 +10,9 @@ namespace ProjectLabSimulator.Views
 {
     public partial class MainWindow : Window
     {
+        private GreenhouseController greenhouseController;
+        SimulatedHardware greenhouseHardware;
+
         MicroGraphics graphics;
 
         PixelCanvas canvas;
@@ -21,9 +27,14 @@ namespace ProjectLabSimulator.Views
         {
             InitializeComponent();
 
+            greenhouseHardware = new SimulatedHardware();
             simDisplay = new Ili9341Simulated();
 
             ReloadCanvas();
+
+            greenhouseController = new GreenhouseController(greenhouseHardware);
+
+            greenhouseController.Run();
         }
 
         void ReloadCanvas()
@@ -40,19 +51,24 @@ namespace ProjectLabSimulator.Views
                 DisabledColor = simDisplay.BackgroundColor,
             };
 
-            graphics = new MicroGraphics(canvas)
-            {
-                CurrentFont = new Font8x12(),
-            };
+            //hacky ... ToDo
+            greenhouseHardware.Display = canvas;
+
+         //   graphics = new MicroGraphics(canvas)
+        //    {
+        //        CurrentFont = new Font8x12(),
+        //    };
 
             displayBorder.Child = canvas;
             displayBorder.Width = canvas.Width;
 
-            Draw();
         }
 
         void Draw()
         {
+ 
+
+            /*
             graphics.Clear();
 
             graphics.DrawText(10, 10, "Hello MicroGraphics", Meadow.Foundation.Color.White, ScaleFactor.X1);
@@ -65,6 +81,7 @@ namespace ProjectLabSimulator.Views
             graphics.DrawCircle(130, 100, 30, Meadow.Foundation.Color.Green, true);
 
             graphics.Show();
+            */
         }
 
         public override void Show()

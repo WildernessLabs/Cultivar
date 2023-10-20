@@ -9,11 +9,6 @@
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Commands\**" />
-    <EmbeddedResource Remove="Commands\**" />
-    <None Remove="Commands\**" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="Commands\" />
   </ItemGroup>
   <ItemGroup>

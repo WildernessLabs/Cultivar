@@ -34,5 +34,6 @@
     <ProjectReference Include="..\..\..\..\..\..\Meadow.Core\source\implementations\windows\Meadow.Windows\Meadow.Windows.csproj" />
     <ProjectReference Include="..\..\..\..\..\..\Meadow.Core\source\ui\Meadow.Avalonia\Meadow.Avalonia.csproj" />
     <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />
+    <ProjectReference Include="..\Cultivar.MeadowApp\Cultivar.MeadowApp.csproj" />
   </ItemGroup>
 </Project>

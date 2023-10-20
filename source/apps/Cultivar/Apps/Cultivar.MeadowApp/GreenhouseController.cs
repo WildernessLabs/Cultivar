@@ -57,7 +57,7 @@ namespace Cultivar.MeadowApp
 
             //HandleRelayChanges();
 
-            InitializeWifi();
+            //InitializeWifi();
 
             Hardware.RgbLed?.SetColor(Color.Green);
             Resolver.Log.Info("Initialization complete");
