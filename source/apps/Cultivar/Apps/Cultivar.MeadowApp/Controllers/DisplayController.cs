@@ -36,7 +36,7 @@ namespace Cultivar.MeadowApp.Controllers
 
         public DisplayController(IGraphicsDisplay _display)
         {
-            screen = new DisplayScreen(_display, RotationType.Normal);
+            screen = new DisplayScreen(_display, RotationType._270Degrees);
 
             screen.Controls.Add(new Box(0, 0, screen.Width, screen.Height) { ForeColor = Meadow.Foundation.Color.White });
             screen.Controls.Add(new Box(0, 27, 106, 93) { ForeColor = Meadow.Foundation.Color.FromHex("#B35E2C") });
