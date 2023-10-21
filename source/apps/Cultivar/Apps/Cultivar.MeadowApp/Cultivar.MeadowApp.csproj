@@ -17,6 +17,7 @@
     <None Remove="img-sync.bmp" />
     <None Remove="img-wifi-fade.bmp" />
     <None Remove="img-wifi.bmp" />
+    <None Remove="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="img-green.bmp" />
@@ -40,5 +41,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\Meadow.Logging\Source\Meadow.Logging.LogProviders\Driver\Meadow.Logging.LogProviders.csproj" />
     <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="app.build.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 </Project>
