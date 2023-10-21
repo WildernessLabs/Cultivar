@@ -1,4 +1,5 @@
-﻿using Cultivar.Hardware;
+﻿using Cultivar.Controllers;
+using Cultivar.Hardware;
 using Meadow;
 using Meadow.Devices;
 using Meadow.Logging;
@@ -12,11 +13,11 @@ namespace Cultivar.MeadowApp
 
         public override Task Initialize()
         {
-            var cloudLogger = new CloudLogger(LogLevel.Warning);
-            Resolver.Log.AddProvider(cloudLogger);
-            Resolver.Services.Add(cloudLogger);
+            //var cloudLogger = new CloudLogger(LogLevel.Warning);
+            //Resolver.Log.AddProvider(cloudLogger);
+            //Resolver.Services.Add(cloudLogger);
 
-            Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
+            //Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
 
             Resolver.Log.Info("Initialize hardware...");
 
