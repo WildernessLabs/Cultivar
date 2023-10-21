@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Meadow;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ProjectLabSimulator
 {
-    public partial class App : AvaloniaMeadowApplication<Windows>
+    public partial class App : Application
     {
         public override void OnFrameworkInitializationCompleted()
         {
@@ -27,12 +28,7 @@ namespace ProjectLabSimulator
         {
             AvaloniaXamlLoader.Load(this);
 
-            LoadMeadowOS();
-        }
-
-        public override Task MeadowInitialize()
-        {
-            return Task.CompletedTask;
+            base.Initialize();
         }
     }
 }

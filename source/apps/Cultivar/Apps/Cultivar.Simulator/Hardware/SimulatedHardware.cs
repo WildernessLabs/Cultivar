@@ -45,7 +45,7 @@ namespace Cultivar.Hardware
 
         public SimulatedHardware()
         {
-
+            Resolver.Services.Add(new Meadow.Logging.Logger());
             Resolver.Log.Info($"Simuated Success!");
         }
     }

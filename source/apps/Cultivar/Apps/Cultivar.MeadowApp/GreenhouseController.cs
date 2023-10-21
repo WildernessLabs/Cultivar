@@ -26,13 +26,16 @@ namespace Cultivar.MeadowApp
 
         GreenhouseModel Climate;
 
-        public GreenhouseController(IGreenhouseHardware greenhouseHardware)
+        public GreenhouseController(IGreenhouseHardware greenhouseHardware, bool isSimulator = false)
         {
             Hardware = greenhouseHardware;
 
-            cloudLogger = new CloudLogger(LogLevel.Warning);
-            Resolver.Log.AddProvider(cloudLogger);
-            Resolver.Services.Add(cloudLogger);
+            if(!isSimulator)
+            {
+                cloudLogger = new CloudLogger(LogLevel.Warning);
+                Resolver.Log.AddProvider(cloudLogger);
+                Resolver.Services.Add(cloudLogger);
+            }
 
             Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
 
@@ -51,13 +54,16 @@ namespace Cultivar.MeadowApp
 
             InitializeButtons();
 
-            SubscribeToCloudConnectionEvents();
+            if(!isSimulator)
+            {
+                SubscribeToCloudConnectionEvents();
 
-            SubscribeToCommands();
+                SubscribeToCommands();
 
-            //HandleRelayChanges();
+                //HandleRelayChanges();
 
-            //InitializeWifi();
+                InitializeWifi();
+            }
 
             Hardware.RgbLed?.SetColor(Color.Green);
             Resolver.Log.Info("Initialization complete");

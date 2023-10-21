@@ -32,7 +32,7 @@ namespace ProjectLabSimulator.Views
 
             ReloadCanvas();
 
-            greenhouseController = new GreenhouseController(greenhouseHardware);
+            greenhouseController = new GreenhouseController(greenhouseHardware, true);
 
             greenhouseController.Run();
         }
