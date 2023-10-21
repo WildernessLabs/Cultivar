@@ -17,6 +17,7 @@
     <None Remove="img-sync.bmp" />
     <None Remove="img-wifi-fade.bmp" />
     <None Remove="img-wifi.bmp" />
+    <None Remove="Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="img-green.bmp" />
@@ -42,6 +43,11 @@
     <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\" />
+    <None Update="app.build.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 </Project>
