@@ -1,8 +1,6 @@
 using Avalonia.Controls;
-using Cultivar;
+using Cultivar.Controllers;
 using Cultivar.Hardware;
-using Cultivar.MeadowApp;
-using Meadow.Foundation.Graphics;
 using ProjectLabSimulator.Displays;
 using ProjectLabSimulator.ViewModels;
 
@@ -12,8 +10,6 @@ namespace ProjectLabSimulator.Views
     {
         private GreenhouseController greenhouseController;
         SimulatedHardware greenhouseHardware;
-
-        MicroGraphics graphics;
 
         PixelCanvas canvas;
 
@@ -54,34 +50,10 @@ namespace ProjectLabSimulator.Views
             //hacky ... ToDo
             greenhouseHardware.Display = canvas;
 
-         //   graphics = new MicroGraphics(canvas)
-        //    {
-        //        CurrentFont = new Font8x12(),
-        //    };
 
             displayBorder.Child = canvas;
             displayBorder.Width = canvas.Width;
 
-        }
-
-        void Draw()
-        {
- 
-
-            /*
-            graphics.Clear();
-
-            graphics.DrawText(10, 10, "Hello MicroGraphics", Meadow.Foundation.Color.White, ScaleFactor.X1);
-
-            graphics.DrawRectangle(10, 30, 30, 30, Meadow.Foundation.Color.White, false);
-
-            graphics.DrawCircle(100, 100, 30, Meadow.Foundation.Color.Yellow, true);
-            graphics.DrawCircle(110, 100, 30, Meadow.Foundation.Color.YellowGreen, true);
-            graphics.DrawCircle(120, 100, 30, Meadow.Foundation.Color.GreenYellow, true);
-            graphics.DrawCircle(130, 100, 30, Meadow.Foundation.Color.Green, true);
-
-            graphics.Show();
-            */
         }
 
         public override void Show()
