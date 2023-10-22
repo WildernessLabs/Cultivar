@@ -34,9 +34,9 @@ namespace Cultivar.MeadowApp.Controllers
 
         protected Picture ledHeater { get; set; }
 
-        public DisplayController(IGraphicsDisplay _display)
+        public DisplayController(IGraphicsDisplay _display, RotationType rotation)
         {
-            screen = new DisplayScreen(_display, RotationType._270Degrees);
+            screen = new DisplayScreen(_display, rotation);
 
             screen.Controls.Add(new Box(0, 0, screen.Width, screen.Height) { ForeColor = Meadow.Foundation.Color.White });
             screen.Controls.Add(new Box(0, 27, 106, 93) { ForeColor = Meadow.Foundation.Color.FromHex("#B35E2C") });

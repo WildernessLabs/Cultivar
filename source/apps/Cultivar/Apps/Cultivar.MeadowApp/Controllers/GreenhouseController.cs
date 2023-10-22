@@ -3,6 +3,7 @@ using Cultivar.MeadowApp.Controllers;
 using Cultivar.MeadowApp.Models;
 using Meadow;
 using Meadow.Foundation;
+using Meadow.Foundation.Graphics;
 using Meadow.Hardware;
 using Meadow.Logging;
 using Meadow.Units;
@@ -43,7 +44,7 @@ namespace Cultivar.Controllers
 
             if (Hardware.Display is { } display)
             {
-                displayController = new DisplayController(display);
+                displayController = new DisplayController(display, isSimulator ? RotationType.Normal : RotationType._270Degrees);
             }
 
             //if (Hardware.Speaker is { } speaker)
