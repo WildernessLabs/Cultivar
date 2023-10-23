@@ -13,7 +13,7 @@ namespace Cultivar.MeadowApp
     public class MeadowApp : App<F7CoreComputeV2>
     {
         GreenhouseController greenhouseController;
-        int WatchdogUptimeMaxHours = 3;
+        int WatchdogUptimeMaxHours = 1;
         int WatchdogUptimePetCountMax = 0;
         int WatchdogCount = 0;
 
