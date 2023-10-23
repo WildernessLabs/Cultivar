@@ -6,7 +6,6 @@ using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
 using Meadow.Hardware;
 using Meadow.Logging;
-using Meadow.Units;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace Cultivar.Controllers
         {
             Hardware = greenhouseHardware;
 
-            if(!isSimulator)
+            if (!isSimulator)
             {
                 cloudLogger = new CloudLogger(LogLevel.Warning);
                 Resolver.Log.AddProvider(cloudLogger);
@@ -55,7 +54,7 @@ namespace Cultivar.Controllers
 
             InitializeButtons();
 
-            if(!isSimulator)
+            if (!isSimulator)
             {
                 SubscribeToCloudConnectionEvents();
 
@@ -260,15 +259,16 @@ namespace Cultivar.Controllers
 
         private async Task<GreenhouseModel> Read()
         {
-            var bmeTask = Hardware.EnvironmentalSensor?.Read();
+            var temperatureTask = Hardware.TemperatureSensor?.Read();
+            var humidityTask = Hardware.HumiditySensor?.Read();
             var moistureTask = Hardware.MoistureSensor?.Read();
 
-            await Task.WhenAll(bmeTask, moistureTask);
+            await Task.WhenAll(temperatureTask, humidityTask, moistureTask);
 
             var climate = new GreenhouseModel()
             {
-                Temperature = (Temperature)(bmeTask?.Result.Temperature),
-                Humidity = (RelativeHumidity)bmeTask?.Result.Humidity,
+                Temperature = temperatureTask?.Result ?? new Meadow.Units.Temperature(0),
+                Humidity = humidityTask?.Result ?? new Meadow.Units.RelativeHumidity(0),
                 SoilMoisture = moistureTask?.Result ?? 0
             };
 

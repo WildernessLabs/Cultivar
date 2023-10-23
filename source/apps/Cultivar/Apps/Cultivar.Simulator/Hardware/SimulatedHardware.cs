@@ -1,15 +1,14 @@
 ﻿using Meadow;
-using Meadow.Devices;
-using Meadow.Foundation.Audio;
+using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Leds;
 using Meadow.Foundation.Relays;
-using Meadow.Foundation.Sensors.Atmospheric;
-using Meadow.Foundation.Sensors.Moisture;
 using Meadow.Peripherals.Relays;
+using Meadow.Peripherals.Sensors;
+using Meadow.Peripherals.Sensors.Atmospheric;
 using Meadow.Peripherals.Sensors.Buttons;
-using Meadow.Units;
-using System;
+using Meadow.Peripherals.Sensors.Moisture;
+using Meadow.Peripherals.Speakers;
 
 namespace Cultivar.Hardware
 {
@@ -20,14 +19,15 @@ namespace Cultivar.Hardware
         public IRelay? VentFan { get; protected set; } = null;
 
         public IRelay? Heater { get; protected set; } = null;
-
         public IRelay? IrrigationLines { get; protected set; } = null;
 
         public IRelay? Lights { get; protected set; } = null;
 
-        public Bme688? EnvironmentalSensor => null;
+        public ITemperatureSensor? TemperatureSensor { get; protected set; }
 
-        public PiezoSpeaker? Speaker => null;
+        public IHumiditySensor? HumiditySensor { get; protected set; }
+
+        public IToneGenerator? Speaker { get; protected set; } = null;
 
         public RgbPwmLed? RgbLed => null;
 
@@ -41,11 +41,16 @@ namespace Cultivar.Hardware
 
         public IGraphicsDisplay? Display { get; set; }
 
-        public Capacitive? MoistureSensor { get; set; } = null;
+        public IMoistureSensor? MoistureSensor { get; set; }
 
         public SimulatedHardware()
         {
             Resolver.Services.Add(new Meadow.Logging.Logger());
+
+            TemperatureSensor = new TemperatureSensorSimulated(new Meadow.Units.Temperature(20), new Meadow.Units.Temperature(-5), new Meadow.Units.Temperature(45));
+            HumiditySensor = new HumiditySensorSimulated(new Meadow.Units.RelativeHumidity(50), new Meadow.Units.RelativeHumidity(0), new Meadow.Units.RelativeHumidity(100));
+            MoistureSensor = new MoistureSensorSimulated(50, 5, 100);
+
             Resolver.Log.Info($"Simuated Success!");
         }
     }

@@ -5,14 +5,14 @@ namespace Cultivar.MeadowApp.Controllers
 {
     public class DisplayController
     {
-        private DisplayScreen screen;
+        private readonly DisplayScreen screen;
 
-        private Image imgWifi = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi.bmp");
-        private Image imgSync = Image.LoadFromResource("Cultivar.MeadowApp.img-sync.bmp");
-        private Image imgWifiFade = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi-fade.bmp");
-        private Image imgSyncFade = Image.LoadFromResource("Cultivar.MeadowApp.img-sync-fade.bmp");
-        private Image imgRed = Image.LoadFromResource("Cultivar.MeadowApp.img-red.bmp");
-        private Image imgGreen = Image.LoadFromResource("Cultivar.MeadowApp.img-green.bmp");
+        private readonly Image imgWifi = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi.bmp");
+        private readonly Image imgSync = Image.LoadFromResource("Cultivar.MeadowApp.img-sync.bmp");
+        private readonly Image imgWifiFade = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi-fade.bmp");
+        private readonly Image imgSyncFade = Image.LoadFromResource("Cultivar.MeadowApp.img-sync-fade.bmp");
+        private readonly Image imgRed = Image.LoadFromResource("Cultivar.MeadowApp.img-red.bmp");
+        private readonly Image imgGreen = Image.LoadFromResource("Cultivar.MeadowApp.img-green.bmp");
 
         protected Label StatusLabel { get; set; }
 
@@ -62,7 +62,7 @@ namespace Cultivar.MeadowApp.Controllers
 
             screen.Controls.Add(new Label(5, 32, 12, 16)
             {
-                Text = "TEMP.",
+                Text = "Temp",
                 Font = new Font12x16(),
                 TextColor = Meadow.Foundation.Color.White
             });
@@ -75,7 +75,7 @@ namespace Cultivar.MeadowApp.Controllers
 
             screen.Controls.Add(new Label(111, 32, 12, 16)
             {
-                Text = "HUM.",
+                Text = "Humidity",
                 Font = new Font12x16(),
                 TextColor = Meadow.Foundation.Color.White
             });
@@ -88,7 +88,7 @@ namespace Cultivar.MeadowApp.Controllers
 
             screen.Controls.Add(new Label(219, 32, 12, 16)
             {
-                Text = "S.M.",
+                Text = "Soil",
                 Font = new Font12x16(),
                 TextColor = Meadow.Foundation.Color.White
             });
