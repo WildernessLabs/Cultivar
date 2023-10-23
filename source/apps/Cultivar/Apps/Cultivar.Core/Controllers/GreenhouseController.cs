@@ -16,6 +16,11 @@ namespace Cultivar.Controllers
     {
         protected bool IsSampling = false;
 
+        bool _isVentilationOn = false;
+        bool _isIrrigationOn = false;
+        bool _isLightOn = false;
+        bool _isHeaterOn = false;
+
         protected IGreenhouseHardware Hardware { get; set; }
 
         protected DisplayController displayController;
@@ -52,8 +57,6 @@ namespace Cultivar.Controllers
             //    audio = new MicroAudio(speaker);
             //}
 
-            InitializeButtons();
-
             if (!isSimulator)
             {
                 SubscribeToCloudConnectionEvents();
@@ -65,100 +68,33 @@ namespace Cultivar.Controllers
                 InitializeWifi();
             }
 
+            InitializeButtons();
+
             Hardware.RgbLed?.SetColor(Color.Green);
             Resolver.Log.Info("Initialization complete");
         }
 
         private void InitializeButtons()
         {
-            if (Hardware.UpButton is { } upButton)
+            if (Hardware.UpButton is { } ventilationButton)
             {
-                Resolver.Log.Info($"UpButton");
+                ventilationButton.Clicked += (s, e) =>
+                {
+                    _isVentilationOn = !_isVentilationOn;
 
-                upButton.PressStarted += (s, e) =>
-                {
-                    Resolver.Log.Info($"upButton.PressStarted");
-                    displayController.UpdateVents(true);
-                    if (Hardware.VentFan is { } ventFan)
-                    {
-                        ventFan.IsOn = true;
-                    }
-                };
-                upButton.PressEnded += (s, e) =>
-                {
-                    Resolver.Log.Info($"upButton.PressEnded");
-                    displayController.UpdateVents(false);
-                    if (Hardware.VentFan is { } ventFan)
-                    {
-                        ventFan.IsOn = false;
-                    }
-                };
-            }
-            if (Hardware.DownButton is { } downButton)
-            {
-                Resolver.Log.Info($"DownButton");
+                    displayController.UpdateVents(_isVentilationOn);
 
-                downButton.PressStarted += (s, e) =>
-                {
-                    Resolver.Log.Info($"downButton.PressStarted");
-                    displayController.UpdateWater(true);
-                    if (Hardware.IrrigationLines is { } irrigationLines)
+                    if (Hardware.VentFan is { } ventilation)
                     {
-                        irrigationLines.IsOn = true;
-                    }
-                };
-                downButton.PressEnded += (s, e) =>
-                {
-                    Resolver.Log.Info($"downButton.PressEnded");
-                    displayController.UpdateWater(false);
-                    if (Hardware.IrrigationLines is { } irrigationLines)
-                    {
-                        irrigationLines.IsOn = false;
-                    }
-                };
-            }
-            if (Hardware.LeftButton is { } leftButton)
-            {
-                Resolver.Log.Info($"LeftButton");
-
-                leftButton.PressStarted += (s, e) =>
-                {
-                    Resolver.Log.Info($"leftButton.PressStarted");
-                    displayController.UpdateLights(true);
-                    if (Hardware.Lights is { } lights)
-                    {
-                        lights.IsOn = true;
-                    }
-                };
-                leftButton.PressEnded += (s, e) =>
-                {
-                    Resolver.Log.Info($"leftButton.PressEnded");
-                    displayController.UpdateLights(false);
-                    if (Hardware.Lights is { } lights)
-                    {
-                        lights.IsOn = false;
-                    }
-                };
-            }
-            if (Hardware.RightButton is { } rightButton)
-            {
-                Resolver.Log.Info($"RightButton");
-
-                rightButton.PressStarted += (s, e) =>
-                {
-                    Resolver.Log.Trace($"rightButton.PressStarted");
-                    displayController.UpdateHeater(true);
-                    if (Hardware.Heater is { } heater)
-                    {
-                        heater.IsOn = true;
+                        ventilation.IsOn = _isVentilationOn;
                     }
 
                     try
                     {
                         var cl = Resolver.Services.Get<CloudLogger>();
-                        cl.LogEvent(110, "relay change", new Dictionary<string, object>()
+                        cl?.LogEvent(110, "Ventilation relay change", new Dictionary<string, object>()
                         {
-                            { "IsHeaterOn", true }
+                            { "IsVentilationOn", _isVentilationOn }
                         });
                     }
                     catch (Exception ex)
@@ -166,21 +102,80 @@ namespace Cultivar.Controllers
                         Resolver.Log.Info($"Err: {ex.Message}");
                     }
                 };
-                rightButton.PressEnded += (s, e) =>
+            }
+            if (Hardware.DownButton is { } irrigationButton)
+            {
+                irrigationButton.Clicked += (s, e) =>
                 {
-                    Resolver.Log.Trace($"rightButton.PressEnded");
-                    displayController.UpdateHeater(false);
-                    if (Hardware.Heater is { } heater)
+                    _isIrrigationOn = !_isIrrigationOn;
+
+                    displayController.UpdateWater(_isIrrigationOn);
+
+                    if (Hardware.IrrigationLines is { } irrigation)
                     {
-                        heater.IsOn = false;
+                        irrigation.IsOn = _isIrrigationOn;
                     }
 
                     try
                     {
                         var cl = Resolver.Services.Get<CloudLogger>();
-                        cl.LogEvent(110, "relay change", new Dictionary<string, object>()
+                        cl?.LogEvent(110, "Irrigation relay change", new Dictionary<string, object>()
                         {
-                            { "IsHeaterOn", false }
+                            { "IsIrrigationOn", _isIrrigationOn }
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Resolver.Log.Info($"Err: {ex.Message}");
+                    }
+                };
+            }
+            if (Hardware.LeftButton is { } lightButton)
+            {
+                lightButton.Clicked += (s, e) =>
+                {
+                    _isLightOn = !_isLightOn;
+
+                    displayController.UpdateLights(_isLightOn);
+
+                    if (Hardware.Lights is { } lights)
+                    {
+                        lights.IsOn = _isLightOn;
+                    }
+
+                    try
+                    {
+                        var cl = Resolver.Services.Get<CloudLogger>();
+                        cl?.LogEvent(110, "Light relay change", new Dictionary<string, object>()
+                        {
+                            { "IsLightOn", _isLightOn }
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Resolver.Log.Info($"Err: {ex.Message}");
+                    }
+                };
+            }
+            if (Hardware.RightButton is { } heaterButton)
+            {
+                heaterButton.Clicked += (s, e) =>
+                {
+                    _isHeaterOn = !_isHeaterOn;
+
+                    displayController.UpdateHeater(_isHeaterOn);
+
+                    if (Hardware.Heater is { } heater)
+                    {
+                        heater.IsOn = _isHeaterOn;
+                    }
+
+                    try
+                    {
+                        var cl = Resolver.Services.Get<CloudLogger>();
+                        cl?.LogEvent(110, "Heater relay change", new Dictionary<string, object>()
+                        {
+                            { "IsHeaterOn", _isHeaterOn }
                         });
                     }
                     catch (Exception ex)
