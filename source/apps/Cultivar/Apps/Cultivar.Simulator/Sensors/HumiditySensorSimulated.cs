@@ -48,19 +48,19 @@ namespace Meadow.Foundation
 
             var value = random.Next((int)(Humidity.Value.Percent - 1), (int)(Humidity.Value.Percent + 1));
 
-            var temperature = new RelativeHumidity(value, Meadow.Units.RelativeHumidity.UnitType.Percent);
+            var humidity = new RelativeHumidity(value, RelativeHumidity.UnitType.Percent);
 
-            if (MinHumidity is { } min && temperature < min)
+            if (MinHumidity is { } min && humidity < min)
             {
-                temperature = min;
+                humidity = min;
             }
 
-            if (MaxHumidity is { } max && temperature > max)
+            if (MaxHumidity is { } max && humidity > max)
             {
-                temperature = max;
+                humidity = max;
             }
 
-            return Task.FromResult(temperature);
+            return Task.FromResult(humidity);
         }
 
         public void StartUpdating(TimeSpan? updateInterval = null)
