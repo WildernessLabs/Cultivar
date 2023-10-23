@@ -3,7 +3,6 @@ using Cultivar.Hardware;
 using Meadow;
 using Meadow.Devices;
 using Meadow.Hardware;
-using Meadow.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,12 +32,7 @@ namespace Cultivar.MeadowApp
         {
             Resolver.Log.Info("Run...");
 
-            // Enable the watchdog for 30 second intervals (max is ~32s)
-            Device.WatchdogEnable(TimeSpan.FromSeconds(30));
-            // calculate the number of times we need to pet the watchdog.
-            WatchdogUptimePetCountMax = ((WatchdogUptimeMaxHours * 60 * 60) / 30);
-            // Start the thread that resets the counter.
-            StartPettingWatchdog(TimeSpan.FromSeconds(9));
+            WireUpWatchdogs();
 
             greenhouseController.Run();
 
@@ -50,11 +44,13 @@ namespace Cultivar.MeadowApp
             // get the wifi adapter
             var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             // set initial state
-            if (wifi.IsConnected) {
+            if (wifi.IsConnected)
+            {
                 greenhouseController?.SetWiFiStatus(true);
                 Resolver.Log.Info("Already connected to WiFi.");
             }
-            else {
+            else
+            {
                 greenhouseController?.SetWiFiStatus(false);
                 Resolver.Log.Info("Not connected to WiFi yet.");
             }
@@ -69,18 +65,31 @@ namespace Cultivar.MeadowApp
             wifi.NetworkDisconnected += sender => { greenhouseController?.SetWiFiStatus(false); };
         }
 
+        void WireUpWatchdogs()
+        {
+            // Enable the watchdog for 30 second intervals (max is ~32s)
+            Device.WatchdogEnable(TimeSpan.FromSeconds(30));
+            // calculate the number of times we need to pet the watchdog.
+            WatchdogUptimePetCountMax = ((WatchdogUptimeMaxHours * 60 * 60) / 30);
+            // Start the thread that resets the counter.
+            StartPettingWatchdog(TimeSpan.FromSeconds(9));
+        }
+
         void StartPettingWatchdog(TimeSpan pettingInterval)
         {
             // Just for good measure, let's reset the watchdog to begin with.
             Device.WatchdogReset();
             // Start a thread that restarts it.
-            Thread t = new Thread(async () => {
+            Thread t = new Thread(async () =>
+            {
                 while (true)
                 {
-                    if (WatchdogCount <= WatchdogUptimePetCountMax) {
+                    if (WatchdogCount <= WatchdogUptimePetCountMax)
+                    {
                         Thread.Sleep(pettingInterval);
                         Device.WatchdogReset();
-                    } else
+                    }
+                    else
                     {
                         // stop spinning while it restarts
                         await Task.Delay(1000);

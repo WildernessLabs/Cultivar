@@ -190,13 +190,13 @@ namespace Cultivar.Controllers
             Console.WriteLine("ClimateMonitorAgent.StartUpdating()");
 
             if (IsSampling)
+            {
                 return;
+            }
             IsSampling = true;
 
             while (IsSampling)
             {
-                Console.WriteLine("ClimateMonitorAgent: About to do a reading.");
-
                 Climate = await Read();
 
                 Console.WriteLine($"Temperature: {Climate.Temperature.Celsius} | Humidity: {Climate.Humidity.Percent} | Moisture: {Climate.SoilMoisture}");
@@ -227,7 +227,9 @@ namespace Cultivar.Controllers
         private void StopUpdating()
         {
             if (!IsSampling)
+            {
                 return;
+            }
 
             IsSampling = false;
         }
