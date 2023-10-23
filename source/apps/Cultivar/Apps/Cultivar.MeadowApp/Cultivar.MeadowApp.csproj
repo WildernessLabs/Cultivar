@@ -10,24 +10,6 @@
 	<LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Commands\" />
-    <None Remove="img-green.bmp" />
-    <None Remove="img-red.bmp" />
-    <None Remove="img-sync-fade.bmp" />
-    <None Remove="img-sync.bmp" />
-    <None Remove="img-wifi-fade.bmp" />
-    <None Remove="img-wifi.bmp" />
-    <None Remove="Controllers\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="img-green.bmp" />
-    <EmbeddedResource Include="img-red.bmp" />
-    <EmbeddedResource Include="img-sync-fade.bmp" />
-    <EmbeddedResource Include="img-sync.bmp" />
-    <EmbeddedResource Include="img-wifi-fade.bmp" />
-    <EmbeddedResource Include="img-wifi.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="meadow.config.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -42,7 +24,7 @@
 	</None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\Meadow.Logging\Source\Meadow.Logging.LogProviders\Driver\Meadow.Logging.LogProviders.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\Meadow.Core\source\implementations\f7\Meadow.F7\Meadow.F7.csproj" />
     <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />
   </ItemGroup>
 </Project>

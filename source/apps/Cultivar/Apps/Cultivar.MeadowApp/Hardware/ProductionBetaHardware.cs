@@ -1,13 +1,15 @@
 ﻿using Meadow;
 using Meadow.Devices;
-using Meadow.Foundation.Audio;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Leds;
 using Meadow.Foundation.Relays;
-using Meadow.Foundation.Sensors.Atmospheric;
 using Meadow.Foundation.Sensors.Moisture;
 using Meadow.Peripherals.Relays;
+using Meadow.Peripherals.Sensors;
+using Meadow.Peripherals.Sensors.Atmospheric;
 using Meadow.Peripherals.Sensors.Buttons;
+using Meadow.Peripherals.Sensors.Moisture;
+using Meadow.Peripherals.Speakers;
 using Meadow.Units;
 using System;
 
@@ -27,9 +29,11 @@ namespace Cultivar.Hardware
 
         protected IProjectLabHardware projectLab { get; set; }
 
-        public Bme688? EnvironmentalSensor => projectLab.EnvironmentalSensor;
+        public ITemperatureSensor? TemperatureSensor => projectLab.EnvironmentalSensor as ITemperatureSensor;
 
-        public PiezoSpeaker? Speaker => projectLab.Speaker;
+        public IHumiditySensor? HumiditySensor => projectLab.EnvironmentalSensor as IHumiditySensor;
+
+        public IToneGenerator? Speaker => projectLab.Speaker;
 
         public RgbPwmLed? RgbLed => projectLab.RgbLed;
 
@@ -43,7 +47,7 @@ namespace Cultivar.Hardware
 
         public IGraphicsDisplay? Display => projectLab.Display;
 
-        public Capacitive MoistureSensor { get; set; }
+        public IMoistureSensor MoistureSensor { get; set; }
 
         public ProductionBetaHardware()
         {

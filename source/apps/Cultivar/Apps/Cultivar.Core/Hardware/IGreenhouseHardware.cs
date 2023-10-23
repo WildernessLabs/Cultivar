@@ -1,24 +1,28 @@
-﻿using Meadow.Foundation.Audio;
-using Meadow.Foundation.Graphics;
+﻿using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Leds;
-using Meadow.Foundation.Sensors.Atmospheric;
-using Meadow.Foundation.Sensors.Moisture;
 using Meadow.Peripherals.Relays;
+using Meadow.Peripherals.Sensors;
+using Meadow.Peripherals.Sensors.Atmospheric;
 using Meadow.Peripherals.Sensors.Buttons;
+using Meadow.Peripherals.Sensors.Moisture;
+using Meadow.Peripherals.Speakers;
 
 namespace Cultivar
 {
     public interface IGreenhouseHardware
     {
-        Capacitive MoistureSensor { get; }
+        IMoistureSensor? MoistureSensor { get; }
 
         IGraphicsDisplay? Display { get; }
 
         RgbPwmLed? RgbLed { get; }
 
-        Bme688? EnvironmentalSensor { get; }
+        ITemperatureSensor? TemperatureSensor { get; }
 
-        PiezoSpeaker? Speaker { get; }
+        IHumiditySensor? HumiditySensor { get; }
+
+
+        IToneGenerator? Speaker { get; }
 
         IButton? LeftButton { get; }
 
