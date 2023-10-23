@@ -177,9 +177,9 @@ namespace Cultivar.MeadowApp.Controllers
             });
         }
 
-        public void UpdateWifi(bool on)
+        public void UpdateWifi(bool connected)
         {
-            wifi.Image = on ? imgWifi : imgWifiFade;
+            wifi.Image = connected ? imgWifi : imgWifiFade;
         }
 
         public void UpdateSync(bool on)

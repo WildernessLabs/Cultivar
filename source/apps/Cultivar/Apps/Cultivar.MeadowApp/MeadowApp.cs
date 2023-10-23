@@ -2,6 +2,7 @@
 using Cultivar.Hardware;
 using Meadow;
 using Meadow.Devices;
+using Meadow.Hardware;
 using Meadow.Logging;
 using System;
 using System.Threading;
@@ -18,16 +19,12 @@ namespace Cultivar.MeadowApp
 
         public override Task Initialize()
         {
-            //var cloudLogger = new CloudLogger(LogLevel.Warning);
-            //Resolver.Log.AddProvider(cloudLogger);
-            //Resolver.Services.Add(cloudLogger);
-
-            //Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
-
             Resolver.Log.Info("Initialize hardware...");
 
             var greenhouseHardware = new ProductionBetaHardware();
             greenhouseController = new GreenhouseController(greenhouseHardware);
+
+            WireUpWiFiStatusEvents();
 
             return base.Initialize();
         }
@@ -46,6 +43,30 @@ namespace Cultivar.MeadowApp
             greenhouseController.Run();
 
             return base.Run();
+        }
+
+        void WireUpWiFiStatusEvents()
+        {
+            // get the wifi adapter
+            var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            // set initial state
+            if (wifi.IsConnected) {
+                greenhouseController?.SetWiFiStatus(true);
+                Resolver.Log.Info("Already connected to WiFi.");
+            }
+            else {
+                greenhouseController?.SetWiFiStatus(false);
+                Resolver.Log.Info("Not connected to WiFi yet.");
+            }
+            // connect event
+            wifi.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
+            {
+                Resolver.Log.Info($"Joined network - IP Address: {networkAdapter.IpAddress}");
+                greenhouseController?.SetWiFiStatus(true);
+                //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
+            };
+            // disconnect event
+            wifi.NetworkDisconnected += sender => { greenhouseController?.SetWiFiStatus(false); };
         }
 
         void StartPettingWatchdog(TimeSpan pettingInterval)

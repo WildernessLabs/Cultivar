@@ -4,7 +4,7 @@
 
 Device:
     # Name of the device on the network.
-    Name: MeadowF7V2_ConfigSample
+    Name: Cultivar
 
 Coprocessor:
     # Should the ESP32 automatically attempt to connect to an access point at startup?

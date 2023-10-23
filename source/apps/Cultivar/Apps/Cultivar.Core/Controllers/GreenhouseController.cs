@@ -64,8 +64,6 @@ namespace Cultivar.Controllers
                 SubscribeToCommands();
 
                 //HandleRelayChanges();
-
-                InitializeWifi();
             }
 
             InitializeButtons();
@@ -186,23 +184,9 @@ namespace Cultivar.Controllers
             }
         }
 
-        private void InitializeWifi()
+        public void SetWiFiStatus(bool connected)
         {
-            var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
-            if (wifi.IsConnected)
-            {
-                displayController?.UpdateWifi(true);
-            }
-            wifi.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
-            {
-                Resolver.Log.Info($"Joined network - IP Address: {networkAdapter.IpAddress}");
-                displayController?.UpdateWifi(true);
-                //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
-            };
-            wifi.NetworkDisconnected += sender =>
-            {
-                displayController?.UpdateWifi(false);
-            };
+            displayController.UpdateWifi(connected);
         }
 
         private async Task StartUpdating(TimeSpan updateInterval)
