@@ -79,7 +79,6 @@ namespace Cultivar.MeadowApp
                 {
                     if (WatchdogCount <= WatchdogUptimePetCountMax) {
                         Thread.Sleep(pettingInterval);
-                        Console.WriteLine("Petting watchdog.");
                         Device.WatchdogReset();
                     } else
                     {
