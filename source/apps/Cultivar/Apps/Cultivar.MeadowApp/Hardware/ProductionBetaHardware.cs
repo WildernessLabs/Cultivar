@@ -29,9 +29,9 @@ namespace Cultivar.Hardware
 
         protected IProjectLabHardware projectLab { get; set; }
 
-        public ITemperatureSensor? TemperatureSensor => projectLab.EnvironmentalSensor as ITemperatureSensor;
+        public ITemperatureSensor? TemperatureSensor => projectLab.EnvironmentalSensor;
 
-        public IHumiditySensor? HumiditySensor => projectLab.EnvironmentalSensor as IHumiditySensor;
+        public IHumiditySensor? HumiditySensor => projectLab.EnvironmentalSensor;
 
         public IToneGenerator? Speaker => projectLab.Speaker;
 

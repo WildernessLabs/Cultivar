@@ -17,12 +17,12 @@
     <None Remove="img-wifi.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="img-green.bmp" />
-    <EmbeddedResource Include="img-red.bmp" />
-    <EmbeddedResource Include="img-sync-fade.bmp" />
-    <EmbeddedResource Include="img-sync.bmp" />
-    <EmbeddedResource Include="img-wifi-fade.bmp" />
-    <EmbeddedResource Include="img-wifi.bmp" />
+    <EmbeddedResource Include="Assets\img-green.bmp" />
+    <EmbeddedResource Include="Assets\img-red.bmp" />
+    <EmbeddedResource Include="Assets\img-sync-fade.bmp" />
+    <EmbeddedResource Include="Assets\img-sync.bmp" />
+    <EmbeddedResource Include="Assets\img-wifi-fade.bmp" />
+    <EmbeddedResource Include="Assets\img-wifi.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\Meadow.Foundation.CompositeDevices\Source\Relays.ElectromagneticRelayModule\Driver\Relays.ElectromagneticRelayModule.csproj" />
