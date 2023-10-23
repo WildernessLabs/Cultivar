@@ -4,10 +4,6 @@
     xmlns:local="using:Cultivar_reTerminal"
     x:Class="Cultivar_reTerminal.App">
     
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
-    
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml"/>

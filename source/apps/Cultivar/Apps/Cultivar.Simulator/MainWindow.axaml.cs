@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Cultivar.Controllers;
 using Cultivar.Hardware;
 using ProjectLabSimulator.Displays;
-using ProjectLabSimulator.ViewModels;
 
 namespace ProjectLabSimulator.Views
 {
@@ -12,8 +11,6 @@ namespace ProjectLabSimulator.Views
         readonly SimulatedHardware greenhouseHardware;
 
         readonly int scale = 2;
-
-        public MainWindowViewModel ViewModel { get; }
 
         public MainWindow()
         {

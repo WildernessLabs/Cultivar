@@ -1,11 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Meadow;
-using Meadow.UI;
-using ProjectLabSimulator.ViewModels;
 using ProjectLabSimulator.Views;
-using System.Threading.Tasks;
 
 namespace ProjectLabSimulator
 {
@@ -15,10 +11,7 @@ namespace ProjectLabSimulator
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel(),
-                };
+                desktop.MainWindow = new MainWindow();
             }
 
             base.OnFrameworkInitializationCompleted();

@@ -7,12 +7,7 @@
 	xmlns:local="clr-namespace:ProjectLabSimulator"
     mc:Ignorable="d" 
     x:Class="ProjectLabSimulator.Views.MainWindow"
-    Icon="/Assets/avalonia-logo.ico"
     Title="Meadow in Avalonia" Width="640" Height="600">
-
-	<Window.DataContext>
-		<vm:MainWindowViewModel />
-	</Window.DataContext>
 
 	<Grid x:Name="mainGrid">
 		<Grid.RowDefinitions>
