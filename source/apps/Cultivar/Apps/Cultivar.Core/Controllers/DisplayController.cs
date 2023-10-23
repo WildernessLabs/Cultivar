@@ -7,12 +7,12 @@ namespace Cultivar.MeadowApp.Controllers
     {
         private readonly DisplayScreen screen;
 
-        private readonly Image imgWifi = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi.bmp");
-        private readonly Image imgSync = Image.LoadFromResource("Cultivar.MeadowApp.img-sync.bmp");
-        private readonly Image imgWifiFade = Image.LoadFromResource("Cultivar.MeadowApp.img-wifi-fade.bmp");
-        private readonly Image imgSyncFade = Image.LoadFromResource("Cultivar.MeadowApp.img-sync-fade.bmp");
-        private readonly Image imgRed = Image.LoadFromResource("Cultivar.MeadowApp.img-red.bmp");
-        private readonly Image imgGreen = Image.LoadFromResource("Cultivar.MeadowApp.img-green.bmp");
+        private readonly Image imgWifi = Image.LoadFromResource("Cultivar.img-wifi.bmp");
+        private readonly Image imgSync = Image.LoadFromResource("Cultivar.img-sync.bmp");
+        private readonly Image imgWifiFade = Image.LoadFromResource("Cultivar.img-wifi-fade.bmp");
+        private readonly Image imgSyncFade = Image.LoadFromResource("Cultivar.img-sync-fade.bmp");
+        private readonly Image imgRed = Image.LoadFromResource("Cultivar.img-red.bmp");
+        private readonly Image imgGreen = Image.LoadFromResource("Cultivar.img-green.bmp");
 
         protected Label StatusLabel { get; set; }
 
