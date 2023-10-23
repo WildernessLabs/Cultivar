@@ -4,7 +4,6 @@ using Cultivar.MeadowApp.Models;
 using Meadow;
 using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
-using Meadow.Hardware;
 using Meadow.Logging;
 using System;
 using System.Collections.Generic;
@@ -35,12 +34,9 @@ namespace Cultivar.Controllers
         {
             Hardware = greenhouseHardware;
 
-            if (!isSimulator)
-            {
-                cloudLogger = new CloudLogger(LogLevel.Warning);
-                Resolver.Log.AddProvider(cloudLogger);
-                Resolver.Services.Add(cloudLogger);
-            }
+            cloudLogger = new CloudLogger(LogLevel.Warning);
+            Resolver.Log.AddProvider(cloudLogger);
+            Resolver.Services.Add(cloudLogger);
 
             Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
 
@@ -57,10 +53,10 @@ namespace Cultivar.Controllers
             //    audio = new MicroAudio(speaker);
             //}
 
+            SubscribeToCloudConnectionEvents();
+
             if (!isSimulator)
             {
-                SubscribeToCloudConnectionEvents();
-
                 SubscribeToCommands();
 
                 //HandleRelayChanges();

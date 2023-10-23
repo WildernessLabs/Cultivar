@@ -45,8 +45,6 @@ namespace Cultivar.Hardware
 
         public SimulatedHardware()
         {
-            Resolver.Services.Add(new Meadow.Logging.Logger());
-
             TemperatureSensor = new TemperatureSensorSimulated(new Meadow.Units.Temperature(20), new Meadow.Units.Temperature(-5), new Meadow.Units.Temperature(45));
             HumiditySensor = new HumiditySensorSimulated(new Meadow.Units.RelativeHumidity(50), new Meadow.Units.RelativeHumidity(0), new Meadow.Units.RelativeHumidity(100));
             MoistureSensor = new MoistureSensorSimulated(50, 5, 100);
