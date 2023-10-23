@@ -27,7 +27,7 @@ namespace Cultivar.Controllers
         //protected MicroAudio audio;
         protected CloudLogger cloudLogger;
 
-        protected TimeSpan UpdateInterval = TimeSpan.FromSeconds(60);
+        protected TimeSpan UpdateInterval = TimeSpan.FromMinutes(2);
 
         GreenhouseModel Climate;
 
@@ -344,7 +344,7 @@ namespace Cultivar.Controllers
         {
             //_ = audio.PlaySystemSound(SystemSoundEffect.Fanfare);
 
-            _ = StartUpdating(TimeSpan.FromSeconds(10));
+            _ = StartUpdating(UpdateInterval);
 
             return Task.CompletedTask;
         }
