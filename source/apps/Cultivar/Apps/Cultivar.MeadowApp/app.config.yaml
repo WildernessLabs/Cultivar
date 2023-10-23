@@ -17,6 +17,6 @@ Update:
 MeadowCloud:
     Hostname: https://staging.meadowcloud.dev
     DataHostname: https://collector-staging.meadowcloud.dev
-# HealthMetrics:
-#     Enabled: true
-#     Interval: 5
+HealthMetrics:
+    Enabled: true
+    Interval: 5
