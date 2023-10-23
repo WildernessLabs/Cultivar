@@ -7,7 +7,7 @@
 	xmlns:local="clr-namespace:ProjectLabSimulator"
     mc:Ignorable="d" 
     x:Class="ProjectLabSimulator.Views.MainWindow"
-    Title="Meadow in Avalonia" Width="640" Height="600">
+    Title="Cultivar Simulator" Width="640" Height="600">
 
 	<Grid x:Name="mainGrid">
 		<Grid.RowDefinitions>
