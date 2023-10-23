@@ -16,10 +16,10 @@ namespace Cultivar.Controllers
     {
         protected bool IsSampling = false;
 
-        bool _isVentilationOn = false;
-        bool _isIrrigationOn = false;
-        bool _isLightOn = false;
-        bool _isHeaterOn = false;
+        private bool isVentilationOn = false;
+        private bool isIrrigationOn = false;
+        private bool isLightOn = false;
+        private bool isHeaterOn = false;
 
         protected IGreenhouseHardware Hardware { get; set; }
 
@@ -80,13 +80,13 @@ namespace Cultivar.Controllers
             {
                 ventilationButton.Clicked += (s, e) =>
                 {
-                    _isVentilationOn = !_isVentilationOn;
+                    isVentilationOn = !isVentilationOn;
 
-                    displayController.UpdateVents(_isVentilationOn);
+                    displayController.UpdateVents(isVentilationOn);
 
                     if (Hardware.VentFan is { } ventilation)
                     {
-                        ventilation.IsOn = _isVentilationOn;
+                        ventilation.IsOn = isVentilationOn;
                     }
 
                     try
@@ -94,7 +94,7 @@ namespace Cultivar.Controllers
                         var cl = Resolver.Services.Get<CloudLogger>();
                         cl?.LogEvent(110, "Ventilation relay change", new Dictionary<string, object>()
                         {
-                            { "IsVentilationOn", _isVentilationOn }
+                            { "IsVentilationOn", isVentilationOn }
                         });
                     }
                     catch (Exception ex)
@@ -107,13 +107,13 @@ namespace Cultivar.Controllers
             {
                 irrigationButton.Clicked += (s, e) =>
                 {
-                    _isIrrigationOn = !_isIrrigationOn;
+                    isIrrigationOn = !isIrrigationOn;
 
-                    displayController.UpdateWater(_isIrrigationOn);
+                    displayController.UpdateWater(isIrrigationOn);
 
                     if (Hardware.IrrigationLines is { } irrigation)
                     {
-                        irrigation.IsOn = _isIrrigationOn;
+                        irrigation.IsOn = isIrrigationOn;
                     }
 
                     try
@@ -121,7 +121,7 @@ namespace Cultivar.Controllers
                         var cl = Resolver.Services.Get<CloudLogger>();
                         cl?.LogEvent(110, "Irrigation relay change", new Dictionary<string, object>()
                         {
-                            { "IsIrrigationOn", _isIrrigationOn }
+                            { "IsIrrigationOn", isIrrigationOn }
                         });
                     }
                     catch (Exception ex)
@@ -134,13 +134,13 @@ namespace Cultivar.Controllers
             {
                 lightButton.Clicked += (s, e) =>
                 {
-                    _isLightOn = !_isLightOn;
+                    isLightOn = !isLightOn;
 
-                    displayController.UpdateLights(_isLightOn);
+                    displayController.UpdateLights(isLightOn);
 
                     if (Hardware.Lights is { } lights)
                     {
-                        lights.IsOn = _isLightOn;
+                        lights.IsOn = isLightOn;
                     }
 
                     try
@@ -148,7 +148,7 @@ namespace Cultivar.Controllers
                         var cl = Resolver.Services.Get<CloudLogger>();
                         cl?.LogEvent(110, "Light relay change", new Dictionary<string, object>()
                         {
-                            { "IsLightOn", _isLightOn }
+                            { "IsLightOn", isLightOn }
                         });
                     }
                     catch (Exception ex)
@@ -161,13 +161,13 @@ namespace Cultivar.Controllers
             {
                 heaterButton.Clicked += (s, e) =>
                 {
-                    _isHeaterOn = !_isHeaterOn;
+                    isHeaterOn = !isHeaterOn;
 
-                    displayController.UpdateHeater(_isHeaterOn);
+                    displayController.UpdateHeater(isHeaterOn);
 
                     if (Hardware.Heater is { } heater)
                     {
-                        heater.IsOn = _isHeaterOn;
+                        heater.IsOn = isHeaterOn;
                     }
 
                     try
@@ -175,7 +175,7 @@ namespace Cultivar.Controllers
                         var cl = Resolver.Services.Get<CloudLogger>();
                         cl?.LogEvent(110, "Heater relay change", new Dictionary<string, object>()
                         {
-                            { "IsHeaterOn", _isHeaterOn }
+                            { "IsHeaterOn", isHeaterOn }
                         });
                     }
                     catch (Exception ex)
