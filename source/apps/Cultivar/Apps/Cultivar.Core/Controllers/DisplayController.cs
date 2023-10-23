@@ -28,9 +28,9 @@ namespace Cultivar.MeadowApp.Controllers
 
         protected Picture sync { get; set; }
 
-        protected Picture ledWater { get; set; }
-
         protected Picture ledVents { get; set; }
+
+        protected Picture ledWater { get; set; }
 
         protected Picture ledHeater { get; set; }
 
@@ -137,12 +137,12 @@ namespace Cultivar.MeadowApp.Controllers
                 TextColor = Meadow.Foundation.Color.Black
             });
 
-            ledWater = new Picture(168, 128, 46, 46, imgRed)
+            ledVents = new Picture(168, 128, 46, 46, imgRed)
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
             };
-            screen.Controls.Add(ledWater);
+            screen.Controls.Add(ledVents);
             screen.Controls.Add(new Label(60, 205, 12, 16, ScaleFactor.X2)
             {
                 Text = "Water",
@@ -150,12 +150,12 @@ namespace Cultivar.MeadowApp.Controllers
                 TextColor = Meadow.Foundation.Color.Black
             });
 
-            ledVents = new Picture(8, 188, 46, 46, imgRed)
+            ledWater = new Picture(8, 188, 46, 46, imgRed)
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
             };
-            screen.Controls.Add(ledVents);
+            screen.Controls.Add(ledWater);
             screen.Controls.Add(new Label(220, 145, 12, 16, ScaleFactor.X2)
             {
                 Text = "Vents",
@@ -202,14 +202,14 @@ namespace Cultivar.MeadowApp.Controllers
             ledHeater.Image = on ? imgGreen : imgRed;
         }
 
-        public void UpdateWater(bool on)
-        {
-            ledWater.Image = on ? imgGreen : imgRed;
-        }
-
         public void UpdateVents(bool on)
         {
             ledVents.Image = on ? imgGreen : imgRed;
+        }
+
+        public void UpdateWater(bool on)
+        {
+            ledWater.Image = on ? imgGreen : imgRed;
         }
 
         public void UpdateReadings(double temp, double humidity, double moisture)

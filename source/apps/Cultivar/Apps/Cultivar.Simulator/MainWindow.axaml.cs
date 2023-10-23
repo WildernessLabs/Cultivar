@@ -1,6 +1,8 @@
 using Avalonia.Controls;
 using Cultivar.Controllers;
 using Cultivar.Hardware;
+using Meadow;
+using Meadow.Cloud;
 using ProjectLabSimulator.Displays;
 
 namespace ProjectLabSimulator.Views
@@ -24,6 +26,18 @@ namespace ProjectLabSimulator.Views
             greenhouseController = new GreenhouseController(greenhouseHardware, true);
 
             greenhouseController.Run();
+
+            buttonDown.Click += ButtonDown_Click;
+        }
+
+        private void ButtonDown_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var cloudEvent = new CloudEvent()
+            {
+                Description = "Button Down",
+            };
+
+            Resolver.MeadowCloudService.SendEvent(cloudEvent);
         }
 
         PixelCanvas LoadDisplay()

@@ -77,6 +77,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Avalonia", "..\..\..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Windows", "..\..\..\..\Meadow.Core\source\implementations\windows\Meadow.Windows\Meadow.Windows.csproj", "{2CA90957-87E5-4301-AA27-679327A38B74}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Simulation", "..\..\..\..\Meadow.Core\source\implementations\simulation\Meadow.Simulation\Meadow.Simulation.csproj", "{F68C2F14-A8D4-4899-BE84-9184BB5E39FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -257,6 +259,10 @@ Global
 		{2CA90957-87E5-4301-AA27-679327A38B74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CA90957-87E5-4301-AA27-679327A38B74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CA90957-87E5-4301-AA27-679327A38B74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F68C2F14-A8D4-4899-BE84-9184BB5E39FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F68C2F14-A8D4-4899-BE84-9184BB5E39FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F68C2F14-A8D4-4899-BE84-9184BB5E39FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F68C2F14-A8D4-4899-BE84-9184BB5E39FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -296,6 +302,7 @@ Global
 		{54A08AEA-85E1-4E2B-A676-3B1B89E9EC5D} = {04FDB621-B754-4414-9AAF-BCF7DEBA902F}
 		{D2176D94-2BA9-4A53-B223-DAE2D3AA868F} = {4DBDBC5C-CC90-4872-A326-8494ABDDB82D}
 		{2CA90957-87E5-4301-AA27-679327A38B74} = {4DBDBC5C-CC90-4872-A326-8494ABDDB82D}
+		{F68C2F14-A8D4-4899-BE84-9184BB5E39FE} = {4DBDBC5C-CC90-4872-A326-8494ABDDB82D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {451E381E-593E-41C2-BC7C-DC1926C286D3}
