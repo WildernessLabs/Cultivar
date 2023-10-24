@@ -96,7 +96,7 @@ namespace Cultivar.MeadowApp
                     {
                         Resolver.Log.Warn("Max uptime has elapsed. Restarting to maintain stability.");
                         // stop spinning while the watchdog countdown elapses
-                        Thread.Sleep(pettingInterval);
+                        Thread.Sleep(pettingInterval * 2);
                     }
                     WatchdogCount++;
                 }
