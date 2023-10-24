@@ -67,12 +67,15 @@ namespace Cultivar.MeadowApp
 
         void WireUpWatchdogs()
         {
+            var watchdogTimeout = TimeSpan.FromSeconds(30);
+            var pettingInterval = TimeSpan.FromSeconds(20); // should be well less than the timeout
+
             // Enable the watchdog for 30 second intervals (max is ~32s)
-            Device.WatchdogEnable(TimeSpan.FromSeconds(30));
+            Device.WatchdogEnable(watchdogTimeout);
             // calculate the number of times we need to pet the watchdog.
             WatchdogUptimePetCountMax = ((WatchdogUptimeMaxHours * 60 * 60) / 30);
             // Start the thread that resets the counter.
-            StartPettingWatchdog(TimeSpan.FromSeconds(9));
+            StartPettingWatchdog(pettingInterval);
         }
 
         void StartPettingWatchdog(TimeSpan pettingInterval)
