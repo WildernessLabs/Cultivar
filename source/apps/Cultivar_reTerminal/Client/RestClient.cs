@@ -11,9 +11,9 @@ namespace Cultivar_reTerminal.Client
     public static class RestClient
     {
         static string meadowCloudUri = "https://staging.meadowcloud.dev/";
-        static string apiKey = "mcdev_HSAnsb2zNkw3X8Yq7tOaehpoul4_uV22i4x5dedRCCXQgawAH5Ft5U1JW4D56HK9107ThP";
+        static string apiKey = "mcstg_WtFpp060LyIOEaQR6K7ZuL9R1H_d8V9t7c6hIKNfKEsK9g6tsHEumPABGir07XN2W259i";
         static string organizationId = "5b1d2b0dab744a04b79b245d881e18b8";
-        static string deviceId = "27-00-1E-00-0D-50-4B-55-30-38-31-20";
+        static string deviceId = "37-00-36-00-0D-50-4B-55-30-38-31-20";
 
         static RestClient() { }
 
@@ -77,7 +77,7 @@ namespace Cultivar_reTerminal.Client
                     client.DefaultRequestHeaders.Add("Authorization", $"apikey {apiKey}");
                     client.Timeout = new TimeSpan(0, 5, 0);
 
-                    HttpResponseMessage response = await client.GetAsync($"{meadowCloudUri}/api/orgs/{organizationId}/search/source:event deviceId:27-00-1E-00-0D-50-4B-55-30-38-31-20 eventId:110 size:100");
+                    HttpResponseMessage response = await client.GetAsync($"{meadowCloudUri}/api/orgs/{organizationId}/search/source:event deviceId:{deviceId} eventId:110 size:100");
 
                     if (response.IsSuccessStatusCode)
                     {

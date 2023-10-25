@@ -88,10 +88,13 @@ namespace Cultivar_reTerminal.ViewModels
 
             SoilMoistureLogs = new ObservableCollection<Pnl>();
 
-            //_ = SimulateCurrentConditions();
-            _ = GetGreenhouseData();
+            _ = GetAndGraphCurrentConditions();
+            //_ = GetGreenhouseData();
         }
 
+        /// <summary>
+        /// Get conditions logs and graph latest values.
+        /// </summary>
         async Task GetGreenhouseData()
         {
             //var sensorReadings = await RestClient.GetSensorReadings();
@@ -127,7 +130,10 @@ namespace Cultivar_reTerminal.ViewModels
             }
         }
 
-        async Task SimulateCurrentConditions()
+        /// <summary>
+        /// Query the Digital Twin for the current conditions and graph them in each cycle.
+        /// </summary>
+        async Task GetAndGraphCurrentConditions()
         {
             var random = new Random();
 
@@ -135,19 +141,31 @@ namespace Cultivar_reTerminal.ViewModels
             {
                 var dateTime = DateTime.Now;
 
-                double temp = random.Next(26, 28) + random.NextDouble();
-                int h = random.Next(95, 97);
-                double sm = random.Next(75, 77) + random.NextDouble();
+                var sensorReading = await DigitalTwinClient.GetDigitalTwinData();
+                if (sensorReading != null)
+                {
+                    CurrentTemperature = $"{sensorReading.TemperatureCelsius:N0}°C";
+                    CurrentHumidity = $"{sensorReading.HumidityPercentage:N0}%";
+                    CurrentSoilMoisture = $"{sensorReading.SoilMoisturePercentage:N0}%";
+                    IsLightsOn = sensorReading.IsLightOn;
+                    IsHeaterOn = sensorReading.IsHeaterOn;
+                    IsSprinklerOn = sensorReading.IsSprinklerOn;
+                    IsVentilationOn = sensorReading.IsVentilationOn;
+                }
 
-                CurrentTemperature = $"{temp:N0}°C";
-                CurrentHumidity = $"{h}%";
-                CurrentSoilMoisture = $"{sm:N0}%";
+                //double temp = random.Next(26, 28) + random.NextDouble();
+                //int h = random.Next(95, 97);
+                //double sm = random.Next(75, 77) + random.NextDouble();
 
-                TemperatureLogs.Add(new Pnl(dateTime, temp));
-                HumidityLogs.Add(new Pnl(dateTime, h));
-                SoilMoistureLogs.Add(new Pnl(dateTime, sm));
+                //CurrentTemperature = $"{temp:N0}°C";
+                //CurrentHumidity = $"{h}%";
+                //CurrentSoilMoisture = $"{sm:N0}%";
 
-                await Task.Delay(TimeSpan.FromMinutes(1));
+                TemperatureLogs.Add(new Pnl(dateTime, sensorReading.TemperatureCelsius));
+                HumidityLogs.Add(new Pnl(dateTime, sensorReading.HumidityPercentage));
+                SoilMoistureLogs.Add(new Pnl(dateTime, sensorReading.SoilMoisturePercentage));
+
+                await Task.Delay(TimeSpan.FromSeconds(10));
 
                 if (TemperatureLogs.Count > 10)
                 {

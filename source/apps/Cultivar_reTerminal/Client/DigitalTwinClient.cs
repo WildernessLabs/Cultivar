@@ -14,7 +14,7 @@ namespace Cultivar_reTerminal.Client
             string clientSecret = "WYx8Q~tz8zv.llfGodsrp3N5OH1kjB3ccKWsva9u";
             string tenantId = "3c5937be-c634-450c-beff-cce3ccfb6330";
             string endpoint = "https://cultivardemo.api.wcus.digitaltwins.azure.net"; // Replace with your instance endpoint
-            string twinId = "23-00-3D-00-15-50-33-4D-35-34-33-20";
+            string twinId = "37-00-36-00-0D-50-4B-55-30-38-31-20";
 
             var clientSecretCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
             var digitalTwinsClient = new DigitalTwinsClient(new Uri(endpoint), clientSecretCredential);
