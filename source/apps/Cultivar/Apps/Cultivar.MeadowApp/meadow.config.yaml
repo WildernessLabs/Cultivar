@@ -13,7 +13,7 @@ Coprocessor:
     # Should the ESP32 automatically reconnect to the configured access point?
     AutomaticallyReconnect: true
     # Maximum number of retry attempts for connections etc. before an error code is returned.
-    MaximumRetryCount: 2
+    MaximumRetryCount: 9999
 
 Network:
     # Automatically attempt to get the time at startup?
