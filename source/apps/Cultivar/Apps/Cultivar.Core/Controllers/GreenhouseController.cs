@@ -257,7 +257,7 @@ namespace Cultivar.Controllers
             Resolver.CommandService?.Subscribe<Fan>(c =>
             {
                 Resolver.Log.Info($"Received fan control: {c.IsOn}");
-                displayController.UpdateWater(c.IsOn);
+                displayController.UpdateVents(c.IsOn);
                 if (Hardware.VentFan != null)
                 {
                     Hardware.VentFan.IsOn = c.IsOn;
@@ -284,7 +284,7 @@ namespace Cultivar.Controllers
             Resolver.CommandService?.Subscribe<Irrigation>(c =>
             {
                 Resolver.Log.Info($"Received valve control: {c.IsOn}");
-                displayController.UpdateVents(c.IsOn);
+                displayController.UpdateWater(c.IsOn);
                 if (Hardware.IrrigationLines != null)
                 {
                     Hardware.IrrigationLines.IsOn = c.IsOn;
