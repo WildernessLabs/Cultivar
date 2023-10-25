@@ -13,9 +13,23 @@ Greenhouse Management Meadow Solution
 
 ## Overall Concept
 
+The concept to automate a basic greenhouse, consists on controlling four peripherals:
+
+* A large cylindrical live bulb to give the appropriate amount of light for the plants health growth throughout the entire year.
+* Sprinkler system to water the plants and keep the soil moist.
+* Heater and Ventilation fan to control and maintain an appropriate room temperature.
+
+Here's a sketch of Cultivar:
+
 ![](Design/wildernesslabs-meadow-cultivar-sketch.jpg)
 
-Lorem Ipsum
+On the top right we have a project lab which is in charge of controlling the whole system, and all four peripherals mentioned above are connected to it, some indirectly with a relay module in the middle to turn on or off things like the heater and the ventilation fan.
+
+Not only the Project Lab is controlling these four peripherals, it's using its onboard BME688 environmental sensor to check the greenhouse's temperature, and soil moisture sensors to control how much the plants need to be watered.
+
+Finally, the Project Lab is connected to a WiFi and periodically sending data from the sensors and the current status of all its peripherals over to Meadow.Cloud, which in turn, sends them to a Digital Twin on Microsoft Azure.
+
+Having a virtual representation of the Project Lab in an Azure Digital Twin lets you monitor and control your Greenhouse from anywhere on the planet using any application that connects to it, which in this case, we built an HMI app using Avalonia on a reTerminal by SeeedStudios.
 
 ## Meadow Application
 
