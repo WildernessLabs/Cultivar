@@ -632,7 +632,7 @@
                         MajorGridlineColor="#EEE"
                         MinorGridlineStyle="None" />-->
                     <oxy:DateTimeAxis 
-                        Title="Time (last X seconds)"
+                        Title="Time (last 10 seconds)"
                         TitleColor="#555"
                         TitleFontSize="25"
                         IntervalType="Minutes" 
