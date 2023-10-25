@@ -2,20 +2,17 @@
 
 # Cultivar
 
-Greenhouse Management Meadow Solution
-
 ## Contents
 * [Overall Concept](#overall-concept)
-* [Meadow Application](#getting-started)
-* [HMI reTerminal Application](#hardware-specifications)
-* [Additional Samples](#additional-samples)
+* [Meadow Application](#meadow-application)
+* [HMI reTerminal Application](#hmi-reterminal-application)
 * [Support](#support)
 
 ## Overall Concept
 
 The concept to automate a basic greenhouse, consists on controlling four peripherals:
 
-* A large cylindrical live bulb to give the appropriate amount of light for the plants health growth throughout the entire year.
+* A light bulb to give the appropriate amount of light for the plants health growth throughout the entire year.
 * Sprinkler system to water the plants and keep the soil moist.
 * Heater and Ventilation fan to control and maintain an appropriate room temperature.
 
@@ -23,37 +20,28 @@ Here's a sketch of Cultivar:
 
 ![](Design/wildernesslabs-meadow-cultivar-sketch.jpg)
 
-On the top right we have a project lab which is in charge of controlling the whole system, and all four peripherals mentioned above are connected to it, some indirectly with a relay module in the middle to turn on or off things like the heater and the ventilation fan.
+On the top right we have a [Project Lab](https://store.wildernesslabs.co/collections/frontpage/products/project-lab-board) which is in charge of controlling the whole system, and all four peripherals mentioned above are connected to it, some indirectly with a relay module in the middle to turn on or off things like the heater and the ventilation fan.
 
-Not only the Project Lab is controlling these four peripherals, it's using its onboard BME688 environmental sensor to check the greenhouse's temperature, and soil moisture sensors to control how much the plants need to be watered.
+Not only the Project Lab is controlling these four peripherals, it's using its onboard BME688 environmental sensor to check the greenhouse's temperature and humidity, and soil moisture sensors to control how much the plants need to be watered.
 
-Finally, the Project Lab is connected to a WiFi and periodically sending data from the sensors and the current status of all its peripherals over to Meadow.Cloud, which in turn, sends them to a Digital Twin on Microsoft Azure.
+Additionally, the Project Lab is connected to a WiFi and periodically sending data from the sensors and the current status of all its peripherals over to [Meadow.Cloud](https://www.meadowcloud.co), which in turn, sends them to a Digital Twin on Microsoft Azure.
 
-Having a virtual representation of the Project Lab in an Azure Digital Twin lets you monitor and control your Greenhouse from anywhere on the planet using any application that connects to it, which in this case, we built an HMI app using Avalonia on a reTerminal by SeeedStudios.
+Having a virtual representation of the Cultivar Meadow application in an Azure Digital Twin lets you monitor and control your Greenhouse from anywhere on the planet using any application that connects to it, which in this case, we built an HMI app using [Avalonia](https://avaloniaui.net/) on a [reTerminal](https://wiki.seeedstudio.com/reTerminal_Intro/) by SeeedStudio.
 
 ## Meadow Application
 
 ![](Design/wildernesslabs-cultivar-projectlab.jpg)
 
-Lorem Ipsum
+Above you can see [Cultivar's Meadow application](/source/apps/Cultivar/Apps/Cultivar.MeadowApp/) running on a Project Lab v3 (minus the connections to the Soil Moisture sensor and a relay module to control the greenhouse peripherals). On its display we have an HMI built using MicroLayouts to show sensor values such as room temperature and humidity, and the soil moisture measured by a Capacitive soil moisture sensor.
+
+This Meadow application also lets you toggle on and off the Lights, Heater, Sprinklers and Ventilation fan using the directional D-Pad push buttons on the Project Lab.
 
 ## HMI reTerminal Application
 
 ![](Design/wildernesslabs-cultivar-reterminal.jpg)
 
-Lorem Ipsum
-
-## Additional Samples
-
-1. **[Setup your Meadow Build Environment](http://developer.wildernesslabs.co/Meadow/Getting_Started/Deploying_Meadow/)** - If you haven't deployed a Meadow app before, you'll need to setup your IDE extension(s), deploy Meadow.OS, etc.
-2. **[Run the Demo App](Source/ProjectLab_Demo)** - Deploy the Project Lab demonstration app to see the built in peripherals at work.
-3. **[Check out the Project Lab Samples](https://github.com/WildernessLabs/Meadow.ProjectLab.Samples)** - We recommend cloning the [Meadow.ProjectLab.Samples](https://github.com/WildernessLabs/Meadow.ProjectLab.Samples) repo. There you'll find a bunch of awesome samples that you can run right out-of-the box! 
-<a href="https://github.com/WildernessLabs/Meadow.ProjectLab.Samples">
-    <img src="Design/project-lab-samples.png" alt="project-lab, iot, project, samples" style="margin-top:10px;margin-bottom:10px" />
-</a>
+This [HMI Cultivar](/source/apps/Cultivar_reTerminal/) project periodically queries the Project Lab's Digital Twin on Azure to refresh the latest conditions and status of all the equipment in the greenhouse, at the same time it queries the logs conditions to graph them to have an idea of how the system is doing over time. Since its an avalonia application, it can run on any linux device (in this case a reTerminal), macOS and Windows machines.
 
 ## Support
 
-Having trouble building/running these projects? 
-* File an [issue](https://github.com/WildernessLabs/Meadow.Desktop.Samples/issues) with a repro case to investigate, and/or
 * Join our [public Slack](http://slackinvite.wildernesslabs.co/), where we have an awesome community helping, sharing and building amazing things using Meadow.
