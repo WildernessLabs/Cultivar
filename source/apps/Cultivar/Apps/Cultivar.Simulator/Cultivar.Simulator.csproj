@@ -34,4 +34,9 @@
     <ProjectReference Include="..\..\..\..\..\..\Meadow.Core\source\ui\Meadow.Avalonia\Meadow.Avalonia.csproj" />
     <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="app.config.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
