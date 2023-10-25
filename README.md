@@ -26,6 +26,8 @@ Not only the Project Lab is controlling these four peripherals, it's using its o
 
 Additionally, the Project Lab is connected to a WiFi and periodically sending data from the sensors and the current status of all its peripherals over to [Meadow.Cloud](https://www.meadowcloud.co), which in turn, sends them to a Digital Twin on Microsoft Azure.
 
+![](/Design/wildernesslabs-cultivar-meadow-cloud.jpg)
+
 Having a virtual representation of the Cultivar Meadow application in an Azure Digital Twin lets you monitor and control your Greenhouse from anywhere on the planet using any application that connects to it, which in this case, we built an HMI app using [Avalonia](https://avaloniaui.net/) on a [reTerminal](https://wiki.seeedstudio.com/reTerminal_Intro/) by SeeedStudio.
 
 ## Meadow Application
