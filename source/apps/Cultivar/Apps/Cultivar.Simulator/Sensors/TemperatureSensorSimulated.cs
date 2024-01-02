@@ -21,7 +21,7 @@ namespace Meadow.Foundation
 
         public bool IsSampling { get; protected set; } = false;
 
-        public event EventHandler<IChangeResult<Temperature>> TemperatureUpdated;
+        public event EventHandler<IChangeResult<Temperature>> Updated;
 
         public Temperature? MinTemperature { get; protected set; }
 
@@ -119,7 +119,7 @@ namespace Meadow.Foundation
 
         protected void RaiseEventsAndNotify(IChangeResult<Temperature> changeResult)
         {
-            TemperatureUpdated?.Invoke(this, changeResult);
+            Updated?.Invoke(this, changeResult);
 
             NotifyObservers(changeResult);
         }

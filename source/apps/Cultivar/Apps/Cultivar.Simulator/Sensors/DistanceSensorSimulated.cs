@@ -21,6 +21,7 @@ namespace Meadow.Foundation
 
         public bool IsSampling { get; protected set; } = false;
 
+        public event EventHandler<IChangeResult<Length>> Updated;
         public event EventHandler<IChangeResult<Length>> DistanceUpdated;
 
         public Length? MinLength { get; protected set; }
@@ -117,7 +118,7 @@ namespace Meadow.Foundation
 
         protected void RaiseEventsAndNotify(IChangeResult<Length> changeResult)
         {
-            DistanceUpdated?.Invoke(this, changeResult);
+            Updated?.Invoke(this, changeResult);
 
             NotifyObservers(changeResult);
         }

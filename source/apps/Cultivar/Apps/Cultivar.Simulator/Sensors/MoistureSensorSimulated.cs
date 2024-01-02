@@ -20,6 +20,7 @@ namespace Meadow.Foundation
 
         public bool IsSampling { get; protected set; } = false;
 
+        public event EventHandler<IChangeResult<double>> Updated;
         public event EventHandler<IChangeResult<double>> MoistureUpdated;
 
         public double? MinMoisture { get; protected set; }
@@ -116,7 +117,7 @@ namespace Meadow.Foundation
 
         protected void RaiseEventsAndNotify(IChangeResult<double> changeResult)
         {
-            MoistureUpdated?.Invoke(this, changeResult);
+            Updated?.Invoke(this, changeResult);
 
             NotifyObservers(changeResult);
         }
