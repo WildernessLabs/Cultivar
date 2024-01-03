@@ -77,6 +77,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Displays.TextDisplayMenu", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audio.MicroAudio", "..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Audio.MicroAudio\Driver\Audio.MicroAudio.csproj", "{C7936496-7A56-415F-BFD4-381047DAD65F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amqp", "..\..\..\..\amqpnetlite\src\Amqp.csproj", "{56B8F5EE-983E-4C20-915D-16BEED783C4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -259,6 +261,10 @@ Global
 		{C7936496-7A56-415F-BFD4-381047DAD65F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7936496-7A56-415F-BFD4-381047DAD65F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7936496-7A56-415F-BFD4-381047DAD65F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{56B8F5EE-983E-4C20-915D-16BEED783C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56B8F5EE-983E-4C20-915D-16BEED783C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56B8F5EE-983E-4C20-915D-16BEED783C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56B8F5EE-983E-4C20-915D-16BEED783C4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -298,6 +304,7 @@ Global
 		{893E463C-2F0A-4777-A079-2D41C59AF6C8} = {CBBA5442-450B-4843-887C-EA25738EEB02}
 		{8DD16BF3-2593-4332-B6CE-74F0A6769389} = {CBBA5442-450B-4843-887C-EA25738EEB02}
 		{C7936496-7A56-415F-BFD4-381047DAD65F} = {CBBA5442-450B-4843-887C-EA25738EEB02}
+		{56B8F5EE-983E-4C20-915D-16BEED783C4D} = {CBBA5442-450B-4843-887C-EA25738EEB02}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {451E381E-593E-41C2-BC7C-DC1926C286D3}
