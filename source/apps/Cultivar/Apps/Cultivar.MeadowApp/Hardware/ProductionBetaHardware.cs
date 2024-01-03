@@ -1,9 +1,9 @@
 ﻿using Meadow;
 using Meadow.Devices;
 using Meadow.Foundation.Graphics;
-using Meadow.Foundation.Leds;
 using Meadow.Foundation.Relays;
 using Meadow.Foundation.Sensors.Moisture;
+using Meadow.Peripherals.Leds;
 using Meadow.Peripherals.Relays;
 using Meadow.Peripherals.Sensors;
 using Meadow.Peripherals.Sensors.Atmospheric;
@@ -35,7 +35,7 @@ namespace Cultivar.Hardware
 
         public IToneGenerator? Speaker => projectLab.Speaker;
 
-        public RgbPwmLed? RgbLed => projectLab.RgbLed;
+        public IRgbPwmLed? RgbLed => projectLab.RgbLed;
 
         public IButton? LeftButton => projectLab.LeftButton;
 

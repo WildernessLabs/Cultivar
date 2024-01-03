@@ -1,4 +1,5 @@
-﻿using Meadow.Foundation.Graphics;
+﻿using Meadow;
+using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using System;
 using System.Threading.Tasks;
@@ -40,19 +41,19 @@ namespace Cultivar_HMI
         {
             screen = new DisplayScreen(_display, RotationType._270Degrees);
 
-            screen.Controls.Add(new Box(0, 0, screen.Width, screen.Height) { ForeColor = Meadow.Foundation.Color.White });
-            screen.Controls.Add(new Box(0, 27, 106, 93) { ForeColor = Meadow.Foundation.Color.FromHex("#B35E2C") });
-            screen.Controls.Add(new Box(106, 27, 108, 93) { ForeColor = Meadow.Foundation.Color.FromHex("#1A80AA") });
-            screen.Controls.Add(new Box(214, 27, 106, 93) { ForeColor = Meadow.Foundation.Color.FromHex("#98A645") });
+            screen.Controls.Add(new Box(0, 0, screen.Width, screen.Height) { ForeColor = Color.White });
+            screen.Controls.Add(new Box(0, 27, 106, 93) { ForeColor = Color.FromHex("#B35E2C") });
+            screen.Controls.Add(new Box(106, 27, 108, 93) { ForeColor = Color.FromHex("#1A80AA") });
+            screen.Controls.Add(new Box(214, 27, 106, 93) { ForeColor = Color.FromHex("#98A645") });
 
-            screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = Meadow.Foundation.Color.Black, Filled = false });
-            screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = Meadow.Foundation.Color.Black, Filled = false });
+            screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = Color.Black, IsFilled = false });
+            screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = Color.Black, IsFilled = false });
 
             StatusLabel = new Label(2, 6, 12, 16)
             {
                 Text = "Hello",
                 Font = new Font12x20(),
-                TextColor = Meadow.Foundation.Color.Black
+                TextColor = Color.Black
             };
             screen.Controls.Add(StatusLabel);
 
@@ -66,46 +67,46 @@ namespace Cultivar_HMI
             {
                 Text = "TEMP.",
                 Font = new Font12x16(),
-                TextColor = Meadow.Foundation.Color.White
+                TextColor = Color.White
             });
             screen.Controls.Add(new Label(77, 99, 12, 16)
             {
                 Text = "°C",
                 Font = new Font12x20(),
-                TextColor = Meadow.Foundation.Color.White
+                TextColor = Color.White
             });
 
             screen.Controls.Add(new Label(111, 32, 12, 16)
             {
                 Text = "HUM.",
                 Font = new Font12x16(),
-                TextColor = Meadow.Foundation.Color.White
+                TextColor = Color.White
             });
             screen.Controls.Add(new Label(197, 99, 12, 16)
             {
                 Text = "%",
                 Font = new Font12x20(),
-                TextColor = Meadow.Foundation.Color.White
+                TextColor = Color.White
             });
 
             screen.Controls.Add(new Label(219, 32, 12, 16)
             {
                 Text = "S.M.",
                 Font = new Font12x16(),
-                TextColor = Meadow.Foundation.Color.White
+                TextColor = Color.White
             });
             screen.Controls.Add(new Label(303, 99, 12, 16)
             {
                 Text = "%",
                 Font = new Font12x20(),
-                TextColor = Meadow.Foundation.Color.White
+                TextColor = Color.White
             });
 
             TemperatureLabel = new Label(50, 70, 12, 16, ScaleFactor.X2)
             {
                 Text = "0",
                 Font = new Font12x16(),
-                TextColor = Meadow.Foundation.Color.White,
+                TextColor = Color.White,
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
             screen.Controls.Add(TemperatureLabel);
@@ -113,7 +114,7 @@ namespace Cultivar_HMI
             {
                 Text = "0",
                 Font = new Font12x16(),
-                TextColor = Meadow.Foundation.Color.White,
+                TextColor = Color.White,
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
             screen.Controls.Add(HumidityLabel);
@@ -121,7 +122,7 @@ namespace Cultivar_HMI
             {
                 Text = "0",
                 Font = new Font12x16(),
-                TextColor = Meadow.Foundation.Color.White,
+                TextColor = Color.White,
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
             screen.Controls.Add(SoilMoistureLabel);
@@ -136,7 +137,7 @@ namespace Cultivar_HMI
             {
                 Text = "Lights",
                 Font = new Font8x12(),
-                TextColor = Meadow.Foundation.Color.Black
+                TextColor = Color.Black
             });
 
             ledWater = new Picture(168, 128, 46, 46, imgRed)
@@ -149,7 +150,7 @@ namespace Cultivar_HMI
             {
                 Text = "Water",
                 Font = new Font8x12(),
-                TextColor = Meadow.Foundation.Color.Black
+                TextColor = Color.Black
             });
 
             ledVents = new Picture(8, 188, 46, 46, imgRed)
@@ -162,7 +163,7 @@ namespace Cultivar_HMI
             {
                 Text = "Vents",
                 Font = new Font8x12(),
-                TextColor = Meadow.Foundation.Color.Black
+                TextColor = Color.Black
             });
 
             ledHeater = new Picture(168, 188, 46, 46, imgRed)
@@ -175,7 +176,7 @@ namespace Cultivar_HMI
             {
                 Text = "Heater",
                 Font = new Font8x12(),
-                TextColor = Meadow.Foundation.Color.Black
+                TextColor = Color.Black
             });
         }
 

@@ -1,8 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Meadow;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.Buffers;
 using System;
@@ -26,12 +26,12 @@ namespace ProjectLabSimulator
         /// <summary>
         /// The color to draw when a pixel is enabled
         /// </summary>
-        public Meadow.Foundation.Color EnabledColor { get; set; } = Meadow.Foundation.Color.White;
+        public Color EnabledColor { get; set; } = Color.White;
 
         /// <summary>
         /// The color to draw when a pixel is disabled
         /// </summary>
-        public Meadow.Foundation.Color DisabledColor { get; set; } = Meadow.Foundation.Color.Black;
+        public Color DisabledColor { get; set; } = Color.Black;
 
         IPixelBuffer pixelBuffer;
 
@@ -72,7 +72,7 @@ namespace ProjectLabSimulator
             }
         }
 
-        private void RedrawPixels(DrawingContext context)
+        private void RedrawPixels(Avalonia.Media.DrawingContext context)
         {
             int bitmapWidth = width;
             int bitmapHeight = height;
@@ -122,7 +122,7 @@ namespace ProjectLabSimulator
         }
 
 
-        public override void Render(DrawingContext context)
+        public override void Render(Avalonia.Media.DrawingContext context)
         {
             RedrawPixels(context);
         }
@@ -142,7 +142,7 @@ namespace ProjectLabSimulator
             pixelBuffer?.Clear();
         }
 
-        public void Fill(Meadow.Foundation.Color fillColor, bool updateDisplay = false)
+        public void Fill(Color fillColor, bool updateDisplay = false)
         {
             pixelBuffer?.Fill(fillColor);
 
@@ -152,12 +152,12 @@ namespace ProjectLabSimulator
             }
         }
 
-        public void Fill(int x, int y, int width, int height, Meadow.Foundation.Color fillColor)
+        public void Fill(int x, int y, int width, int height, Color fillColor)
         {
             pixelBuffer?.Fill(x, y, width, height, fillColor);
         }
 
-        public void DrawPixel(int x, int y, Meadow.Foundation.Color color)
+        public void DrawPixel(int x, int y, Color color)
         {
             pixelBuffer?.SetPixel(x, y, color);
         }
@@ -172,11 +172,11 @@ namespace ProjectLabSimulator
             pixelBuffer?.InvertPixel(x, y);
         }
 
-        public Meadow.Foundation.Color GetPixel(int x, int y)
+        public Color GetPixel(int x, int y)
         {
             if (ColorMode == ColorMode.Format1bpp)
             {
-                return pixelBuffer.GetPixel(x, y) == Meadow.Foundation.Color.White ? EnabledColor : DisabledColor;
+                return pixelBuffer.GetPixel(x, y) == Color.White ? EnabledColor : DisabledColor;
             }
             return pixelBuffer.GetPixel(x, y);
         }

@@ -1,4 +1,4 @@
-﻿using Meadow.Foundation;
+﻿using Meadow;
 using Meadow.Foundation.Graphics;
 
 namespace ProjectLabSimulator.Displays
@@ -7,9 +7,9 @@ namespace ProjectLabSimulator.Displays
     {
         public Ili9341Simulated(int width = 320, int height = 240, ColorMode colorMode = ColorMode.Format16bppRgb565)
         {
-            this.Width = width;
-            this.Height = height;
-            this.ColorMode = colorMode;
+            Width = width;
+            Height = height;
+            ColorMode = colorMode;
         }
 
         public ColorMode ColorMode { get; private set; }

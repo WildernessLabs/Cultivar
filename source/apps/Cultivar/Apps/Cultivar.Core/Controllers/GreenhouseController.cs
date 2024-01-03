@@ -2,7 +2,6 @@
 using Cultivar.MeadowApp.Controllers;
 using Cultivar.MeadowApp.Models;
 using Meadow;
-using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
 using Meadow.Logging;
 using System;
@@ -80,7 +79,9 @@ namespace Cultivar.Controllers
 
                     if (Hardware.VentFan is { } ventilation)
                     {
-                        ventilation.IsOn = isVentilationOn;
+                        ventilation.State = isVentilationOn
+                            ? Meadow.Peripherals.Relays.RelayState.Closed
+                            : Meadow.Peripherals.Relays.RelayState.Open;
                     }
 
                     try
@@ -107,7 +108,9 @@ namespace Cultivar.Controllers
 
                     if (Hardware.IrrigationLines is { } irrigation)
                     {
-                        irrigation.IsOn = isIrrigationOn;
+                        irrigation.State = isIrrigationOn
+                            ? Meadow.Peripherals.Relays.RelayState.Closed
+                            : Meadow.Peripherals.Relays.RelayState.Open;
                     }
 
                     try
@@ -134,7 +137,9 @@ namespace Cultivar.Controllers
 
                     if (Hardware.Lights is { } lights)
                     {
-                        lights.IsOn = isLightOn;
+                        lights.State = isLightOn
+                            ? Meadow.Peripherals.Relays.RelayState.Closed
+                            : Meadow.Peripherals.Relays.RelayState.Open;
                     }
 
                     try
@@ -161,7 +166,9 @@ namespace Cultivar.Controllers
 
                     if (Hardware.Heater is { } heater)
                     {
-                        heater.IsOn = isHeaterOn;
+                        heater.State = isHeaterOn
+                            ? Meadow.Peripherals.Relays.RelayState.Closed
+                            : Meadow.Peripherals.Relays.RelayState.Open; ;
                     }
 
                     try
@@ -260,7 +267,9 @@ namespace Cultivar.Controllers
                 displayController.UpdateVents(c.IsOn);
                 if (Hardware.VentFan != null)
                 {
-                    Hardware.VentFan.IsOn = c.IsOn;
+                    Hardware.VentFan.State = c.IsOn
+                        ? Meadow.Peripherals.Relays.RelayState.Closed
+                        : Meadow.Peripherals.Relays.RelayState.Open; ;
                 }
             });
             Resolver.CommandService?.Subscribe<Heater>(c =>
@@ -269,7 +278,9 @@ namespace Cultivar.Controllers
                 displayController.UpdateHeater(c.IsOn);
                 if (Hardware.Heater != null)
                 {
-                    Hardware.Heater.IsOn = c.IsOn;
+                    Hardware.Heater.State = c.IsOn
+                        ? Meadow.Peripherals.Relays.RelayState.Closed
+                        : Meadow.Peripherals.Relays.RelayState.Open; ;
                 }
             });
             Resolver.CommandService?.Subscribe<Lights>(c =>
@@ -278,7 +289,9 @@ namespace Cultivar.Controllers
                 displayController.UpdateLights(c.IsOn);
                 if (Hardware.Lights != null)
                 {
-                    Hardware.Lights.IsOn = c.IsOn;
+                    Hardware.Lights.State = c.IsOn
+                        ? Meadow.Peripherals.Relays.RelayState.Closed
+                        : Meadow.Peripherals.Relays.RelayState.Open; ;
                 }
             });
             Resolver.CommandService?.Subscribe<Irrigation>(c =>
@@ -287,7 +300,9 @@ namespace Cultivar.Controllers
                 displayController.UpdateWater(c.IsOn);
                 if (Hardware.IrrigationLines != null)
                 {
-                    Hardware.IrrigationLines.IsOn = c.IsOn;
+                    Hardware.IrrigationLines.State = c.IsOn
+                        ? Meadow.Peripherals.Relays.RelayState.Closed
+                        : Meadow.Peripherals.Relays.RelayState.Open; ;
                 }
             });
             //Resolver.CommandService.Subscribe(c =>

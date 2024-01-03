@@ -1,8 +1,8 @@
 ﻿using Meadow;
 using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
-using Meadow.Foundation.Leds;
 using Meadow.Foundation.Relays;
+using Meadow.Peripherals.Leds;
 using Meadow.Peripherals.Relays;
 using Meadow.Peripherals.Sensors;
 using Meadow.Peripherals.Sensors.Atmospheric;
@@ -19,6 +19,7 @@ namespace Cultivar.Hardware
         public IRelay? VentFan { get; protected set; } = null;
 
         public IRelay? Heater { get; protected set; } = null;
+
         public IRelay? IrrigationLines { get; protected set; } = null;
 
         public IRelay? Lights { get; protected set; } = null;
@@ -29,7 +30,7 @@ namespace Cultivar.Hardware
 
         public IToneGenerator? Speaker { get; protected set; } = null;
 
-        public RgbPwmLed? RgbLed => null;
+        public IRgbPwmLed? RgbLed => null;
 
         public IButton? LeftButton => null;
 

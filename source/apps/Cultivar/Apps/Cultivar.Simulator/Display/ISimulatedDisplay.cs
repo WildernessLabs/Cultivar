@@ -1,4 +1,4 @@
-﻿using Meadow.Foundation;
+﻿using Meadow;
 using Meadow.Foundation.Graphics;
 
 namespace ProjectLabSimulator.Displays
