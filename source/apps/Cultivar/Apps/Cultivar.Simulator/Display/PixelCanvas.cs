@@ -26,12 +26,12 @@ namespace ProjectLabSimulator
         /// <summary>
         /// The color to draw when a pixel is enabled
         /// </summary>
-        public Meadow.Foundation.Color EnabledColor { get; set; } = Meadow.Foundation.Color.White;
+        public Meadow.Color EnabledColor { get; set; } = Meadow.Color.White;
 
         /// <summary>
         /// The color to draw when a pixel is disabled
         /// </summary>
-        public Meadow.Foundation.Color DisabledColor { get; set; } = Meadow.Foundation.Color.Black;
+        public Meadow.Color DisabledColor { get; set; } = Meadow.Color.Black;
 
         IPixelBuffer pixelBuffer;
 
@@ -142,7 +142,7 @@ namespace ProjectLabSimulator
             pixelBuffer?.Clear();
         }
 
-        public void Fill(Meadow.Foundation.Color fillColor, bool updateDisplay = false)
+        public void Fill(Meadow.Color fillColor, bool updateDisplay = false)
         {
             pixelBuffer?.Fill(fillColor);
 
@@ -152,12 +152,12 @@ namespace ProjectLabSimulator
             }
         }
 
-        public void Fill(int x, int y, int width, int height, Meadow.Foundation.Color fillColor)
+        public void Fill(int x, int y, int width, int height, Meadow.Color fillColor)
         {
             pixelBuffer?.Fill(x, y, width, height, fillColor);
         }
 
-        public void DrawPixel(int x, int y, Meadow.Foundation.Color color)
+        public void DrawPixel(int x, int y, Meadow.Color color)
         {
             pixelBuffer?.SetPixel(x, y, color);
         }
@@ -172,11 +172,11 @@ namespace ProjectLabSimulator
             pixelBuffer?.InvertPixel(x, y);
         }
 
-        public Meadow.Foundation.Color GetPixel(int x, int y)
+        public Meadow.Color GetPixel(int x, int y)
         {
             if (ColorMode == ColorMode.Format1bpp)
             {
-                return pixelBuffer.GetPixel(x, y) == Meadow.Foundation.Color.White ? EnabledColor : DisabledColor;
+                return pixelBuffer.GetPixel(x, y) == Meadow.Color.White ? EnabledColor : DisabledColor;
             }
             return pixelBuffer.GetPixel(x, y);
         }

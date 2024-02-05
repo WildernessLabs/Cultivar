@@ -1,5 +1,5 @@
 ﻿using Meadow.Foundation.Graphics;
-using Meadow.Foundation.Leds;
+using Meadow.Peripherals.Leds;
 using Meadow.Peripherals.Relays;
 using Meadow.Peripherals.Sensors;
 using Meadow.Peripherals.Sensors.Atmospheric;
@@ -15,7 +15,7 @@ namespace Cultivar
 
         IGraphicsDisplay? Display { get; }
 
-        RgbPwmLed? RgbLed { get; }
+        IRgbPwmLed? RgbLed { get; }
 
         ITemperatureSensor? TemperatureSensor { get; }
 

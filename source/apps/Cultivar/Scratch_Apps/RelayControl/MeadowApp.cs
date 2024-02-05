@@ -4,6 +4,7 @@ using Meadow.Foundation.Displays.UI;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Foundation.Relays;
+using Meadow.Peripherals.Relays;
 using RelayControl.UI;
 using System.IO;
 using System.Reflection;
@@ -99,15 +100,15 @@ namespace RelayControl
                 _ => -1,
             };
 
-            bool intendedState = e.Value switch
+            RelayState intendedState = e.Value switch
             {
-                "On" => true,
-                "Off" => false,
-                _ => false,
+                "On" => RelayState.Closed,
+                "Off" => RelayState.Open,
+                _ => RelayState.Open,
             };
 
             Resolver.Log.Info($"Turning relay {relayIndex + 1} to {e.Value}/{intendedState}.");
-            if (relayIndex >= 0) { relayModule.Relays[relayIndex].IsOn = intendedState; }
+            if (relayIndex >= 0) { relayModule.Relays[relayIndex].State = intendedState; }
 
         }
 
