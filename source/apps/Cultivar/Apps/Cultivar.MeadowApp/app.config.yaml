@@ -13,10 +13,10 @@ Lifecycle:
     #AppFailureRestartDelaySeconds: 15
 Update:
     Enabled: true
-    UpdateServer: mqtt-staging.meadowcloud.co
-MeadowCloud:
-    Hostname: https://staging.meadowcloud.dev
-    DataHostname: https://collector-staging.meadowcloud.dev
+#    UpdateServer: mqtt-staging.meadowcloud.co
+#MeadowCloud:
+#    Hostname: https://staging.meadowcloud.dev
+#    DataHostname: https://collector-staging.meadowcloud.dev
 HealthMetrics:
     Enabled: true
     Interval: 5
