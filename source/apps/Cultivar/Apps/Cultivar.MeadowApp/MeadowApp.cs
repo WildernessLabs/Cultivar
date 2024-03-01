@@ -12,8 +12,8 @@ namespace Cultivar.MeadowApp
     public class MeadowApp : App<F7CoreComputeV2>
     {
         GreenhouseController greenhouseController;
-        int WatchdogUptimeMaxHours = 1;
-        int WatchdogUptimePetCountMax = 0;
+        //int WatchdogUptimeMaxHours = 1;
+        //int WatchdogUptimePetCountMax = 0;
         int WatchdogCount = 0;
 
         public override Task Initialize()
@@ -73,7 +73,7 @@ namespace Cultivar.MeadowApp
             // Enable the watchdog for 30 second intervals (max is ~32s)
             Device.WatchdogEnable(watchdogTimeout);
             // calculate the number of times we need to pet the watchdog.
-            WatchdogUptimePetCountMax = ((WatchdogUptimeMaxHours * 60 * 60) / 30);
+            //WatchdogUptimePetCountMax = ((WatchdogUptimeMaxHours * 60 * 60) / 30);
             // Start the thread that resets the counter.
             StartPettingWatchdog(pettingInterval);
         }
@@ -87,17 +87,17 @@ namespace Cultivar.MeadowApp
             {
                 while (true)
                 {
-                    if (WatchdogCount <= WatchdogUptimePetCountMax)
-                    {
+                    // if (WatchdogCount <= WatchdogUptimePetCountMax)
+                    // {
                         Thread.Sleep(pettingInterval);
                         Device.WatchdogReset();
-                    }
-                    else
-                    {
-                        Resolver.Log.Warn("Max uptime has elapsed. Restarting to maintain stability.");
-                        // stop spinning while the watchdog countdown elapses
-                        Thread.Sleep(pettingInterval * 2);
-                    }
+                    //}
+                    // else
+                    // {
+                    //     Resolver.Log.Warn("Max uptime has elapsed. Restarting to maintain stability.");
+                    //     // stop spinning while the watchdog countdown elapses
+                    //     Thread.Sleep(pettingInterval * 2);
+                    // }
                     WatchdogCount++;
                 }
             });
