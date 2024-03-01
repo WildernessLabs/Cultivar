@@ -62,7 +62,7 @@ namespace Cultivar.MeadowApp
                 //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
             };
             // disconnect event
-            wifi.NetworkDisconnected += sender => { greenhouseController?.SetWiFiStatus(false); };
+            wifi.NetworkDisconnected += (sender, args) => { greenhouseController?.SetWiFiStatus(false); };
         }
 
         void WireUpWatchdogs()

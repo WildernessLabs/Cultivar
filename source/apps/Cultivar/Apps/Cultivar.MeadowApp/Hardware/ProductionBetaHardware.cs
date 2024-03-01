@@ -12,6 +12,7 @@ using Meadow.Peripherals.Sensors.Moisture;
 using Meadow.Peripherals.Speakers;
 using Meadow.Units;
 using System;
+using Meadow.Peripherals.Displays;
 
 namespace Cultivar.Hardware
 {
@@ -29,9 +30,9 @@ namespace Cultivar.Hardware
 
         protected IProjectLabHardware projectLab { get; set; }
 
-        public ITemperatureSensor? TemperatureSensor => projectLab.EnvironmentalSensor;
+        public ITemperatureSensor? TemperatureSensor => projectLab.TemperatureSensor;
 
-        public IHumiditySensor? HumiditySensor => projectLab.EnvironmentalSensor;
+        public IHumiditySensor? HumiditySensor => projectLab.HumiditySensor;
 
         public IToneGenerator? Speaker => projectLab.Speaker;
 
@@ -45,7 +46,7 @@ namespace Cultivar.Hardware
 
         public IButton? DownButton => projectLab.DownButton;
 
-        public IGraphicsDisplay? Display => projectLab.Display;
+        public IPixelDisplay? Display => projectLab.Display;
 
         public IMoistureSensor MoistureSensor { get; set; }
 

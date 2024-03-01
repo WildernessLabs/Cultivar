@@ -1,6 +1,7 @@
 using Meadow;
 using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
+using Meadow.Peripherals.Displays;
 using Meadow.Units;
 using Illuminance = Meadow.Units.Illuminance;
 using Pressure = Meadow.Units.Pressure;
@@ -95,7 +96,7 @@ namespace MeadowApp
         bool isUpdating = false;
         bool needsUpdate = false;
 
-        public DisplayController(IGraphicsDisplay display)
+        public DisplayController(IPixelDisplay display)
         {
             graphics = new MicroGraphics(display)
             {

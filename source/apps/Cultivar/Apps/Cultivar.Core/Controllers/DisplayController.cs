@@ -1,6 +1,7 @@
 ﻿using Meadow;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
+using Meadow.Peripherals.Displays;
 
 namespace Cultivar.MeadowApp.Controllers
 {
@@ -35,7 +36,7 @@ namespace Cultivar.MeadowApp.Controllers
 
         protected Picture ledHeater { get; set; }
 
-        public DisplayController(IGraphicsDisplay _display, RotationType rotation)
+        public DisplayController(IPixelDisplay _display, RotationType rotation)
         {
             screen = new DisplayScreen(_display, rotation);
 
