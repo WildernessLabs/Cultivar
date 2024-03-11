@@ -2,12 +2,11 @@
 using Cultivar.MeadowApp.Controllers;
 using Cultivar.MeadowApp.Models;
 using Meadow;
-using Meadow.Foundation.Graphics;
 using Meadow.Logging;
+using Meadow.Peripherals.Displays;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Meadow.Peripherals.Displays;
 
 namespace Cultivar.Controllers
 {
@@ -188,9 +187,9 @@ namespace Cultivar.Controllers
             }
         }
 
-        public void SetWiFiStatus(bool connected)
+        public void SetNetworkConnectionStatus(bool connected)
         {
-            displayController.UpdateWifi(connected);
+            displayController.UpdateConnectionStatus(connected);
         }
 
         private async Task StartUpdating(TimeSpan updateInterval)

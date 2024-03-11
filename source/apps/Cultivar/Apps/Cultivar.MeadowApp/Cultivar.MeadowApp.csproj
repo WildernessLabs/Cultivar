@@ -22,6 +22,9 @@
 	<None Update="app.build.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
+	<None Update="cell.config.yaml">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />

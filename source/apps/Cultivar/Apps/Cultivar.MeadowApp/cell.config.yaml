@@ -1,0 +1,5 @@
+Settings:
+    APN: super
+    Module: BG95M3
+    Interface: /dev/ttyS0
+    TurnOnPin: A02
