@@ -320,7 +320,7 @@ namespace Cultivar.Controllers
         {
             displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
 
-            Resolver.UpdateService.OnStateChanged += (sender, state) =>
+            Resolver.UpdateService.StateChanged += (sender, state) =>
             {
                 displayController?.UpdateStatus(state.ToString());
             };

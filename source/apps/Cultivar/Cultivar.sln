@@ -83,6 +83,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meadow.Foundation.Core", ".
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.MicroJson", "..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Serialization.MicroJson\Driver\Serialization.MicroJson.csproj", "{F2F54038-37A2-434F-9002-45C529347F1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sensors.Hid.Xpt2046", "..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\Sensors.Hid.Xpt2046\Driver\Sensors.Hid.Xpt2046.csproj", "{CA90993C-F28E-4E59-B182-92C7211D391E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -277,6 +279,10 @@ Global
 		{F2F54038-37A2-434F-9002-45C529347F1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2F54038-37A2-434F-9002-45C529347F1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2F54038-37A2-434F-9002-45C529347F1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA90993C-F28E-4E59-B182-92C7211D391E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA90993C-F28E-4E59-B182-92C7211D391E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA90993C-F28E-4E59-B182-92C7211D391E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA90993C-F28E-4E59-B182-92C7211D391E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -319,6 +325,7 @@ Global
 		{56B8F5EE-983E-4C20-915D-16BEED783C4D} = {CBBA5442-450B-4843-887C-EA25738EEB02}
 		{AE63AE43-7757-406A-853A-5838E339D3D5} = {CBBA5442-450B-4843-887C-EA25738EEB02}
 		{F2F54038-37A2-434F-9002-45C529347F1D} = {CBBA5442-450B-4843-887C-EA25738EEB02}
+		{CA90993C-F28E-4E59-B182-92C7211D391E} = {CBBA5442-450B-4843-887C-EA25738EEB02}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {451E381E-593E-41C2-BC7C-DC1926C286D3}
