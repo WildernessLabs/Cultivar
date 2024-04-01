@@ -108,8 +108,12 @@ namespace RelayControl
             };
 
             Resolver.Log.Info($"Turning relay {relayIndex + 1} to {e.Value}/{intendedState}.");
-            if (relayIndex >= 0) { relayModule.Relays[relayIndex].State = intendedState; }
-
+            if (relayIndex >= 0)
+            {
+                relayModule.Relays[relayIndex].State = intendedState
+                    ? Meadow.Peripherals.Relays.RelayState.Closed
+                    : Meadow.Peripherals.Relays.RelayState.Open;
+            }
         }
 
         private void RelayMenu_Selected(object sender, MenuSelectedEventArgs e)

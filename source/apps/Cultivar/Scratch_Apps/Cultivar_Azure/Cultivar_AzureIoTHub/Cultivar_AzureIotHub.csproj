@@ -6,8 +6,8 @@
     <AssemblyName>App</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.ProjectLab" Version="*" />
-    <PackageReference Include="Meadow.AmqpNetLite" Version="*" />
+    <ProjectReference Include="..\..\..\..\..\..\..\amqpnetlite\src\Amqp.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\..\Meadow.ProjectLab\Source\Meadow.ProjectLab\Meadow.ProjectLab.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="meadow.config.yaml">

@@ -31,13 +31,18 @@ namespace Cultivar_AzureIotHub
             return base.Initialize();
         }
 
-        private void EnvironmentalSensorUpdated(object sender, IChangeResult<(Meadow.Units.Temperature? Temperature, Meadow.Units.RelativeHumidity? Humidity, Meadow.Units.Pressure? Pressure, Meadow.Units.Resistance? GasResistance)> e)
+        private async Task EnvironmentalSensorUpdated()
         {
+            var temperatureTask = projectLab.TemperatureSensor?.Read();
+            var humidityTask = projectLab.HumiditySensor?.Read();
+
+            await Task.WhenAll(temperatureTask, humidityTask);
+
             var model = new GreenhouseModel()
             {
-                Temperature = e.New.Temperature.Value.Celsius,
-                Humidity = e.New.Humidity.Value.Percent,
-                SoilMoisture = e.New.Humidity.Value.Percent - 10,
+                Temperature = temperatureTask?.Result.Celsius ?? new Meadow.Units.Temperature(0).Celsius,
+                Humidity = humidityTask?.Result.Percent ?? new Meadow.Units.RelativeHumidity(0).Percent,
+                SoilMoisture = humidityTask?.Result.Percent ?? new Meadow.Units.RelativeHumidity(0).Percent,
                 IsLightOn = IsLightOn,
                 IsHeaterOn = IsHeaterOn,
                 IsSprinklerOn = IsSprinklerOn,
@@ -45,9 +50,9 @@ namespace Cultivar_AzureIotHub
             };
 
             Resolver.Log.Info($"Reading {DateTime.Now} - " +
-                $"Temperature: {e.New.Temperature.Value.Celsius:N2}°C, " +
-                $"Humidity: {e.New.Humidity.Value.Percent:N2}%, " +
-                $"SoilMoisture: {e.New.Humidity.Value.Percent - 10:N2}%, " +
+                $"Temperature: {model.Temperature:N2}°C, " +
+                $"Humidity: {model.Humidity:N2}%, " +
+                $"SoilMoisture: {model.Humidity - 10:N2}%, " +
                 $"IsLightOn: {IsLightOn}, " +
                 $"IsHeaterOn: {IsHeaterOn}, " +
                 $"IsSprinklerOn: {IsSprinklerOn}, " +
@@ -64,8 +69,13 @@ namespace Cultivar_AzureIotHub
             await iotHubManager.Initialize();
 
             projectLab = ProjectLab.Create();
-            projectLab.EnvironmentalSensor.Updated += EnvironmentalSensorUpdated;
-            projectLab.EnvironmentalSensor.StartUpdating(TimeSpan.FromSeconds(30));
+
+            while (true)
+            {
+                await EnvironmentalSensorUpdated();
+
+                await Task.Delay(TimeSpan.FromSeconds(30));
+            }
         }
     }
 }

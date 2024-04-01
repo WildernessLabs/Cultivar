@@ -1,11 +1,9 @@
 using Meadow;
 using Meadow.Foundation;
 using Meadow.Foundation.Graphics;
+using Meadow.Peripherals.Displays;
 using Meadow.Units;
 using Illuminance = Meadow.Units.Illuminance;
-using Pressure = Meadow.Units.Pressure;
-using RelativeHumidity = Meadow.Units.RelativeHumidity;
-using Resistance = Meadow.Units.Resistance;
 using Temperature = Meadow.Units.Temperature;
 
 namespace MeadowApp
@@ -14,16 +12,16 @@ namespace MeadowApp
     {
         readonly MicroGraphics graphics;
 
-        public (Meadow.Units.Temperature? Temperature, RelativeHumidity? Humidity, Meadow.Units.Pressure? Pressure, Resistance? GasResistance)? AtmosphericConditions
+        public Temperature? TemperatureConditions
         {
-            get => atmosphericConditions;
+            get => temperatureConditions;
             set
             {
-                atmosphericConditions = value;
+                temperatureConditions = value;
                 Update();
             }
         }
-        (Temperature? Temperature, RelativeHumidity? Humidity, Pressure? Pressure, Resistance? GasResistance)? atmosphericConditions;
+        Temperature? temperatureConditions;
 
         public Illuminance? LightConditions
         {
@@ -95,7 +93,7 @@ namespace MeadowApp
         bool isUpdating = false;
         bool needsUpdate = false;
 
-        public DisplayController(IGraphicsDisplay display)
+        public DisplayController(IPixelDisplay display)
         {
             graphics = new MicroGraphics(display)
             {
@@ -138,22 +136,9 @@ namespace MeadowApp
         {
             graphics.DrawText(x: 2, y: 0, "Hello PROJ LAB!", WildernessLabsColors.AzureBlue);
 
-            if (AtmosphericConditions is { } conditions)
+            if (TemperatureConditions is { } temperature)
             {
-                if (conditions.Temperature is { } temp)
-                {
-                    DrawStatus("Temperature:", $"{temp.Celsius:N1}C", WildernessLabsColors.GalleryWhite, 35);
-                }
-
-                if (conditions.Pressure is { } pressure)
-                {
-                    DrawStatus("Pressure:", $"{pressure.StandardAtmosphere:N1}atm", WildernessLabsColors.GalleryWhite, 55);
-                }
-
-                if (conditions.Humidity is { } humidity)
-                {
-                    DrawStatus("Humidity:", $"{humidity.Percent:N1}%", WildernessLabsColors.GalleryWhite, 75);
-                }
+                DrawStatus("Temperature:", $"{temperature.Celsius:N1}C", WildernessLabsColors.GalleryWhite, 35);
             }
 
             if (LightConditions is { } light)

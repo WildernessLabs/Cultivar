@@ -2,8 +2,8 @@
 using Cultivar.MeadowApp.Controllers;
 using Cultivar.MeadowApp.Models;
 using Meadow;
-using Meadow.Foundation.Graphics;
 using Meadow.Logging;
+using Meadow.Peripherals.Displays;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -79,7 +79,9 @@ namespace Cultivar.Controllers
 
                     if (Hardware.VentFan is { } ventilation)
                     {
-                        ventilation.IsClosed = isVentilationOn;
+                        ventilation.State = isVentilationOn
+                            ? Meadow.Peripherals.Relays.RelayState.Closed
+                            : Meadow.Peripherals.Relays.RelayState.Open;
                     }
 
                     try
@@ -106,7 +108,9 @@ namespace Cultivar.Controllers
 
                     if (Hardware.IrrigationLines is { } irrigation)
                     {
-                        irrigation.IsClosed = isIrrigationOn;
+                        irrigation.State = isIrrigationOn
+                            ? Meadow.Peripherals.Relays.RelayState.Closed
+                            : Meadow.Peripherals.Relays.RelayState.Open;
                     }
 
                     try
@@ -133,7 +137,9 @@ namespace Cultivar.Controllers
 
                     if (Hardware.Lights is { } lights)
                     {
-                        lights.IsClosed = isLightOn;
+                        lights.State = isLightOn
+                            ? Meadow.Peripherals.Relays.RelayState.Closed
+                            : Meadow.Peripherals.Relays.RelayState.Open;
                     }
 
                     try
@@ -160,7 +166,9 @@ namespace Cultivar.Controllers
 
                     if (Hardware.Heater is { } heater)
                     {
-                        heater.IsClosed = isHeaterOn;
+                        heater.State = isHeaterOn
+                            ? Meadow.Peripherals.Relays.RelayState.Closed
+                            : Meadow.Peripherals.Relays.RelayState.Open; ;
                     }
 
                     try
@@ -179,9 +187,9 @@ namespace Cultivar.Controllers
             }
         }
 
-        public void SetWiFiStatus(bool connected)
+        public void SetNetworkConnectionStatus(bool connected)
         {
-            displayController.UpdateWifi(connected);
+            displayController.UpdateConnectionStatus(connected);
         }
 
         private async Task StartUpdating(TimeSpan updateInterval)
@@ -259,7 +267,9 @@ namespace Cultivar.Controllers
                 displayController.UpdateVents(c.IsOn);
                 if (Hardware.VentFan != null)
                 {
-                    Hardware.VentFan.IsClosed = c.IsOn;
+                    Hardware.VentFan.State = c.IsOn
+                        ? Meadow.Peripherals.Relays.RelayState.Closed
+                        : Meadow.Peripherals.Relays.RelayState.Open; ;
                 }
             });
             Resolver.CommandService?.Subscribe<Heater>(c =>
@@ -268,7 +278,9 @@ namespace Cultivar.Controllers
                 displayController.UpdateHeater(c.IsOn);
                 if (Hardware.Heater != null)
                 {
-                    Hardware.Heater.IsClosed = c.IsOn;
+                    Hardware.Heater.State = c.IsOn
+                        ? Meadow.Peripherals.Relays.RelayState.Closed
+                        : Meadow.Peripherals.Relays.RelayState.Open; ;
                 }
             });
             Resolver.CommandService?.Subscribe<Lights>(c =>
@@ -277,7 +289,9 @@ namespace Cultivar.Controllers
                 displayController.UpdateLights(c.IsOn);
                 if (Hardware.Lights != null)
                 {
-                    Hardware.Lights.IsClosed = c.IsOn;
+                    Hardware.Lights.State = c.IsOn
+                        ? Meadow.Peripherals.Relays.RelayState.Closed
+                        : Meadow.Peripherals.Relays.RelayState.Open; ;
                 }
             });
             Resolver.CommandService?.Subscribe<Irrigation>(c =>
@@ -286,7 +300,9 @@ namespace Cultivar.Controllers
                 displayController.UpdateWater(c.IsOn);
                 if (Hardware.IrrigationLines != null)
                 {
-                    Hardware.IrrigationLines.IsClosed = c.IsOn;
+                    Hardware.IrrigationLines.State = c.IsOn
+                        ? Meadow.Peripherals.Relays.RelayState.Closed
+                        : Meadow.Peripherals.Relays.RelayState.Open; ;
                 }
             });
             //Resolver.CommandService.Subscribe(c =>
@@ -303,7 +319,7 @@ namespace Cultivar.Controllers
         {
             displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
 
-            Resolver.UpdateService.OnStateChanged += (sender, state) =>
+            Resolver.UpdateService.StateChanged += (sender, state) =>
             {
                 displayController?.UpdateStatus(state.ToString());
             };

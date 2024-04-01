@@ -12,8 +12,8 @@ namespace Cultivar.MeadowApp
     public class MeadowApp : App<F7CoreComputeV2>
     {
         GreenhouseController greenhouseController;
-        int WatchdogUptimeMaxHours = 1;
-        int WatchdogUptimePetCountMax = 0;
+        //int WatchdogUptimeMaxHours = 1;
+        //int WatchdogUptimePetCountMax = 0;
         int WatchdogCount = 0;
 
         public override Task Initialize()
@@ -23,7 +23,7 @@ namespace Cultivar.MeadowApp
             var greenhouseHardware = new ProductionBetaHardware();
             greenhouseController = new GreenhouseController(greenhouseHardware);
 
-            WireUpWiFiStatusEvents();
+            WireNetworkEvents();
 
             return base.Initialize();
         }
@@ -39,30 +39,36 @@ namespace Cultivar.MeadowApp
             return base.Run();
         }
 
-        void WireUpWiFiStatusEvents()
+        void WireNetworkEvents()
         {
-            // get the wifi adapter
-            var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            // get the network adapter (Ethernet, WiFi or Cell)
+            var networkAdapter = Resolver.Device.NetworkAdapters.Primary<INetworkAdapter>();
+
             // set initial state
-            if (wifi.IsConnected)
+            if (networkAdapter.IsConnected)
             {
-                greenhouseController?.SetWiFiStatus(true);
-                Resolver.Log.Info("Already connected to WiFi.");
+                greenhouseController?.SetNetworkConnectionStatus(true);
+                Resolver.Log.Info("Already have a network connection.");
             }
             else
             {
-                greenhouseController?.SetWiFiStatus(false);
-                Resolver.Log.Info("Not connected to WiFi yet.");
+                greenhouseController?.SetNetworkConnectionStatus(false);
+                Resolver.Log.Info("Not connected to a network yet.");
             }
+
             // connect event
-            wifi.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
+            networkAdapter.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
             {
                 Resolver.Log.Info($"Joined network - IP Address: {networkAdapter.IpAddress}");
-                greenhouseController?.SetWiFiStatus(true);
+                greenhouseController?.SetNetworkConnectionStatus(true);
                 //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
             };
+
             // disconnect event
-            wifi.NetworkDisconnected += sender => { greenhouseController?.SetWiFiStatus(false); };
+            networkAdapter.NetworkDisconnected += (sender, args) =>
+            {
+                greenhouseController?.SetNetworkConnectionStatus(false);
+            };
         }
 
         void WireUpWatchdogs()
@@ -73,7 +79,7 @@ namespace Cultivar.MeadowApp
             // Enable the watchdog for 30 second intervals (max is ~32s)
             Device.WatchdogEnable(watchdogTimeout);
             // calculate the number of times we need to pet the watchdog.
-            WatchdogUptimePetCountMax = ((WatchdogUptimeMaxHours * 60 * 60) / 30);
+            //WatchdogUptimePetCountMax = ((WatchdogUptimeMaxHours * 60 * 60) / 30);
             // Start the thread that resets the counter.
             StartPettingWatchdog(pettingInterval);
         }
@@ -87,17 +93,17 @@ namespace Cultivar.MeadowApp
             {
                 while (true)
                 {
-                    if (WatchdogCount <= WatchdogUptimePetCountMax)
-                    {
-                        Thread.Sleep(pettingInterval);
-                        Device.WatchdogReset();
-                    }
-                    else
-                    {
-                        Resolver.Log.Warn("Max uptime has elapsed. Restarting to maintain stability.");
-                        // stop spinning while the watchdog countdown elapses
-                        Thread.Sleep(pettingInterval * 2);
-                    }
+                    // if (WatchdogCount <= WatchdogUptimePetCountMax)
+                    // {
+                    Thread.Sleep(pettingInterval);
+                    Device.WatchdogReset();
+                    //}
+                    // else
+                    // {
+                    //     Resolver.Log.Warn("Max uptime has elapsed. Restarting to maintain stability.");
+                    //     // stop spinning while the watchdog countdown elapses
+                    //     Thread.Sleep(pettingInterval * 2);
+                    // }
                     WatchdogCount++;
                 }
             });

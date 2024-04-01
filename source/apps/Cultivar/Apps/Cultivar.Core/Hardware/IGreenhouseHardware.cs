@@ -1,4 +1,5 @@
 ﻿using Meadow.Foundation.Graphics;
+using Meadow.Peripherals.Displays;
 using Meadow.Peripherals.Leds;
 using Meadow.Peripherals.Relays;
 using Meadow.Peripherals.Sensors;
@@ -13,7 +14,7 @@ namespace Cultivar
     {
         IMoistureSensor? MoistureSensor { get; }
 
-        IGraphicsDisplay? Display { get; }
+        IPixelDisplay? Display { get; }
 
         IRgbPwmLed? RgbLed { get; }
 

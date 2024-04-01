@@ -1,6 +1,7 @@
 ﻿using Meadow;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
+using Meadow.Peripherals.Displays;
 
 namespace Cultivar.MeadowApp.Controllers
 {
@@ -35,7 +36,7 @@ namespace Cultivar.MeadowApp.Controllers
 
         protected Picture ledHeater { get; set; }
 
-        public DisplayController(IGraphicsDisplay _display, RotationType rotation)
+        public DisplayController(IPixelDisplay _display, RotationType rotation)
         {
             screen = new DisplayScreen(_display, rotation);
 
@@ -44,8 +45,8 @@ namespace Cultivar.MeadowApp.Controllers
             screen.Controls.Add(new Box(106, 27, 108, 93) { ForeColor = Color.FromHex("#1A80AA") });
             screen.Controls.Add(new Box(214, 27, 106, 93) { ForeColor = Color.FromHex("#98A645") });
 
-            screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = Color.Black });
-            screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = Color.Black, });
+            screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = Color.Black, IsFilled = false });
+            screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = Color.Black, IsFilled = false });
 
             StatusLabel = new Label(2, 6, 12, 16)
             {
@@ -178,7 +179,7 @@ namespace Cultivar.MeadowApp.Controllers
             });
         }
 
-        public void UpdateWifi(bool connected)
+        public void UpdateConnectionStatus(bool connected)
         {
             wifi.Image = connected ? imgWifi : imgWifiFade;
         }

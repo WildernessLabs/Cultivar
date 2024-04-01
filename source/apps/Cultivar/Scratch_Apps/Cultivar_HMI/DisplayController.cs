@@ -1,6 +1,7 @@
 ﻿using Meadow;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
+using Meadow.Peripherals.Displays;
 using System;
 using System.Threading.Tasks;
 
@@ -37,7 +38,7 @@ namespace Cultivar_HMI
 
         protected Picture ledHeater { get; set; }
 
-        public DisplayController(IGraphicsDisplay _display)
+        public DisplayController(IPixelDisplay _display)
         {
             screen = new DisplayScreen(_display, RotationType._270Degrees);
 
@@ -46,8 +47,8 @@ namespace Cultivar_HMI
             screen.Controls.Add(new Box(106, 27, 108, 93) { ForeColor = Color.FromHex("#1A80AA") });
             screen.Controls.Add(new Box(214, 27, 106, 93) { ForeColor = Color.FromHex("#98A645") });
 
-            screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = Color.Black });
-            screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = Color.Black });
+            screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = Color.Black, IsFilled = false });
+            screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = Color.Black, IsFilled = false });
 
             StatusLabel = new Label(2, 6, 12, 16)
             {
