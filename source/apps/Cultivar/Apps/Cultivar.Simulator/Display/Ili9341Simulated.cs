@@ -1,5 +1,5 @@
 ﻿using Meadow;
-using Meadow.Foundation.Graphics;
+using Meadow.Peripherals.Displays;
 
 namespace ProjectLabSimulator.Displays
 {

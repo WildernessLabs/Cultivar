@@ -23,7 +23,7 @@ namespace Cultivar.MeadowApp
             var greenhouseHardware = new ProductionBetaHardware();
             greenhouseController = new GreenhouseController(greenhouseHardware);
 
-            WireUpWiFiStatusEvents();
+            WireNetworkEvents();
 
             return base.Initialize();
         }
@@ -39,30 +39,36 @@ namespace Cultivar.MeadowApp
             return base.Run();
         }
 
-        void WireUpWiFiStatusEvents()
+        void WireNetworkEvents()
         {
-            // get the wifi adapter
-            var wifi = Resolver.Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            // get the network adapter (Ethernet, WiFi or Cell)
+            var networkAdapter = Resolver.Device.NetworkAdapters.Primary<INetworkAdapter>();
+
             // set initial state
-            if (wifi.IsConnected)
+            if (networkAdapter.IsConnected)
             {
-                greenhouseController?.SetWiFiStatus(true);
-                Resolver.Log.Info("Already connected to WiFi.");
+                greenhouseController?.SetNetworkConnectionStatus(true);
+                Resolver.Log.Info("Already have a network connection.");
             }
             else
             {
-                greenhouseController?.SetWiFiStatus(false);
-                Resolver.Log.Info("Not connected to WiFi yet.");
+                greenhouseController?.SetNetworkConnectionStatus(false);
+                Resolver.Log.Info("Not connected to a network yet.");
             }
+
             // connect event
-            wifi.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
+            networkAdapter.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
             {
                 Resolver.Log.Info($"Joined network - IP Address: {networkAdapter.IpAddress}");
-                greenhouseController?.SetWiFiStatus(true);
+                greenhouseController?.SetNetworkConnectionStatus(true);
                 //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
             };
+
             // disconnect event
-            wifi.NetworkDisconnected += (sender, args) => { greenhouseController?.SetWiFiStatus(false); };
+            networkAdapter.NetworkDisconnected += (sender, args) =>
+            {
+                greenhouseController?.SetNetworkConnectionStatus(false);
+            };
         }
 
         void WireUpWatchdogs()
@@ -89,8 +95,8 @@ namespace Cultivar.MeadowApp
                 {
                     // if (WatchdogCount <= WatchdogUptimePetCountMax)
                     // {
-                        Thread.Sleep(pettingInterval);
-                        Device.WatchdogReset();
+                    Thread.Sleep(pettingInterval);
+                    Device.WatchdogReset();
                     //}
                     // else
                     // {
