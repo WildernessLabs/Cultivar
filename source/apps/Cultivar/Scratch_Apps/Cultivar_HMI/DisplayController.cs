@@ -1,6 +1,7 @@
 ﻿using Meadow;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
+using Meadow.Peripherals.Displays;
 using System;
 using System.Threading.Tasks;
 
@@ -37,7 +38,7 @@ namespace Cultivar_HMI
 
         protected Picture ledHeater { get; set; }
 
-        public DisplayController(IGraphicsDisplay _display)
+        public DisplayController(IPixelDisplay _display)
         {
             screen = new DisplayScreen(_display, RotationType._270Degrees);
 

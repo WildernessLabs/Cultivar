@@ -1,15 +1,10 @@
 ﻿using Meadow;
 using Meadow.Devices;
-using Meadow.Foundation;
-using Meadow.Foundation.Leds;
-using Meadow.Peripherals.Leds;
+using Meadow.Logging;
+using MeadowApp.Commands;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Meadow.Logging;
-using MeadowApp.Commands;
-using RelativeHumidity = Meadow.Units.RelativeHumidity;
-using Resistance = Meadow.Units.Resistance;
 
 namespace MeadowApp
 {
@@ -22,27 +17,42 @@ namespace MeadowApp
         public override Task Initialize()
         {
             Resolver.Log.Info("Initialize...");
-            
+
             projLab = ProjectLab.Create();
-            
+
             var cloudLogger = new CloudLogger();
             Resolver.Log.AddProvider(cloudLogger);
             Resolver.Services.Add(cloudLogger);
-            
+
             if (projLab.Display is { } display)
             {
                 Resolver.Log.Trace("Creating DisplayController");
                 displayController = new DisplayController(display);
                 Resolver.Log.Trace("DisplayController up");
             }
-            
-            if (projLab.EnvironmentalSensor is { } bme688)
+
+            if (projLab.TemperatureSensor is { } temperature)
             {
-                bme688.Updated += Bme688Updated;
-                bme688.StartUpdating(TimeSpan.FromMinutes(1));
+                temperature.Updated += TemperatureUpdated; ;
+                temperature.StartUpdating(TimeSpan.FromMinutes(1));
             }
-            
+
             return base.Initialize();
+        }
+
+        private void TemperatureUpdated(object sender, IChangeResult<Meadow.Units.Temperature> e)
+        {
+            Resolver.Log.Trace($"Temperature: {(int)e.New.Celsius}C");
+            if (displayController != null)
+            {
+                displayController.TemperatureConditions = e.New;
+            }
+
+            var cl = Resolver.Services.Get<CloudLogger>();
+            cl.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
+            {
+                { "TemperatureCelsius", e.New.Celsius }
+            });
         }
 
         public override Task Run()
@@ -55,40 +65,23 @@ namespace MeadowApp
             {
                 Resolver.Log.Trace($"Received fan control: {e.RelayState}");
             });
-            
+
             Resolver.CommandService.Subscribe<HeaterControl>(e =>
             {
                 Resolver.Log.Trace($"Received heater control: {e.RelayState}");
             });
-            
+
             Resolver.CommandService.Subscribe<LightControl>(e =>
             {
                 Resolver.Log.Trace($"Received light control: {e.RelayState}");
             });
-            
+
             Resolver.CommandService.Subscribe<ValveControl>(e =>
             {
                 Resolver.Log.Trace($"Received valve control: {e.RelayState}");
             });
-            
-            return base.Run();
-        }
 
-        private void Bme688Updated(object sender, IChangeResult<(Meadow.Units.Temperature? Temperature, RelativeHumidity? Humidity, Meadow.Units.Pressure? Pressure, Resistance? GasResistance)> e)
-        {
-            Resolver.Log.Trace($"BME688: {(int)e.New.Temperature?.Celsius}C - {(int)e.New.Humidity?.Percent}% - {(int)e.New.Pressure?.Millibar}mbar");
-            if (displayController != null)
-            {
-                displayController.AtmosphericConditions = e.New;
-            }
-            
-            var cl = Resolver.Services.Get<CloudLogger>();
-            cl.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
-            {
-                { "TemperatureCelsius", e.New.Temperature?.Celsius },
-                { "HumidityPercentage", e.New.Humidity?.Percent },
-                { "PressureMillibar", e.New.Pressure?.Millibar }
-            });
+            return base.Run();
         }
     }
 }

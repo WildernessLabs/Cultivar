@@ -3,22 +3,22 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Meadow;
-using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.Buffers;
+using Meadow.Peripherals.Displays;
 using System;
 
 namespace ProjectLabSimulator
 {
-    public class PixelCanvas : Control, IGraphicsDisplay
+    public class PixelCanvas : Control, IPixelDisplay
     {
         public ColorMode ColorMode { get; private set; }
 
         public ColorMode SupportedColorModes => ColorMode;
 
-        int IGraphicsDisplay.Width => width;
+        int IPixelDisplay.Width => width;
         int width;
 
-        int IGraphicsDisplay.Height => height;
+        int IPixelDisplay.Height => height;
         int height;
 
         public IPixelBuffer PixelBuffer => pixelBuffer;
