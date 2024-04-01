@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
@@ -30,8 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\Meadow.Core\source\implementations\simulation\Meadow.Simulation\Meadow.Simulation.csproj" />
-    <ProjectReference Include="..\..\..\..\..\..\Meadow.Core\source\ui\Meadow.Avalonia\Meadow.Avalonia.csproj" />
+    <PackageReference Include="Meadow.Simulation" Version="*" />
+    <PackageReference Include="Meadow.Avalonia" Version="*" />
     <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
