@@ -5,8 +5,6 @@
     <OutputType>Library</OutputType>
     <AssemblyName>App</AssemblyName>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <PropertyGroup>
 	<LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>

@@ -1,9 +1,8 @@
 using Meadow.Cloud;
 
-namespace Cultivar.Commands
+namespace Cultivar.Commands;
+
+public class Fan : IMeadowCommand
 {
-    public class Fan : IMeadowCommand
-    {
-        public bool IsOn { get; set; } = false;
-    }
+    public bool IsOn { get; set; } = false;
 }

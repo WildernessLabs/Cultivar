@@ -1,13 +1,12 @@
 ﻿using Meadow.Units;
 
-namespace Cultivar.MeadowApp.Models
+namespace Cultivar.MeadowApp.Models;
+
+public class GreenhouseModel
 {
-    public class GreenhouseModel
-    {
-        public Temperature Temperature { get; set; }
+    public Temperature Temperature { get; set; }
 
-        public RelativeHumidity Humidity { get; set; }
+    public RelativeHumidity Humidity { get; set; }
 
-        public double SoilMoisture { get; set; }
-    }
+    public double SoilMoisture { get; set; }
 }
