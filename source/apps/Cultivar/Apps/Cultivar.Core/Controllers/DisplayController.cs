@@ -14,6 +14,17 @@ public class DisplayController
     private readonly Image imgRed = Image.LoadFromResource("Cultivar.Assets.img-red.bmp");
     private readonly Image imgGreen = Image.LoadFromResource("Cultivar.Assets.img-green.bmp");
 
+    private readonly Color backgroundColor = Color.White;
+    private readonly Color foregroundColor = Color.Black;
+    private readonly Color temperatureColor = Color.FromHex("B35E2C");
+    private readonly Color humidityColor = Color.FromHex("1A80AA");
+    private readonly Color soilMoistureColor = Color.FromHex("98A645");
+    private readonly Color sensorColor = Color.White;
+
+    private readonly Font12x20 font12X20 = new Font12x20();
+    private readonly Font12x16 font12X16 = new Font12x16();
+    private readonly Font8x12 font8x12 = new Font8x12();
+
     private readonly DisplayScreen screen;
 
     private Label StatusLabel;
@@ -32,21 +43,23 @@ public class DisplayController
 
     public DisplayController(IPixelDisplay _display, RotationType rotation)
     {
-        screen = new DisplayScreen(_display, rotation);
+        screen = new DisplayScreen(_display, rotation)
+        {
+            BackgroundColor = backgroundColor
+        };
 
-        screen.Controls.Add(new Box(0, 0, screen.Width, screen.Height) { ForeColor = Color.White });
-        screen.Controls.Add(new Box(0, 27, 106, 93) { ForeColor = Color.FromHex("#B35E2C") });
-        screen.Controls.Add(new Box(106, 27, 108, 93) { ForeColor = Color.FromHex("#1A80AA") });
-        screen.Controls.Add(new Box(214, 27, 106, 93) { ForeColor = Color.FromHex("#98A645") });
+        screen.Controls.Add(new Box(0, 27, 106, 93) { ForeColor = temperatureColor });
+        screen.Controls.Add(new Box(106, 27, 108, 93) { ForeColor = humidityColor });
+        screen.Controls.Add(new Box(214, 27, 106, 93) { ForeColor = soilMoistureColor });
 
-        screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = Color.Black, IsFilled = false });
-        screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = Color.Black, IsFilled = false });
+        screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = foregroundColor, IsFilled = false });
+        screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = foregroundColor, IsFilled = false });
 
         StatusLabel = new Label(2, 6, 12, 16)
         {
-            Text = "Hello",
-            Font = new Font12x20(),
-            TextColor = Color.Black,
+            Text = "-",
+            Font = font12X20,
+            TextColor = foregroundColor,
         };
         screen.Controls.Add(StatusLabel);
 
@@ -63,7 +76,7 @@ public class DisplayController
         CounterLabel = new Label(195, 6, 60, 18)
         {
             Text = "000010",
-            Font = new Font8x12(),
+            Font = font8x12,
             TextColor = Color.White,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
@@ -72,47 +85,47 @@ public class DisplayController
         screen.Controls.Add(new Label(5, 32, 12, 16)
         {
             Text = "Temp",
-            Font = new Font12x16(),
-            TextColor = Color.White
+            Font = font12X16,
+            TextColor = sensorColor
         });
         screen.Controls.Add(new Label(77, 99, 12, 16)
         {
             Text = "°C",
-            Font = new Font12x20(),
-            TextColor = Color.White
+            Font = font12X20,
+            TextColor = sensorColor
         });
 
         screen.Controls.Add(new Label(111, 32, 12, 16)
         {
             Text = "Humidity",
-            Font = new Font12x16(),
-            TextColor = Color.White
+            Font = font12X16,
+            TextColor = sensorColor
         });
         screen.Controls.Add(new Label(197, 99, 12, 16)
         {
             Text = "%",
-            Font = new Font12x20(),
-            TextColor = Color.White
+            Font = font12X20,
+            TextColor = sensorColor
         });
 
         screen.Controls.Add(new Label(219, 32, 12, 16)
         {
             Text = "Soil",
-            Font = new Font12x16(),
-            TextColor = Color.White
+            Font = font12X16,
+            TextColor = sensorColor
         });
         screen.Controls.Add(new Label(303, 99, 12, 16)
         {
             Text = "%",
-            Font = new Font12x20(),
-            TextColor = Color.White
+            Font = font12X20,
+            TextColor = sensorColor
         });
 
         TemperatureLabel = new Label(50, 70, 12, 16, ScaleFactor.X2)
         {
             Text = "0",
-            Font = new Font12x16(),
-            TextColor = Color.White,
+            Font = font12X16,
+            TextColor = sensorColor,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         screen.Controls.Add(TemperatureLabel);
@@ -120,8 +133,8 @@ public class DisplayController
         HumidityLabel = new Label(155, 70, 12, 16, ScaleFactor.X2)
         {
             Text = "0",
-            Font = new Font12x16(),
-            TextColor = Color.White,
+            Font = font12X16,
+            TextColor = sensorColor,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         screen.Controls.Add(HumidityLabel);
@@ -129,8 +142,8 @@ public class DisplayController
         SoilMoistureLabel = new Label(260, 70, 12, 16, ScaleFactor.X2)
         {
             Text = "0",
-            Font = new Font12x16(),
-            TextColor = Color.White,
+            Font = font12X16,
+            TextColor = sensorColor,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         screen.Controls.Add(SoilMoistureLabel);
@@ -145,8 +158,8 @@ public class DisplayController
         screen.Controls.Add(new Label(60, 145, 12, 16, ScaleFactor.X2)
         {
             Text = "Lights",
-            Font = new Font8x12(),
-            TextColor = Color.Black
+            Font = font8x12,
+            TextColor = foregroundColor
         });
 
         ledVents = new Picture(168, 128, 46, 46, imgRed)
@@ -159,8 +172,8 @@ public class DisplayController
         screen.Controls.Add(new Label(60, 205, 12, 16, ScaleFactor.X2)
         {
             Text = "Water",
-            Font = new Font8x12(),
-            TextColor = Color.Black
+            Font = font8x12,
+            TextColor = foregroundColor
         });
 
         ledWater = new Picture(8, 188, 46, 46, imgRed)
@@ -173,8 +186,8 @@ public class DisplayController
         screen.Controls.Add(new Label(220, 145, 12, 16, ScaleFactor.X2)
         {
             Text = "Vents",
-            Font = new Font8x12(),
-            TextColor = Color.Black
+            Font = font8x12,
+            TextColor = foregroundColor
         });
 
         ledHeater = new Picture(168, 188, 46, 46, imgRed)
@@ -187,8 +200,8 @@ public class DisplayController
         screen.Controls.Add(new Label(220, 205, 12, 16, ScaleFactor.X2)
         {
             Text = "Heater",
-            Font = new Font8x12(),
-            TextColor = Color.Black
+            Font = font8x12,
+            TextColor = foregroundColor
         });
     }
 
