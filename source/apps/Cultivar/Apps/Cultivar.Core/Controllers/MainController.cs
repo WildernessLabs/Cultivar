@@ -2,6 +2,7 @@
 using Cultivar.MeadowApp.Controllers;
 using Cultivar.MeadowApp.Models;
 using Meadow;
+using Meadow.Hardware;
 using Meadow.Logging;
 using Meadow.Peripherals.Displays;
 using System;
@@ -10,16 +11,17 @@ using System.Threading.Tasks;
 
 namespace Cultivar.Controllers;
 
-public class GreenhouseController
+public class MainController
 {
-    protected bool IsSampling = false;
+    private bool IsSampling = false;
 
     private bool isVentilationOn = false;
     private bool isIrrigationOn = false;
     private bool isLightOn = false;
     private bool isHeaterOn = false;
 
-    protected IGreenhouseHardware Hardware { get; set; }
+    private IGreenhouseHardware hardware;
+    private INetworkAdapter? network;
 
     protected DisplayController displayController;
     //protected MicroAudio audio;
@@ -29,19 +31,14 @@ public class GreenhouseController
 
     GreenhouseModel Climate;
 
-    public GreenhouseController(IGreenhouseHardware greenhouseHardware, bool isSimulator = false)
+    public MainController(IGreenhouseHardware greenhouseHardware, INetworkAdapter? networkAdapter = null, bool isSimulator = false)
     {
-        Hardware = greenhouseHardware;
+        hardware = greenhouseHardware;
+        network = networkAdapter;
 
-        cloudLogger = new CloudLogger(LogLevel.Warning);
-        Resolver.Log.AddProvider(cloudLogger);
-        Resolver.Services.Add(cloudLogger);
+        hardware.RgbLed?.SetColor(Color.Red);
 
-        Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
-
-        Hardware.RgbLed?.SetColor(Color.Red);
-
-        if (Hardware.Display is { } display)
+        if (hardware.Display is { } display)
         {
             displayController = new DisplayController(display, isSimulator ? RotationType.Normal : RotationType._270Degrees);
         }
@@ -51,6 +48,16 @@ public class GreenhouseController
         //    speaker.SetVolume(0.5f);
         //    audio = new MicroAudio(speaker);
         //}
+
+        if (networkAdapter != null)
+        {
+            WireNetworkEvents();
+        }
+
+        cloudLogger = new CloudLogger(LogLevel.Warning);
+        Resolver.Log.AddProvider(cloudLogger);
+        Resolver.Services.Add(cloudLogger);
+        Resolver.Log.Info($"cloudlogger null? {cloudLogger is null}");
 
         SubscribeToCloudConnectionEvents();
 
@@ -63,13 +70,126 @@ public class GreenhouseController
 
         InitializeButtons();
 
-        Hardware.RgbLed?.SetColor(Color.Green);
+        hardware.RgbLed?.SetColor(Color.Green);
         Resolver.Log.Info("Initialization complete");
     }
 
+    private void WireNetworkEvents()
+    {
+        if (network.IsConnected)
+        {
+            displayController.UpdateConnectionStatus(true);
+            Resolver.Log.Info("Already have a network connection.");
+        }
+        else
+        {
+            displayController.UpdateConnectionStatus(false);
+            Resolver.Log.Info("Not connected to a network yet.");
+        }
+
+        network.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
+        {
+            Resolver.Log.Info($"Joined network - IP Address: {networkAdapter.IpAddress}");
+            displayController.UpdateConnectionStatus(true);
+            //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
+        };
+
+        network.NetworkDisconnected += (sender, args) =>
+        {
+            displayController.UpdateConnectionStatus(false);
+        };
+    }
+
+    private void SubscribeToCloudConnectionEvents()
+    {
+        displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
+
+        Resolver.UpdateService.StateChanged += (sender, state) =>
+        {
+            displayController?.UpdateCloudStatus(state == UpdateState.Connected);
+            displayController?.UpdateStatus(state.ToString());
+        };
+    }
+
+    private void SubscribeToCommands()
+    {
+        Resolver.CommandService?.Subscribe<Fan>(c =>
+        {
+            Resolver.Log.Info($"Received fan control: {c.IsOn}");
+            displayController.UpdateVents(c.IsOn);
+            if (hardware.VentFan != null)
+            {
+                hardware.VentFan.State = c.IsOn
+                    ? Meadow.Peripherals.Relays.RelayState.Closed
+                    : Meadow.Peripherals.Relays.RelayState.Open; ;
+            }
+        });
+        Resolver.CommandService?.Subscribe<Heater>(c =>
+        {
+            Resolver.Log.Info($"Received heater control: {c.IsOn}");
+            displayController.UpdateHeater(c.IsOn);
+            if (hardware.Heater != null)
+            {
+                hardware.Heater.State = c.IsOn
+                    ? Meadow.Peripherals.Relays.RelayState.Closed
+                    : Meadow.Peripherals.Relays.RelayState.Open; ;
+            }
+        });
+        Resolver.CommandService?.Subscribe<Lights>(c =>
+        {
+            Resolver.Log.Info($"Received light control: {c.IsOn}");
+            displayController.UpdateLights(c.IsOn);
+            if (hardware.Lights != null)
+            {
+                hardware.Lights.State = c.IsOn
+                    ? Meadow.Peripherals.Relays.RelayState.Closed
+                    : Meadow.Peripherals.Relays.RelayState.Open; ;
+            }
+        });
+        Resolver.CommandService?.Subscribe<Irrigation>(c =>
+        {
+            Resolver.Log.Info($"Received valve control: {c.IsOn}");
+            displayController.UpdateWater(c.IsOn);
+            if (hardware.IrrigationLines != null)
+            {
+                hardware.IrrigationLines.State = c.IsOn
+                    ? Meadow.Peripherals.Relays.RelayState.Closed
+                    : Meadow.Peripherals.Relays.RelayState.Open; ;
+            }
+        });
+    }
+
+    //private void HandleRelayChanges()
+    //{
+    //    RegisterRelayChange(Hardware.VentFan, "IsVentilationOn");
+    //    RegisterRelayChange(Hardware.Heater, "IsHeaterOn");
+    //    RegisterRelayChange(Hardware.Lights, "IsLightOn");
+    //    RegisterRelayChange(Hardware.IrrigationLines, "IsIrrigationOn");
+    //}
+
+    //private void RegisterRelayChange(IRelay relay, string eventName)
+    //{
+    //    relay.OnRelayChanged += (sender, relayState) =>
+    //    {
+    //        Resolver.Log.Trace($"relay changed, {eventName}:{relayState}");
+    //        try
+    //        {
+    //            var cl = Resolver.Services.Get<CloudLogger>();
+    //            cl?.LogEvent(110, "relay change", new Dictionary<string, object>()
+    //            {
+    //                { eventName, relayState }
+    //            });
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            Resolver.Log.Info($"Err: {ex.Message}");
+    //        }
+    //    };
+    //}
+
     private void InitializeButtons()
     {
-        if (Hardware.UpButton is { } ventilationButton)
+        if (hardware.UpButton is { } ventilationButton)
         {
             ventilationButton.Clicked += (s, e) =>
             {
@@ -77,7 +197,7 @@ public class GreenhouseController
 
                 displayController.UpdateVents(isVentilationOn);
 
-                if (Hardware.VentFan is { } ventilation)
+                if (hardware.VentFan is { } ventilation)
                 {
                     ventilation.State = isVentilationOn
                         ? Meadow.Peripherals.Relays.RelayState.Closed
@@ -98,7 +218,7 @@ public class GreenhouseController
                 }
             };
         }
-        if (Hardware.DownButton is { } irrigationButton)
+        if (hardware.DownButton is { } irrigationButton)
         {
             irrigationButton.Clicked += (s, e) =>
             {
@@ -106,7 +226,7 @@ public class GreenhouseController
 
                 displayController.UpdateWater(isIrrigationOn);
 
-                if (Hardware.IrrigationLines is { } irrigation)
+                if (hardware.IrrigationLines is { } irrigation)
                 {
                     irrigation.State = isIrrigationOn
                         ? Meadow.Peripherals.Relays.RelayState.Closed
@@ -127,7 +247,7 @@ public class GreenhouseController
                 }
             };
         }
-        if (Hardware.LeftButton is { } lightButton)
+        if (hardware.LeftButton is { } lightButton)
         {
             lightButton.Clicked += (s, e) =>
             {
@@ -135,7 +255,7 @@ public class GreenhouseController
 
                 displayController.UpdateLights(isLightOn);
 
-                if (Hardware.Lights is { } lights)
+                if (hardware.Lights is { } lights)
                 {
                     lights.State = isLightOn
                         ? Meadow.Peripherals.Relays.RelayState.Closed
@@ -156,7 +276,7 @@ public class GreenhouseController
                 }
             };
         }
-        if (Hardware.RightButton is { } heaterButton)
+        if (hardware.RightButton is { } heaterButton)
         {
             heaterButton.Clicked += (s, e) =>
             {
@@ -164,7 +284,7 @@ public class GreenhouseController
 
                 displayController.UpdateHeater(isHeaterOn);
 
-                if (Hardware.Heater is { } heater)
+                if (hardware.Heater is { } heater)
                 {
                     heater.State = isHeaterOn
                         ? Meadow.Peripherals.Relays.RelayState.Closed
@@ -185,11 +305,6 @@ public class GreenhouseController
                 }
             };
         }
-    }
-
-    public void SetNetworkConnectionStatus(bool connected)
-    {
-        displayController.UpdateConnectionStatus(connected);
     }
 
     private async Task StartUpdating(TimeSpan updateInterval)
@@ -231,21 +346,11 @@ public class GreenhouseController
         }
     }
 
-    private void StopUpdating()
-    {
-        if (!IsSampling)
-        {
-            return;
-        }
-
-        IsSampling = false;
-    }
-
     private async Task<GreenhouseModel> Read()
     {
-        var temperatureTask = Hardware.TemperatureSensor?.Read();
-        var humidityTask = Hardware.HumiditySensor?.Read();
-        var moistureTask = Hardware.MoistureSensor?.Read();
+        var temperatureTask = hardware.TemperatureSensor?.Read();
+        var humidityTask = hardware.HumiditySensor?.Read();
+        var moistureTask = hardware.MoistureSensor?.Read();
 
         await Task.WhenAll(temperatureTask, humidityTask, moistureTask);
 
@@ -259,99 +364,15 @@ public class GreenhouseController
         return climate;
     }
 
-    private void SubscribeToCommands()
+    private void StopUpdating()
     {
-        Resolver.CommandService?.Subscribe<Fan>(c =>
+        if (!IsSampling)
         {
-            Resolver.Log.Info($"Received fan control: {c.IsOn}");
-            displayController.UpdateVents(c.IsOn);
-            if (Hardware.VentFan != null)
-            {
-                Hardware.VentFan.State = c.IsOn
-                    ? Meadow.Peripherals.Relays.RelayState.Closed
-                    : Meadow.Peripherals.Relays.RelayState.Open; ;
-            }
-        });
-        Resolver.CommandService?.Subscribe<Heater>(c =>
-        {
-            Resolver.Log.Info($"Received heater control: {c.IsOn}");
-            displayController.UpdateHeater(c.IsOn);
-            if (Hardware.Heater != null)
-            {
-                Hardware.Heater.State = c.IsOn
-                    ? Meadow.Peripherals.Relays.RelayState.Closed
-                    : Meadow.Peripherals.Relays.RelayState.Open; ;
-            }
-        });
-        Resolver.CommandService?.Subscribe<Lights>(c =>
-        {
-            Resolver.Log.Info($"Received light control: {c.IsOn}");
-            displayController.UpdateLights(c.IsOn);
-            if (Hardware.Lights != null)
-            {
-                Hardware.Lights.State = c.IsOn
-                    ? Meadow.Peripherals.Relays.RelayState.Closed
-                    : Meadow.Peripherals.Relays.RelayState.Open; ;
-            }
-        });
-        Resolver.CommandService?.Subscribe<Irrigation>(c =>
-        {
-            Resolver.Log.Info($"Received valve control: {c.IsOn}");
-            displayController.UpdateWater(c.IsOn);
-            if (Hardware.IrrigationLines != null)
-            {
-                Hardware.IrrigationLines.State = c.IsOn
-                    ? Meadow.Peripherals.Relays.RelayState.Closed
-                    : Meadow.Peripherals.Relays.RelayState.Open; ;
-            }
-        });
-        //Resolver.CommandService.Subscribe(c =>
-        //{
-        //    Resolver.Log.Info($"Received command: {c.CommandName} with args {c.Arguments}");
-        //});
-        //Resolver.CommandService.Subscribe<FanControl>(e =>
-        //{
-        //    Resolver.Log.Trace($"Received fan control: {e.RelayState}");
-        //});
+            return;
+        }
+
+        IsSampling = false;
     }
-
-    private void SubscribeToCloudConnectionEvents()
-    {
-        displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
-
-        Resolver.UpdateService.StateChanged += (sender, state) =>
-        {
-            displayController?.UpdateStatus(state.ToString());
-        };
-    }
-
-    //private void HandleRelayChanges()
-    //{
-    //    RegisterRelayChange(Hardware.VentFan, "IsVentilationOn");
-    //    RegisterRelayChange(Hardware.Heater, "IsHeaterOn");
-    //    RegisterRelayChange(Hardware.Lights, "IsLightOn");
-    //    RegisterRelayChange(Hardware.IrrigationLines, "IsIrrigationOn");
-    //}
-
-    //private void RegisterRelayChange(IRelay relay, string eventName)
-    //{
-    //    relay.OnRelayChanged += (sender, relayState) =>
-    //    {
-    //        Resolver.Log.Trace($"relay changed, {eventName}:{relayState}");
-    //        try
-    //        {
-    //            var cl = Resolver.Services.Get<CloudLogger>();
-    //            cl?.LogEvent(110, "relay change", new Dictionary<string, object>()
-    //            {
-    //                { eventName, relayState }
-    //            });
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            Resolver.Log.Info($"Err: {ex.Message}");
-    //        }
-    //    };
-    //}
 
     public Task Run()
     {

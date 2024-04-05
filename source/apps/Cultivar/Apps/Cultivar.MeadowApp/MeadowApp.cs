@@ -11,19 +11,19 @@ namespace Cultivar.MeadowApp;
 
 public class MeadowApp : App<F7CoreComputeV2>
 {
-    GreenhouseController greenhouseController;
-    //int WatchdogUptimeMaxHours = 1;
-    //int WatchdogUptimePetCountMax = 0;
-    int WatchdogCount = 0;
+    private MainController mainController;
+    //private int WatchdogUptimeMaxHours = 1;
+    //private int WatchdogUptimePetCountMax = 0;
+    //private int WatchdogCount = 0;
 
     public override Task Initialize()
     {
         Resolver.Log.Info("Initialize hardware...");
 
         var greenhouseHardware = new ProductionBetaHardware();
-        greenhouseController = new GreenhouseController(greenhouseHardware);
+        var networkAdapter = Device.NetworkAdapters.Primary<INetworkAdapter>();
 
-        WireNetworkEvents();
+        mainController = new MainController(greenhouseHardware, networkAdapter!);
 
         return base.Initialize();
     }
@@ -34,41 +34,9 @@ public class MeadowApp : App<F7CoreComputeV2>
 
         WireUpWatchdogs();
 
-        greenhouseController.Run();
+        mainController.Run();
 
         return base.Run();
-    }
-
-    void WireNetworkEvents()
-    {
-        // get the network adapter (Ethernet, WiFi or Cell)
-        var networkAdapter = Resolver.Device.NetworkAdapters.Primary<INetworkAdapter>();
-
-        // set initial state
-        if (networkAdapter.IsConnected)
-        {
-            greenhouseController?.SetNetworkConnectionStatus(true);
-            Resolver.Log.Info("Already have a network connection.");
-        }
-        else
-        {
-            greenhouseController?.SetNetworkConnectionStatus(false);
-            Resolver.Log.Info("Not connected to a network yet.");
-        }
-
-        // connect event
-        networkAdapter.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
-        {
-            Resolver.Log.Info($"Joined network - IP Address: {networkAdapter.IpAddress}");
-            greenhouseController?.SetNetworkConnectionStatus(true);
-            //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
-        };
-
-        // disconnect event
-        networkAdapter.NetworkDisconnected += (sender, args) =>
-        {
-            greenhouseController?.SetNetworkConnectionStatus(false);
-        };
     }
 
     void WireUpWatchdogs()
@@ -104,7 +72,7 @@ public class MeadowApp : App<F7CoreComputeV2>
                 //     // stop spinning while the watchdog countdown elapses
                 //     Thread.Sleep(pettingInterval * 2);
                 // }
-                WatchdogCount++;
+                //WatchdogCount++;
             }
         });
         t.Start();

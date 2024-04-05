@@ -7,6 +7,8 @@
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Assets\img-cloud-fade.bmp" />
+    <None Remove="Assets\img-cloud.bmp" />
     <None Remove="img-green.bmp" />
     <None Remove="img-red.bmp" />
     <None Remove="img-sync-fade.bmp" />
@@ -15,8 +17,8 @@
     <None Remove="img-wifi.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\img-green.bmp" />
-    <EmbeddedResource Include="Assets\img-red.bmp" />
+    <EmbeddedResource Include="Assets\img-cloud-fade.bmp" />
+    <EmbeddedResource Include="Assets\img-cloud.bmp" />
     <EmbeddedResource Include="Assets\img-sync-fade.bmp" />
     <EmbeddedResource Include="Assets\img-sync.bmp" />
     <EmbeddedResource Include="Assets\img-wifi-fade.bmp" />
