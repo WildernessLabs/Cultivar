@@ -76,26 +76,21 @@ public class MainController
 
     private void WireNetworkEvents()
     {
-        if (network.IsConnected)
-        {
-            displayController.UpdateConnectionStatus(true);
-            Resolver.Log.Info("Already have a network connection.");
-        }
-        else
-        {
-            displayController.UpdateConnectionStatus(false);
-            Resolver.Log.Info("Not connected to a network yet.");
-        }
+        displayController.UpdateConnectionStatus(network.IsConnected);
+        Resolver.Log.Info(network.IsConnected
+            ? "NETWORK: Already connected."
+            : "NETWORK: Not connected.");
 
         network.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
         {
-            Resolver.Log.Info($"Joined network - IP Address: {networkAdapter.IpAddress}");
+            Resolver.Log.Info($"NETWORK: Joined network - IP Address: {networkAdapter.IpAddress}");
             displayController.UpdateConnectionStatus(true);
             //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
         };
 
         network.NetworkDisconnected += (sender, args) =>
         {
+            Resolver.Log.Info($"NETWORK: Disconnected.");
             displayController.UpdateConnectionStatus(false);
         };
     }
@@ -104,9 +99,10 @@ public class MainController
     {
         displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
 
-        Resolver.UpdateService.StateChanged += (sender, state) =>
+        Resolver.MeadowCloudService.ConnectionStateChanged += (sender, state) =>
         {
-            displayController?.UpdateCloudStatus(state == UpdateState.Connected);
+            displayController?.UpdateConnectionStatus(network.IsConnected);
+            displayController?.UpdateCloudStatus(state == CloudConnectionState.Connected);
             displayController?.UpdateStatus(state.ToString());
         };
     }
@@ -321,7 +317,7 @@ public class MainController
         {
             Climate = await Read();
 
-            Console.WriteLine($"Temperature: {Climate.Temperature.Celsius} | Humidity: {Climate.Humidity.Percent} | Moisture: {Climate.SoilMoisture}");
+            Console.WriteLine($"Temperature: {Climate.Temperature.Celsius:N1} | Humidity: {Climate.Humidity.Percent:N1} | Moisture: {Climate.SoilMoisture:N1}");
 
             displayController.UpdateReadings(Climate.Temperature.Celsius, Climate.Humidity.Percent, Climate.SoilMoisture);
 
@@ -333,7 +329,7 @@ public class MainController
                 {
                     { "TemperatureCelsius", Climate.Temperature.Celsius },
                     { "HumidityPercent", Climate.Humidity.Percent },
-                    { "PressureMillibar", Climate.SoilMoisture }
+                    { "SoilMoistureDouble", Climate.SoilMoisture }
                 });
                 displayController.UpdateSync(false);
             }

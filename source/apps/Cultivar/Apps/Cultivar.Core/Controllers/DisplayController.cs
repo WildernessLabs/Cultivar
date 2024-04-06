@@ -98,7 +98,7 @@ public class DisplayController
         });
         CounterLabel = new Label(160, 6, 60, 18)
         {
-            Text = "000010",
+            Text = "000000",
             Font = font8x12,
             TextColor = Color.White,
             HorizontalAlignment = HorizontalAlignment.Center,
