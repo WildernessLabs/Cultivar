@@ -9,14 +9,14 @@ namespace Cultivar_HMI
 {
     public class DisplayController
     {
-        DisplayScreen screen;
+        readonly DisplayScreen screen;
 
-        Image imgWifi = Image.LoadFromResource("Cultivar_HMI.img-wifi.bmp");
-        Image imgSync = Image.LoadFromResource("Cultivar_HMI.img-sync.bmp");
-        Image imgWifiFade = Image.LoadFromResource("Cultivar_HMI.img-wifi-fade.bmp");
-        Image imgSyncFade = Image.LoadFromResource("Cultivar_HMI.img-sync-fade.bmp");
-        Image imgRed = Image.LoadFromResource("Cultivar_HMI.img-red.bmp");
-        Image imgGreen = Image.LoadFromResource("Cultivar_HMI.img-green.bmp");
+        readonly Image imgWifi = Image.LoadFromResource("Cultivar_HMI.img-wifi.bmp");
+        readonly Image imgSync = Image.LoadFromResource("Cultivar_HMI.img-sync.bmp");
+        readonly Image imgWifiFade = Image.LoadFromResource("Cultivar_HMI.img-wifi-fade.bmp");
+        readonly Image imgSyncFade = Image.LoadFromResource("Cultivar_HMI.img-sync-fade.bmp");
+        readonly Image imgRed = Image.LoadFromResource("Cultivar_HMI.img-red.bmp");
+        readonly Image imgGreen = Image.LoadFromResource("Cultivar_HMI.img-green.bmp");
 
         protected Label StatusLabel { get; set; }
 

@@ -17,7 +17,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-      <PackageReference Include="Meadow.Logging.LogProviders" Version="*" />
-      <PackageReference Include="Meadow.ProjectLab" Version="*" />
+    <PackageReference Include="Meadow.Logging.LogProviders" Version="*" />
+    <PackageReference Include="Meadow.ProjectLab" Version="*" />
   </ItemGroup>
 </Project>
