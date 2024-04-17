@@ -9,7 +9,7 @@ namespace ProjectLabSimulator.Views
 {
     public partial class MainWindow : Window
     {
-        private readonly GreenhouseController greenhouseController;
+        private readonly MainController mainController;
         readonly SimulatedHardware greenhouseHardware;
 
         readonly int scale = 2;
@@ -23,9 +23,9 @@ namespace ProjectLabSimulator.Views
                 Display = LoadDisplay()
             };
 
-            greenhouseController = new GreenhouseController(greenhouseHardware, true);
+            mainController = new MainController(greenhouseHardware, isSimulator: true);
 
-            greenhouseController.Run();
+            mainController.Run();
 
             buttonDown.Click += ButtonDown_Click;
         }

@@ -1,9 +1,8 @@
 using Meadow.Cloud;
 
-namespace Cultivar.Commands
+namespace Cultivar.Commands;
+
+public class Irrigation : IMeadowCommand
 {
-    public class Irrigation : IMeadowCommand
-    {
-        public bool IsOn { get; set; } = false;
-    }
+    public bool IsOn { get; set; } = false;
 }

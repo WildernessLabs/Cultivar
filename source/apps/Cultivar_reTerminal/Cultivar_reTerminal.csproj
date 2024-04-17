@@ -24,14 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
+    <PackageReference Include="Avalonia" Version="11.0.10" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
     <PackageReference Include="Azure.DigitalTwins.Core" Version="1.4.0" />
-    <PackageReference Include="Azure.Identity" Version="1.10.4" />
-    <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0-Avalonia11" />
+    <PackageReference Include="Azure.Identity" Version="1.11.0" />
+    <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.4" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
   </ItemGroup>
 </Project>

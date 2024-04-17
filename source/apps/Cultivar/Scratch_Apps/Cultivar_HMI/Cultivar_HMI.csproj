@@ -22,8 +22,8 @@
     <EmbeddedResource Include="img-wifi.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.Foundation.Graphics.MicroLayout" Version="*" />
-    <PackageReference Include="Meadow.ProjectLab" Version="*" />
+      <PackageReference Include="Meadow.Foundation.Graphics.MicroLayout" Version="*" />
+      <PackageReference Include="Meadow.ProjectLab" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <None Update="meadow.config.yaml">

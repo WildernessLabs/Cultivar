@@ -29,9 +29,9 @@
     <EmbeddedResource Include="RelayMenu.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Meadow.Foundation.Relays.ElectromagneticRelayModule" Version="*" />
-    <PackageReference Include="Meadow.Foundation.Displays.TextDisplayMenu" Version="*" />
-    <PackageReference Include="Meadow.Foundation.Graphics.MicroLayout" Version="*" />
-    <PackageReference Include="Meadow.ProjectLab" Version="*" />
+      <PackageReference Include="Meadow.Foundation.Relays.ElectromagneticRelayModule" Version="*" />
+      <PackageReference Include="Meadow.Foundation.Displays.TextDisplayMenu" Version="*" />
+      <PackageReference Include="Meadow.Foundation.Graphics.MicroLayout" Version="*" />
+      <PackageReference Include="Meadow.ProjectLab" Version="*" />
   </ItemGroup>
 </Project>
