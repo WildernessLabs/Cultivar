@@ -6,18 +6,7 @@
     <AssemblyName>App</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="meadow.config.yaml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="app.config.yaml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="wifi.config.yaml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Meadow.Logging.LogProviders" Version="*" />
-    <PackageReference Include="Meadow.ProjectLab" Version="*" />
+    <ProjectReference Include="..\..\..\..\..\..\Meadow.Logging\Source\Meadow.Logging.LogProviders\Driver\Meadow.Logging.LogProviders.csproj" />
+    <ProjectReference Include="..\..\..\..\..\..\Meadow.ProjectLab\Source\Meadow.ProjectLab\Meadow.ProjectLab.csproj" />
   </ItemGroup>
 </Project>
