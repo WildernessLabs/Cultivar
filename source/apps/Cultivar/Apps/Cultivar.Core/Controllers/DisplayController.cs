@@ -44,8 +44,6 @@ public class DisplayController
     private Circle waterCircle;
     private Circle heaterCircle;
 
-    private int counter = 0;
-
     public DisplayController(IPixelDisplay _display, RotationType rotation)
     {
         screen = new DisplayScreen(_display, rotation)
@@ -369,13 +367,11 @@ public class DisplayController
             : inactiveColor;
     }
 
-    public void UpdateReadings(double temp, double humidity, double moisture)
+    public void UpdateReadings(int logId, double temp, double humidity, double moisture)
     {
         screen.BeginUpdate();
 
-        counter++;
-        CounterLabel.Text = $"{counter:D6}";
-
+        CounterLabel.Text = $"{logId:D6}";
         TemperatureLabel.Text = temp.ToString("N0");
         HumidityLabel.Text = humidity.ToString("N0");
         SoilMoistureLabel.Text = moisture.ToString("N0");

@@ -13,6 +13,8 @@ namespace Cultivar.Controllers;
 
 public class MainController
 {
+    private int logId = 0;
+
     private bool IsSampling = false;
 
     private bool isVentilationOn = false;
@@ -23,13 +25,14 @@ public class MainController
     private IGreenhouseHardware hardware;
     private INetworkAdapter? network;
 
-    protected DisplayController displayController;
-    //protected MicroAudio audio;
-    protected CloudLogger cloudLogger;
+    private DisplayController displayController;
+    //private MicroAudio audio;
 
-    protected TimeSpan UpdateInterval = TimeSpan.FromMinutes(2);
+    private CloudLogger cloudLogger;
 
-    GreenhouseModel Climate;
+    private GreenhouseModel climate;
+
+    private TimeSpan updateInterval = TimeSpan.FromMinutes(2);
 
     public MainController(IGreenhouseHardware greenhouseHardware, INetworkAdapter? networkAdapter = null, bool isSimulator = false)
     {
@@ -315,22 +318,25 @@ public class MainController
 
         while (IsSampling)
         {
-            Climate = await Read();
+            climate = await Read();
 
-            Console.WriteLine($"Temperature: {Climate.Temperature.Celsius:N1} | Humidity: {Climate.Humidity.Percent:N1} | Moisture: {Climate.SoilMoisture:N1}");
+            Console.WriteLine($"Temperature: {climate.Temperature.Celsius:N1} | Humidity: {climate.Humidity.Percent:N1} | Moisture: {climate.SoilMoisture:N1}");
 
-            displayController.UpdateReadings(Climate.Temperature.Celsius, Climate.Humidity.Percent, Climate.SoilMoisture);
+            displayController.UpdateReadings(logId, climate.Temperature.Celsius, climate.Humidity.Percent, climate.SoilMoisture);
 
             try
             {
                 displayController.UpdateSync(true);
+
                 var cl = Resolver.Services.Get<CloudLogger>();
                 cl?.LogEvent(110, "Atmospheric reading", new Dictionary<string, object>()
                 {
-                    { "TemperatureCelsius", Climate.Temperature.Celsius },
-                    { "HumidityPercent", Climate.Humidity.Percent },
-                    { "SoilMoistureDouble", Climate.SoilMoisture }
+                    { "LogId", logId++},
+                    { "TemperatureCelsius", climate.Temperature.Celsius },
+                    { "HumidityPercent", climate.Humidity.Percent },
+                    { "SoilMoistureDouble", climate.SoilMoisture }
                 });
+
                 displayController.UpdateSync(false);
             }
             catch (Exception ex)
@@ -374,7 +380,7 @@ public class MainController
     {
         //_ = audio.PlaySystemSound(SystemSoundEffect.Fanfare);
 
-        _ = StartUpdating(UpdateInterval);
+        _ = StartUpdating(updateInterval);
 
         return Task.CompletedTask;
     }
