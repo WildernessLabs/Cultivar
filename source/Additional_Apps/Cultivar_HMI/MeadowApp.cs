@@ -1,77 +1,42 @@
 ﻿using Meadow;
-using Meadow.Devices;
+using Meadow.Foundation.Displays;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Cultivar_HMI
+namespace Cultivar_HMI;
+
+public class MeadowApp : App<Windows>
 {
-    // Change F7CoreComputeV2 to F7FeatherV2 (or F7FeatherV1) for Feather boards
-    public class MeadowApp : App<F7CoreComputeV2>
+    private WinFormsDisplay display;
+    private DisplayController displayController;
+
+    public override Task Initialize()
     {
-        DisplayController displayController { get; set; }
+        Resolver.Log.Info("Initialize...");
 
-        public override Task Initialize()
-        {
-            Resolver.Log.Info("Initialize...");
+        display = new WinFormsDisplay(320, 240);
+        displayController = new DisplayController(display);
 
-            var projectLab = ProjectLab.Create();
+        _ = displayController.Run();
 
-            displayController = new DisplayController(projectLab.Display);
+        return base.Initialize();
+    }
 
-            if (projectLab.UpButton is { } upButton)
-            {
-                upButton.PressStarted += (s, e) =>
-                {
-                    displayController.UpdateVents(true);
-                };
-                upButton.PressEnded += (s, e) =>
-                {
-                    displayController.UpdateVents(false);
-                };
-            }
-            if (projectLab.DownButton is { } downButton)
-            {
-                downButton.PressStarted += (s, e) =>
-                {
-                    displayController.UpdateWater(true);
-                };
-                downButton.PressEnded += (s, e) =>
-                {
-                    displayController.UpdateWater(false);
-                };
-            }
-            if (projectLab.LeftButton is { } leftButton)
-            {
-                leftButton.PressStarted += (s, e) =>
-                {
-                    displayController.UpdateLights(true);
-                };
-                leftButton.PressEnded += (s, e) =>
-                {
-                    displayController.UpdateLights(false);
-                };
-            }
-            if (projectLab.RightButton is { } rightButton)
-            {
-                rightButton.PressStarted += (s, e) =>
-                {
-                    displayController.UpdateHeater(true);
-                };
-                rightButton.PressEnded += (s, e) =>
-                {
-                    displayController.UpdateHeater(false);
-                };
-            }
+    public override Task Run()
+    {
+        Resolver.Log.Info("Run...");
 
-            return base.Initialize();
-        }
+        Application.Run(display);
 
-        public override Task Run()
-        {
-            Resolver.Log.Info("Run...");
+        return base.Run();
+    }
 
-            _ = displayController.Run();
+    public static async Task Main(string[] args)
+    {
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        ApplicationConfiguration.Initialize();
 
-            return base.Run();
-        }
+        await MeadowOS.Start(args);
     }
 }
