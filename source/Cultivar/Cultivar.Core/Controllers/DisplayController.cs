@@ -2,11 +2,16 @@
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Peripherals.Displays;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cultivar.MeadowApp.Controllers;
 
 public class DisplayController
 {
+    private CancellationTokenSource connectivityToken;
+    private CancellationTokenSource cloudToken;
+
     private readonly Image imgWifi = Image.LoadFromResource("Cultivar.Assets.img-wifi.bmp");
     private readonly Image imgSync = Image.LoadFromResource("Cultivar.Assets.img-sync.bmp");
     private readonly Image imgCloud = Image.LoadFromResource("Cultivar.Assets.img-cloud.bmp");
@@ -14,19 +19,18 @@ public class DisplayController
     private readonly Image imgSyncFade = Image.LoadFromResource("Cultivar.Assets.img-sync-fade.bmp");
     private readonly Image imgCloudFade = Image.LoadFromResource("Cultivar.Assets.img-cloud-fade.bmp");
 
-    private readonly Color backgroundColor = Color.White;
-    private readonly Color foregroundColor = Color.Black;
+    private readonly Color backgroundColor = Color.FromHex("10485E");
+    private readonly Color foregroundColor = Color.White;
     private readonly Color temperatureColor = Color.FromHex("B35E2C");
     private readonly Color humidityColor = Color.FromHex("1A80AA");
-    private readonly Color soilMoistureColor = Color.FromHex("98A645");
+    private readonly Color soilMoistureColor = Color.FromHex("737D45");
     private readonly Color sensorColor = Color.White;
     private readonly Color activeColor = Color.FromHex("14B069");
     private readonly Color inactiveColor = Color.FromHex("FF3535");
 
     private readonly Font12x20 font12X20 = new Font12x20();
-    private readonly Font12x16 font12X16 = new Font12x16();
     private readonly Font8x12 font8x12 = new Font8x12();
-    private readonly Font6x8 font6x8 = new Font6x8();
+    private readonly Font16x24 font16x24 = new Font16x24();
 
     private readonly DisplayScreen screen;
 
@@ -44,32 +48,14 @@ public class DisplayController
     private Circle waterCircle;
     private Circle heaterCircle;
 
-    public DisplayController(IPixelDisplay _display, RotationType rotation)
+    public DisplayController(IPixelDisplay _display, RotationType rotationType)
     {
-        screen = new DisplayScreen(_display, rotation)
+        screen = new DisplayScreen(_display, rotationType)
         {
             BackgroundColor = backgroundColor
         };
 
-        screen.Controls.Add(new Box(160, 120, 1, screen.Height) { ForeColor = foregroundColor, IsFilled = false });
-        screen.Controls.Add(new Box(0, 180, screen.Width, 1) { ForeColor = foregroundColor, IsFilled = false });
-
-        StatusLabel = new Label(2, 6, 12, 16)
-        {
-            Text = "Connected",
-            Font = font12X20,
-            TextColor = foregroundColor,
-        };
-        screen.Controls.Add(StatusLabel);
-
-        wifi = new Picture(286, 3, 30, 21, imgWifiFade);
-        screen.Controls.Add(wifi);
-
-        cloud = new Picture(252, 3, 30, 21, imgCloudFade);
-        screen.Controls.Add(cloud);
-
-        sync = new Picture(226, 3, 21, 21, imgSyncFade);
-        screen.Controls.Add(sync);
+        LoadStatusBar();
 
         LoadCounter();
 
@@ -88,17 +74,44 @@ public class DisplayController
         LoadHeaterStatus();
     }
 
+    private void LoadStatusBar()
+    {
+        int boxX = 0;
+        int boxY = 0;
+        int boxWidth = 320;
+        int boxHeight = 30;
+
+        StatusLabel = new Label(boxX + 5, boxY + 1, boxWidth, boxHeight)
+        {
+            Text = "-",
+            Font = font12X20,
+            TextColor = foregroundColor,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        screen.Controls.Add(StatusLabel);
+
+        wifi = new Picture(286, boxY + 5, imgWifiFade.Width, imgWifiFade.Height, imgWifiFade);
+        screen.Controls.Add(wifi);
+
+        cloud = new Picture(252, boxY + 5, imgCloudFade.Width, imgCloudFade.Height, imgCloudFade);
+        screen.Controls.Add(cloud);
+
+        sync = new Picture(226, boxY + 5, imgSyncFade.Width, imgSyncFade.Height, imgSyncFade);
+        screen.Controls.Add(sync);
+    }
+
     private void LoadCounter()
     {
-        screen.Controls.Add(new Box(160, 3, 60, 21)
+        screen.Controls.Add(new Box(160, 5, 60, 21)
         {
-            ForeColor = Color.FromHex("333333")
+            ForeColor = Color.FromHex("082936")
         });
-        CounterLabel = new Label(160, 6, 60, 18)
+        CounterLabel = new Label(160, 8, 60, 18)
         {
             Text = "000000",
             Font = font8x12,
-            TextColor = Color.White,
+            TextColor = foregroundColor,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
         screen.Controls.Add(CounterLabel);
@@ -107,225 +120,262 @@ public class DisplayController
     private void LoadTemperatureIndicator()
     {
         int boxX = 0;
-        int boxY = 27;
-        int boxWidth = 106;
-        int boxHeight = 93;
+        int boxY = 30;
+        int boxWidth = 320;
+        int boxHeight = 42;
 
         screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
             ForeColor = temperatureColor
         });
 
-        screen.Controls.Add(new Label(5, boxY + 5, boxWidth - 10, font8x12.Height)
+        screen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
         {
             Text = "Temperature",
-            Font = font8x12,
-            TextColor = sensorColor
+            Font = font16x24,
+            TextColor = sensorColor,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center
         });
 
-        TemperatureLabel = new Label(5, boxY + 43, boxWidth - 10, font12X16.Height, ScaleFactor.X2)
+        TemperatureLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "0",
-            Font = font12X16,
-            TextColor = sensorColor,
-            HorizontalAlignment = HorizontalAlignment.Center,
-        };
-        screen.Controls.Add(TemperatureLabel);
-
-        screen.Controls.Add(new Label(5, boxY + 72, boxWidth - 10, font12X20.Height)
-        {
-            Text = "°C",
-            Font = font12X20,
+            Font = font16x24,
             TextColor = sensorColor,
             HorizontalAlignment = HorizontalAlignment.Right,
-        });
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        screen.Controls.Add(TemperatureLabel);
     }
 
     private void LoadHumidityIndicator()
     {
-        int boxX = 106;
-        int boxY = 27;
-        int boxWidth = 108;
-        int boxHeight = 93;
+        int boxX = 0;
+        int boxY = 72;
+        int boxWidth = 320;
+        int boxHeight = 42;
 
         screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
             ForeColor = humidityColor
         });
 
-        screen.Controls.Add(new Label(111, boxY + 5, boxWidth - 10, font8x12.Height)
+        screen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
         {
             Text = "Humidity",
-            Font = font8x12,
-            TextColor = sensorColor
+            Font = font16x24,
+            TextColor = sensorColor,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center
         });
 
-        HumidityLabel = new Label(111, boxY + 43, boxWidth - 10, font12X16.Height, ScaleFactor.X2)
+        HumidityLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "0",
-            Font = font12X16,
+            Font = font16x24,
             TextColor = sensorColor,
-            HorizontalAlignment = HorizontalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment = VerticalAlignment.Center
         };
         screen.Controls.Add(HumidityLabel);
-
-        screen.Controls.Add(new Label(111, boxY + 72, boxWidth - 10, font12X20.Height)
-        {
-            Text = "%",
-            Font = font12X20,
-            TextColor = sensorColor,
-            HorizontalAlignment = HorizontalAlignment.Right
-        });
     }
 
     private void LoadSoilMoistureIndicator()
     {
-        int boxX = 214;
-        int boxY = 27;
-        int boxWidth = 106;
-        int boxHeight = 93;
+        int boxX = 0;
+        int boxY = 114;
+        int boxWidth = 320;
+        int boxHeight = 42;
 
         screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
             ForeColor = soilMoistureColor
         });
 
-        screen.Controls.Add(new Label(219, boxY + 5, boxWidth - 10, font8x12.Height)
+        screen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
         {
-            Text = "Soil Moist.",
-            Font = font8x12,
-            TextColor = sensorColor
+            Text = "Soil Moisture",
+            Font = font16x24,
+            TextColor = sensorColor,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center
         });
 
-        SoilMoistureLabel = new Label(219, boxY + 43, boxWidth - 10, font12X16.Height, ScaleFactor.X2)
+        SoilMoistureLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "0",
-            Font = font12X16,
+            Font = font16x24,
             TextColor = sensorColor,
-            HorizontalAlignment = HorizontalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment = VerticalAlignment.Center
         };
         screen.Controls.Add(SoilMoistureLabel);
-
-        screen.Controls.Add(new Label(219, boxY + 72, boxWidth - 10, font12X20.Height)
-        {
-            Text = "%",
-            Font = font12X20,
-            TextColor = sensorColor,
-            HorizontalAlignment = HorizontalAlignment.Right
-        });
     }
 
     private void LoadLightsStatus()
     {
-        screen.Controls.Add(new Box(0, 120, screen.Width / 2, 60)
-        {
-            ForeColor = Color.FromHex("CCCCCC"),
-        });
+        int boxX = 0;
+        int boxY = 156;
+        int boxWidth = 160;
+        int boxHeight = 42;
 
-        lightsCircle = new Circle(30, 150, 20)
+        lightsCircle = new Circle(139, 177, 12)
         {
             ForeColor = inactiveColor,
         };
         screen.Controls.Add(lightsCircle);
 
-        screen.Controls.Add(new Circle(24, 144, 6)
+        screen.Controls.Add(new Circle(135, 173, 4)
         {
             ForeColor = Color.FromHex("DCDCDC"),
         });
 
-        screen.Controls.Add(new Label(60, 145, 12, 16, ScaleFactor.X2)
+        screen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "Lights",
-            Font = font8x12,
-            TextColor = foregroundColor
+            Font = font16x24,
+            TextColor = sensorColor,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center
         });
     }
 
     private void LoadVentsStatus()
     {
-        screen.Controls.Add(new Box(screen.Width / 2, 120, screen.Width / 2, 60)
+        int boxX = 160;
+        int boxY = 156;
+        int boxWidth = 160;
+        int boxHeight = 42;
+
+        screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
-            ForeColor = Color.White,
+            ForeColor = Color.FromHex("082936")
         });
 
-        ventsCircle = new Circle(190, 150, 20)
+        ventsCircle = new Circle(299, 177, 12)
         {
             ForeColor = inactiveColor,
         };
         screen.Controls.Add(ventsCircle);
 
-        screen.Controls.Add(new Circle(184, 144, 6)
+        screen.Controls.Add(new Circle(295, 173, 4)
         {
             ForeColor = Color.FromHex("DCDCDC"),
         });
 
-        screen.Controls.Add(new Label(220, 145, 12, 16, ScaleFactor.X2)
+        screen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "Vents",
-            Font = font8x12,
-            TextColor = foregroundColor
+            Font = font16x24,
+            TextColor = sensorColor,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center
         });
     }
 
     private void LoadWaterStatus()
     {
-        screen.Controls.Add(new Box(0, 180, screen.Width / 2, 60)
+        int boxX = 0;
+        int boxY = 198;
+        int boxWidth = 160;
+        int boxHeight = 42;
+
+        screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
-            ForeColor = Color.White,
+            ForeColor = Color.FromHex("082936")
         });
 
-        waterCircle = new Circle(30, 210, 20)
+        waterCircle = new Circle(139, 219, 12)
         {
             ForeColor = inactiveColor,
         };
         screen.Controls.Add(waterCircle);
 
-        screen.Controls.Add(new Circle(24, 204, 6)
+        screen.Controls.Add(new Circle(135, 215, 4)
         {
-            ForeColor = Color.FromHex("DCDCDC"),
+            ForeColor = Color.FromHex("DCDCDC")
         });
 
-        screen.Controls.Add(new Label(60, 205, 12, 16, ScaleFactor.X2)
+        screen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "Water",
-            Font = font8x12,
-            TextColor = foregroundColor
+            Font = font16x24,
+            TextColor = sensorColor,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center
         });
     }
 
     private void LoadHeaterStatus()
     {
-        screen.Controls.Add(new Box(screen.Width / 2, 180, screen.Width / 2, 60)
-        {
-            ForeColor = Color.FromHex("CCCCCC"),
-        });
+        int boxX = 160;
+        int boxY = 198;
+        int boxWidth = 160;
+        int boxHeight = 42;
 
-        heaterCircle = new Circle(190, 210, 20)
+        heaterCircle = new Circle(299, 219, 12)
         {
             ForeColor = inactiveColor,
         };
         screen.Controls.Add(heaterCircle);
 
-        screen.Controls.Add(new Circle(184, 204, 6)
+        screen.Controls.Add(new Circle(295, 215, 4)
         {
             ForeColor = Color.FromHex("DCDCDC"),
         });
 
-        screen.Controls.Add(new Label(220, 205, 12, 16, ScaleFactor.X2)
+        screen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "Heater",
-            Font = font8x12,
-            TextColor = foregroundColor
+            Font = font16x24,
+            TextColor = sensorColor,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center
         });
     }
 
-    public void UpdateConnectionStatus(bool connected)
+    public async Task StartConnectingWiFiAnimation()
     {
+        connectivityToken = new CancellationTokenSource();
+
+        bool alternateImg = false;
+
+        while (!connectivityToken.IsCancellationRequested)
+        {
+            alternateImg = !alternateImg;
+            UpdateConnectionStatus(alternateImg);
+
+            await Task.Delay(500);
+        }
+    }
+
+    public async Task StartConnectingCloudAnimation()
+    {
+        cloudToken = new CancellationTokenSource();
+
+        bool alternateImg = false;
+
+        while (!cloudToken.IsCancellationRequested)
+        {
+            alternateImg = !alternateImg;
+            UpdateCloudStatus(alternateImg);
+
+            await Task.Delay(500);
+        }
+    }
+
+    public void UpdateConnectionStatus(bool connected, bool stopAnimation = false)
+    {
+        if (stopAnimation) { connectivityToken.Cancel(); }
+
         wifi.Image = connected ? imgWifi : imgWifiFade;
     }
 
-    public void UpdateCloudStatus(bool IsConnected)
+    public void UpdateCloudStatus(bool IsConnected, bool stopAnimation = false)
     {
+        if (stopAnimation) { cloudToken.Cancel(); }
+
         cloud.Image = IsConnected ? imgCloud : imgCloudFade;
     }
 
@@ -372,9 +422,9 @@ public class DisplayController
         screen.BeginUpdate();
 
         CounterLabel.Text = $"{logId:D6}";
-        TemperatureLabel.Text = temp.ToString("N0");
-        HumidityLabel.Text = humidity.ToString("N0");
-        SoilMoistureLabel.Text = moisture.ToString("N0");
+        TemperatureLabel.Text = $"{temp.ToString("N0")}°C";
+        HumidityLabel.Text = $"{humidity.ToString("N0")}%";
+        SoilMoistureLabel.Text = $"{moisture.ToString("N0")}%";
 
         screen.EndUpdate();
     }
