@@ -3,7 +3,9 @@ using Cultivar.Hardware;
 using Meadow;
 using Meadow.Devices;
 using Meadow.Hardware;
+using Meadow.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,12 +22,25 @@ public class MeadowApp : App<F7CoreComputeV2>
     {
         Resolver.Log.Info("Initialize hardware...");
 
+        Resolver.MeadowCloudService.SendLog(LogLevel.Information, "Cultivar started");
+        Resolver.MeadowCloudService.ErrorOccurred += MeadowCloudService_ErrorOccurred;
+
         var greenhouseHardware = new ProductionBetaHardware();
         var networkAdapter = Device.NetworkAdapters.Primary<INetworkAdapter>();
 
         mainController = new MainController(greenhouseHardware, networkAdapter!);
 
         return base.Initialize();
+    }
+
+    public override void OnBootFromCrash(IEnumerable<string> crashReports)
+    {
+        Resolver.MeadowCloudService.SendLog(LogLevel.Information, "Cultivar restarted after crash");
+    }
+
+    private void MeadowCloudService_ErrorOccurred(object sender, Exception e)
+    {
+        Resolver.Log.Error($"CLOUD ERROR: {e.Message}");
     }
 
     public override Task Run()
@@ -39,7 +54,7 @@ public class MeadowApp : App<F7CoreComputeV2>
         return base.Run();
     }
 
-    void WireUpWatchdogs()
+    private void WireUpWatchdogs()
     {
         var watchdogTimeout = TimeSpan.FromSeconds(30);
         var pettingInterval = TimeSpan.FromSeconds(20); // should be well less than the timeout
@@ -52,7 +67,7 @@ public class MeadowApp : App<F7CoreComputeV2>
         StartPettingWatchdog(pettingInterval);
     }
 
-    void StartPettingWatchdog(TimeSpan pettingInterval)
+    private void StartPettingWatchdog(TimeSpan pettingInterval)
     {
         // Just for good measure, let's reset the watchdog to begin with.
         Device.WatchdogReset();
