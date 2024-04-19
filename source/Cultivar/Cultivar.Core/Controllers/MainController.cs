@@ -7,12 +7,15 @@ using Meadow.Logging;
 using Meadow.Peripherals.Displays;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cultivar.Controllers;
 
 public class MainController
 {
+    private int TIMEZONE_OFFSET = -7;
+
     private int logId = 0;
 
     private bool IsSampling = false;
@@ -32,7 +35,7 @@ public class MainController
 
     private GreenhouseModel climate;
 
-    private TimeSpan updateInterval = TimeSpan.FromMinutes(2);
+    private TimeSpan updateInterval = TimeSpan.FromMinutes(1);
 
     public MainController(IGreenhouseHardware greenhouseHardware, INetworkAdapter? networkAdapter = null, bool isSimulator = false)
     {
@@ -79,7 +82,15 @@ public class MainController
 
     private void WireNetworkEvents()
     {
-        displayController.UpdateConnectionStatus(network.IsConnected);
+        if (network.IsConnected)
+        {
+            displayController.UpdateConnectionStatus(true);
+        }
+        else
+        {
+            _ = displayController.StartConnectingWiFiAnimation();
+        }
+
         Resolver.Log.Info(network.IsConnected
             ? "NETWORK: Already connected."
             : "NETWORK: Not connected.");
@@ -87,26 +98,33 @@ public class MainController
         network.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
         {
             Resolver.Log.Info($"NETWORK: Joined network - IP Address: {networkAdapter.IpAddress}");
-            displayController.UpdateConnectionStatus(true);
+            displayController.UpdateConnectionStatus(true, true);
             //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
         };
 
         network.NetworkDisconnected += (sender, args) =>
         {
             Resolver.Log.Info($"NETWORK: Disconnected.");
-            displayController.UpdateConnectionStatus(false);
+            displayController.UpdateConnectionStatus(false, true);
         };
     }
 
     private void SubscribeToCloudConnectionEvents()
     {
+        _ = displayController.StartConnectingCloudAnimation();
+
         displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
 
         Resolver.MeadowCloudService.ConnectionStateChanged += (sender, state) =>
         {
-            displayController?.UpdateConnectionStatus(network.IsConnected);
-            displayController?.UpdateCloudStatus(state == CloudConnectionState.Connected);
+            if (state == CloudConnectionState.Connected)
+            {
+                displayController?.UpdateCloudStatus(true, true);
+            }
+
             displayController?.UpdateStatus(state.ToString());
+            Thread.Sleep(2000);
+            displayController?.UpdateStatus(DateTime.Now.AddHours(TIMEZONE_OFFSET).ToString("hh:mm tt"));
         };
     }
 
@@ -337,12 +355,17 @@ public class MainController
                     { "SoilMoistureDouble", climate.SoilMoisture }
                 });
 
+                displayController.UpdateStatus("Log Sent!");
+                await Task.Delay(2000);
+
                 displayController.UpdateSync(false);
             }
             catch (Exception ex)
             {
                 Resolver.Log.Info($"Err: {ex.Message}");
             }
+
+            displayController.UpdateStatus(DateTime.Now.AddHours(TIMEZONE_OFFSET).ToString("hh:mm tt"));
 
             await Task.Delay(updateInterval);
         }

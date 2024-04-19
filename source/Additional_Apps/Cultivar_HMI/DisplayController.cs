@@ -20,7 +20,7 @@ namespace Cultivar_HMI
         private readonly Color foregroundColor = Color.White;
         private readonly Color temperatureColor = Color.FromHex("B35E2C");
         private readonly Color humidityColor = Color.FromHex("1A80AA");
-        private readonly Color soilMoistureColor = Color.FromHex("98A645");
+        private readonly Color soilMoistureColor = Color.FromHex("737D45");
         private readonly Color sensorColor = Color.White;
         private readonly Color activeColor = Color.FromHex("14B069");
         private readonly Color inactiveColor = Color.FromHex("FF3535");
@@ -135,7 +135,7 @@ namespace Cultivar_HMI
                 VerticalAlignment = VerticalAlignment.Center
             });
 
-            TemperatureLabel = new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
+            TemperatureLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
             {
                 Text = "0",
                 Font = font16x24,
@@ -167,7 +167,7 @@ namespace Cultivar_HMI
                 VerticalAlignment = VerticalAlignment.Center
             });
 
-            HumidityLabel = new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
+            HumidityLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
             {
                 Text = "0",
                 Font = font16x24,
@@ -199,7 +199,7 @@ namespace Cultivar_HMI
                 VerticalAlignment = VerticalAlignment.Center
             });
 
-            SoilMoistureLabel = new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
+            SoilMoistureLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
             {
                 Text = "0",
                 Font = font16x24,
