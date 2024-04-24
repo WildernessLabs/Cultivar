@@ -1,0 +1,34 @@
+<Project Sdk="Meadow.Sdk/1.1.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Cultivar</RootNamespace>
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Assets\img-cloud-fade.bmp" />
+    <None Remove="Assets\img-cloud.bmp" />
+    <None Remove="img-green.bmp" />
+    <None Remove="img-red.bmp" />
+    <None Remove="img-sync-fade.bmp" />
+    <None Remove="img-sync.bmp" />
+    <None Remove="img-wifi-fade.bmp" />
+    <None Remove="img-wifi.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\img-cloud-fade.bmp" />
+    <EmbeddedResource Include="Assets\img-cloud.bmp" />
+    <EmbeddedResource Include="Assets\img-sync-fade.bmp" />
+    <EmbeddedResource Include="Assets\img-sync.bmp" />
+    <EmbeddedResource Include="Assets\img-wifi-fade.bmp" />
+    <EmbeddedResource Include="Assets\img-wifi.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Meadow.Foundation.CompositeDevices\Source\Relays.ElectromagneticRelayModule\Driver\Relays.ElectromagneticRelayModule.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Libraries_and_Frameworks\Graphics.MicroLayout\Driver\Graphics.MicroLayout.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\Sensors.Moisture.Capacitive\Driver\Sensors.Moisture.Capacitive.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.Logging\Source\Meadow.Logging.LogProviders\Driver\Meadow.Logging.LogProviders.csproj" />
+    <ProjectReference Include="..\..\..\..\Meadow.ProjectLab\Source\Meadow.ProjectLab\Meadow.ProjectLab.csproj" />
+  </ItemGroup>
+</Project>
