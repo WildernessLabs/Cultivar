@@ -14,18 +14,20 @@ namespace Cultivar.MeadowApp;
 public class MeadowApp : App<F7CoreComputeV2>
 {
     private MainController mainController;
-    //private int WatchdogUptimeMaxHours = 1;
-    //private int WatchdogUptimePetCountMax = 0;
-    //private int WatchdogCount = 0;
+
+    public bool RunningOnDevKit { get; set; } = true;
 
     public override Task Initialize()
     {
         Resolver.Log.Info("Initialize hardware...");
 
-        Resolver.MeadowCloudService.SendLog(LogLevel.Information, "Cultivar started");
+        IGreenhouseHardware greenhouseHardware = RunningOnDevKit ? new CoreComputeDevKitHardware() : new ProductionBetaHardware();
+
+        Resolver.Log.Info($"Running on {greenhouseHardware.GetType().Name}");
+
+        Resolver.MeadowCloudService.SendLog(LogLevel.Information, $"Cultivar started on {greenhouseHardware.GetType().Name}");
         Resolver.MeadowCloudService.ErrorOccurred += MeadowCloudService_ErrorOccurred;
 
-        var greenhouseHardware = new ProductionBetaHardware();
         var networkAdapter = Device.NetworkAdapters.Primary<INetworkAdapter>();
 
         mainController = new MainController(greenhouseHardware, networkAdapter!);

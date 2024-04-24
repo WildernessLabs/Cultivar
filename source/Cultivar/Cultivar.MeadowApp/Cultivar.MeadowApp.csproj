@@ -25,6 +25,7 @@
 	</None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj" />
     <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />
   </ItemGroup>
 </Project>

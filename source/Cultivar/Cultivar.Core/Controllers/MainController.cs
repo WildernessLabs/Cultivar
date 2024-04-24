@@ -26,9 +26,8 @@ public class MainController
     private bool isHeaterOn = false;
 
     private IGreenhouseHardware hardware;
-    private INetworkAdapter? network;
 
-    private DisplayController displayController;
+    private readonly IDisplayController? displayController;
     //private MicroAudio audio;
 
     private CloudLogger cloudLogger;
@@ -40,13 +39,19 @@ public class MainController
     public MainController(IGreenhouseHardware greenhouseHardware, INetworkAdapter? networkAdapter = null, bool isSimulator = false)
     {
         hardware = greenhouseHardware;
-        network = networkAdapter;
 
         hardware.RgbLed?.SetColor(Color.Red);
 
         if (hardware.Display is { } display)
         {
-            displayController = new DisplayController(display, isSimulator ? RotationType.Normal : RotationType._270Degrees);
+            if (hardware.Display.Width == 240)
+            {
+                displayController = new DisplayController_240x240(display);
+            }
+            else
+            {
+                displayController = new DisplayController_320x240(display, isSimulator ? RotationType.Normal : RotationType._270Degrees);
+            }
         }
 
         //if (Hardware.Speaker is { } speaker)
@@ -57,7 +62,7 @@ public class MainController
 
         if (networkAdapter != null)
         {
-            WireNetworkEvents();
+            WireNetworkEvents(networkAdapter);
         }
 
         cloudLogger = new CloudLogger(LogLevel.Warning);
@@ -80,38 +85,38 @@ public class MainController
         Resolver.Log.Info("Initialization complete");
     }
 
-    private void WireNetworkEvents()
+    private void WireNetworkEvents(INetworkAdapter networkAdapter)
     {
-        if (network.IsConnected)
+        if (networkAdapter.IsConnected)
         {
-            displayController.UpdateConnectionStatus(true);
+            displayController?.UpdateConnectionStatus(true);
         }
         else
         {
-            _ = displayController.StartConnectingWiFiAnimation();
+            _ = displayController?.StartConnectingWiFiAnimation();
         }
 
-        Resolver.Log.Info(network.IsConnected
+        Resolver.Log.Info(networkAdapter.IsConnected
             ? "NETWORK: Already connected."
             : "NETWORK: Not connected.");
 
-        network.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
+        networkAdapter.NetworkConnected += (networkAdapter, networkConnectionEventArgs) =>
         {
             Resolver.Log.Info($"NETWORK: Joined network - IP Address: {networkAdapter.IpAddress}");
-            displayController.UpdateConnectionStatus(true, true);
+            displayController?.UpdateConnectionStatus(true, true);
             //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
         };
 
-        network.NetworkDisconnected += (sender, args) =>
+        networkAdapter.NetworkDisconnected += (sender, args) =>
         {
             Resolver.Log.Info($"NETWORK: Disconnected.");
-            displayController.UpdateConnectionStatus(false, true);
+            displayController?.UpdateConnectionStatus(false, true);
         };
     }
 
     private void SubscribeToCloudConnectionEvents()
     {
-        _ = displayController.StartConnectingCloudAnimation();
+        _ = displayController?.StartConnectingCloudAnimation();
 
         displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
 

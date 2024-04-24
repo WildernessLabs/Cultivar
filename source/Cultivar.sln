@@ -85,7 +85,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amqp", "..\..\amqpnetlite\s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Windows", "..\..\Meadow.Core\source\implementations\windows\Meadow.Windows\Meadow.Windows.csproj", "{C58716BC-99CD-4B58-A854-17653014CA99}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Displays.WinForms", "..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\Displays.WinForms\Driver\Displays.WinForms.csproj", "{2B36D2E9-B90A-4E1C-B2D1-2C156E0D6240}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Foundation.Core", "..\..\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj", "{A08B7246-41A6-4190-8B37-03A893CF8CC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Displays.Silk", "..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\Displays.Silk\Driver\Displays.Silk.csproj", "{9BB5BB66-9CD8-43C8-99C0-2BF5D62B4659}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ICs.IOExpanders.Pcx857x", "..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\ICs.IOExpanders.Pcx857x\Driver\ICs.IOExpanders.Pcx857x.csproj", "{93F22288-6812-45D1-9ACA-1384F1B25ECC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -251,10 +255,18 @@ Global
 		{C58716BC-99CD-4B58-A854-17653014CA99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C58716BC-99CD-4B58-A854-17653014CA99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C58716BC-99CD-4B58-A854-17653014CA99}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B36D2E9-B90A-4E1C-B2D1-2C156E0D6240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B36D2E9-B90A-4E1C-B2D1-2C156E0D6240}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B36D2E9-B90A-4E1C-B2D1-2C156E0D6240}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B36D2E9-B90A-4E1C-B2D1-2C156E0D6240}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A08B7246-41A6-4190-8B37-03A893CF8CC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A08B7246-41A6-4190-8B37-03A893CF8CC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A08B7246-41A6-4190-8B37-03A893CF8CC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A08B7246-41A6-4190-8B37-03A893CF8CC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BB5BB66-9CD8-43C8-99C0-2BF5D62B4659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BB5BB66-9CD8-43C8-99C0-2BF5D62B4659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BB5BB66-9CD8-43C8-99C0-2BF5D62B4659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BB5BB66-9CD8-43C8-99C0-2BF5D62B4659}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F22288-6812-45D1-9ACA-1384F1B25ECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F22288-6812-45D1-9ACA-1384F1B25ECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F22288-6812-45D1-9ACA-1384F1B25ECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F22288-6812-45D1-9ACA-1384F1B25ECC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -298,7 +310,9 @@ Global
 		{481AC720-C0F9-483C-B401-F953F85C476E} = {02FF0386-E2EE-4139-8AD8-9822BA413B37}
 		{879E8F05-78EA-47AD-9334-0F6344DDFB24} = {02FF0386-E2EE-4139-8AD8-9822BA413B37}
 		{C58716BC-99CD-4B58-A854-17653014CA99} = {02FF0386-E2EE-4139-8AD8-9822BA413B37}
-		{2B36D2E9-B90A-4E1C-B2D1-2C156E0D6240} = {02FF0386-E2EE-4139-8AD8-9822BA413B37}
+		{A08B7246-41A6-4190-8B37-03A893CF8CC8} = {02FF0386-E2EE-4139-8AD8-9822BA413B37}
+		{9BB5BB66-9CD8-43C8-99C0-2BF5D62B4659} = {02FF0386-E2EE-4139-8AD8-9822BA413B37}
+		{93F22288-6812-45D1-9ACA-1384F1B25ECC} = {02FF0386-E2EE-4139-8AD8-9822BA413B37}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {451E381E-593E-41C2-BC7C-DC1926C286D3}
