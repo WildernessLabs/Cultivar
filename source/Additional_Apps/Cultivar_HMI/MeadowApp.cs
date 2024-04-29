@@ -1,42 +1,47 @@
 ﻿using Meadow;
 using Meadow.Foundation.Displays;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Cultivar_HMI;
 
-public class MeadowApp : App<Windows>
+public class MeadowApp : App<Desktop>
 {
-    private WinFormsDisplay display;
+    private SilkDisplay display;
     private DisplayController displayController;
 
     public override Task Initialize()
     {
         Resolver.Log.Info("Initialize...");
 
-        display = new WinFormsDisplay(320, 240);
+        display = new SilkDisplay(320, 240);
         displayController = new DisplayController(display);
 
         _ = displayController.Run();
 
-        return base.Initialize();
+        return Task.CompletedTask;
     }
 
     public override Task Run()
     {
         Resolver.Log.Info("Run...");
 
-        Application.Run(display);
+        // NOTE: this will not return until the display is closed
+        ExecutePlatformDisplayRunner();
 
-        return base.Run();
+        return Task.CompletedTask;
+    }
+
+    private void ExecutePlatformDisplayRunner()
+    {
+        if (Device.Display is SilkDisplay sd)
+        {
+            sd.Run();
+        }
+        MeadowOS.TerminateRun();
+        System.Environment.Exit(0);
     }
 
     public static async Task Main(string[] args)
     {
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(false);
-        ApplicationConfiguration.Initialize();
-
         await MeadowOS.Start(args);
     }
 }
