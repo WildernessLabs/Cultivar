@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>10.0</LangVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Remove="img-green.bmp" />
+        <None Remove="img-red.bmp" />
+        <None Remove="img-sync-fade.bmp" />
+        <None Remove="img-sync.bmp" />
+        <None Remove="img-wifi-fade.bmp" />
+        <None Remove="img-wifi.bmp" />
+        <None Remove="Resources\img-cloud-fade.bmp" />
+        <None Remove="Resources\img-cloud.bmp" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\img-cloud-fade.bmp" />
+        <EmbeddedResource Include="Resources\img-cloud.bmp" />
+        <EmbeddedResource Include="Resources\img-sync-fade.bmp" />
+        <EmbeddedResource Include="Resources\img-sync.bmp" />
+        <EmbeddedResource Include="Resources\img-wifi-fade.bmp" />
+        <EmbeddedResource Include="Resources\img-wifi.bmp" />
+    </ItemGroup>
+    <ItemGroup>
+    <PackageReference Include="Meadow.Desktop" Version="*" />
+    <PackageReference Include="Meadow.Foundation.Graphics.MicroLayout" Version="*" />
+    </ItemGroup>
+</Project>
