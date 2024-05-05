@@ -9,12 +9,10 @@
   <ItemGroup>
     <None Remove="Assets\img-cloud-fade.bmp" />
     <None Remove="Assets\img-cloud.bmp" />
-    <None Remove="img-green.bmp" />
-    <None Remove="img-red.bmp" />
-    <None Remove="img-sync-fade.bmp" />
-    <None Remove="img-sync.bmp" />
-    <None Remove="img-wifi-fade.bmp" />
-    <None Remove="img-wifi.bmp" />
+    <None Remove="Assets\img-sync-fade.bmp" />
+    <None Remove="Assets\img-sync.bmp" />
+    <None Remove="Assets\img-wifi-fade.bmp" />
+    <None Remove="Assets\img-wifi.bmp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\img-cloud-fade.bmp" />

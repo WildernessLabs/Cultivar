@@ -5,6 +5,7 @@ using Meadow;
 using Meadow.Hardware;
 using Meadow.Logging;
 using Meadow.Peripherals.Displays;
+using Meadow.Peripherals.Relays;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -46,7 +47,9 @@ public class MainController
 
         if (hardware.Display is { } display)
         {
-            displayController = new DisplayController(display, isSimulator ? RotationType.Normal : RotationType._270Degrees);
+            displayController = new DisplayController(display, isSimulator
+                ? RotationType.Normal
+                : RotationType._270Degrees);
         }
 
         //if (Hardware.Speaker is { } speaker)
@@ -176,33 +179,33 @@ public class MainController
         });
     }
 
-    //private void HandleRelayChanges()
-    //{
-    //    RegisterRelayChange(Hardware.VentFan, "IsVentilationOn");
-    //    RegisterRelayChange(Hardware.Heater, "IsHeaterOn");
-    //    RegisterRelayChange(Hardware.Lights, "IsLightOn");
-    //    RegisterRelayChange(Hardware.IrrigationLines, "IsIrrigationOn");
-    //}
+    private void HandleRelayChanges()
+    {
+        RegisterRelayChange(hardware.VentFan, "IsVentilationOn");
+        RegisterRelayChange(hardware.Heater, "IsHeaterOn");
+        RegisterRelayChange(hardware.Lights, "IsLightOn");
+        RegisterRelayChange(hardware.IrrigationLines, "IsIrrigationOn");
+    }
 
-    //private void RegisterRelayChange(IRelay relay, string eventName)
-    //{
-    //    relay.OnRelayChanged += (sender, relayState) =>
-    //    {
-    //        Resolver.Log.Trace($"relay changed, {eventName}:{relayState}");
-    //        try
-    //        {
-    //            var cl = Resolver.Services.Get<CloudLogger>();
-    //            cl?.LogEvent(110, "relay change", new Dictionary<string, object>()
-    //            {
-    //                { eventName, relayState }
-    //            });
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            Resolver.Log.Info($"Err: {ex.Message}");
-    //        }
-    //    };
-    //}
+    private void RegisterRelayChange(IRelay relay, string eventName)
+    {
+        relay.OnChanged += (sender, relayState) =>
+        {
+            Resolver.Log.Trace($"relay changed, {eventName}:{relayState}");
+            try
+            {
+                var cl = Resolver.Services.Get<CloudLogger>();
+                cl?.LogEvent(110, "relay change", new Dictionary<string, object>()
+                {
+                    { eventName, relayState }
+                });
+            }
+            catch (Exception ex)
+            {
+                Resolver.Log.Info($"Err: {ex.Message}");
+            }
+        };
+    }
 
     private void InitializeButtons()
     {
@@ -217,8 +220,8 @@ public class MainController
                 if (hardware.VentFan is { } ventilation)
                 {
                     ventilation.State = isVentilationOn
-                        ? Meadow.Peripherals.Relays.RelayState.Closed
-                        : Meadow.Peripherals.Relays.RelayState.Open;
+                        ? RelayState.Closed
+                        : RelayState.Open;
                 }
 
                 try
@@ -246,8 +249,8 @@ public class MainController
                 if (hardware.IrrigationLines is { } irrigation)
                 {
                     irrigation.State = isIrrigationOn
-                        ? Meadow.Peripherals.Relays.RelayState.Closed
-                        : Meadow.Peripherals.Relays.RelayState.Open;
+                        ? RelayState.Closed
+                        : RelayState.Open;
                 }
 
                 try
@@ -275,8 +278,8 @@ public class MainController
                 if (hardware.Lights is { } lights)
                 {
                     lights.State = isLightOn
-                        ? Meadow.Peripherals.Relays.RelayState.Closed
-                        : Meadow.Peripherals.Relays.RelayState.Open;
+                        ? RelayState.Closed
+                        : RelayState.Open;
                 }
 
                 try
@@ -304,8 +307,8 @@ public class MainController
                 if (hardware.Heater is { } heater)
                 {
                     heater.State = isHeaterOn
-                        ? Meadow.Peripherals.Relays.RelayState.Closed
-                        : Meadow.Peripherals.Relays.RelayState.Open; ;
+                        ? RelayState.Closed
+                        : RelayState.Open;
                 }
 
                 try
@@ -326,7 +329,7 @@ public class MainController
 
     private async Task StartUpdating(TimeSpan updateInterval)
     {
-        Console.WriteLine("ClimateMonitorAgent.StartUpdating()");
+        Resolver.Log.Info("ClimateMonitorAgent.StartUpdating()");
 
         if (IsSampling)
         {
@@ -338,7 +341,7 @@ public class MainController
         {
             climate = await Read();
 
-            Console.WriteLine($"Temperature: {climate.Temperature.Celsius:N1} | Humidity: {climate.Humidity.Percent:N1} | Moisture: {climate.SoilMoisture:N1}");
+            Resolver.Log.Info($"Temperature: {climate.Temperature.Celsius:N1} | Humidity: {climate.Humidity.Percent:N1} | Moisture: {climate.SoilMoisture:N1}");
 
             displayController.UpdateReadings(logId, climate.Temperature.Celsius, climate.Humidity.Percent, climate.SoilMoisture);
 
