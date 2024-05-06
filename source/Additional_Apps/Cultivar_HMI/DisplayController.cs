@@ -2,13 +2,14 @@
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Peripherals.Displays;
-using System;
-using System.Threading.Tasks;
 
 namespace Cultivar_HMI
 {
     public class DisplayController
     {
+        private CancellationTokenSource connectivityToken;
+        private CancellationTokenSource cloudToken;
+
         private readonly Image imgWifi = Image.LoadFromResource("Cultivar_HMI.Resources.img-wifi.bmp");
         private readonly Image imgSync = Image.LoadFromResource("Cultivar_HMI.Resources.img-sync.bmp");
         private readonly Image imgCloud = Image.LoadFromResource("Cultivar_HMI.Resources.img-cloud.bmp");
@@ -27,10 +28,13 @@ namespace Cultivar_HMI
 
         private readonly Font12x20 font12X20 = new Font12x20();
         private readonly Font8x12 font8x12 = new Font8x12();
+        private readonly Font12x16 font12x16 = new Font12x16();
         private readonly Font16x24 font16x24 = new Font16x24();
 
-        private readonly DisplayScreen screen;
+        private readonly DisplayScreen displayScreen;
+        private AbsoluteLayout splashScreen;
 
+        private AbsoluteLayout dataScreen;
         private Label StatusLabel;
         private Label CounterLabel;
         private Label TemperatureLabel;
@@ -39,18 +43,69 @@ namespace Cultivar_HMI
         private Picture wifi;
         private Picture cloud;
         private Picture sync;
-
         private Circle lightsCircle;
         private Circle ventsCircle;
         private Circle waterCircle;
         private Circle heaterCircle;
 
+        private AbsoluteLayout updateScreen;
+        private Label status;
+        private Label progressValue;
+        private ProgressBar progressBar;
+
         public DisplayController(IPixelDisplay _display)
         {
-            screen = new DisplayScreen(_display)
+            displayScreen = new DisplayScreen(_display)
             {
                 BackgroundColor = backgroundColor
             };
+
+            LoadSplashScreen();
+
+            LoadDataScreen();
+
+            LoadOTAUpdateScreen();
+
+            displayScreen.Controls.Add(splashScreen!, dataScreen!, updateScreen!);
+        }
+
+        private void LoadSplashScreen()
+        {
+            splashScreen = new AbsoluteLayout(displayScreen);
+
+            var logo = Image.LoadFromResource("Cultivar_HMI.Resources.img_meadow.bmp");
+            var displayImage = new Picture(
+                0,
+                displayScreen.Height / 4,
+                displayScreen.Width,
+                logo.Height,
+                logo)
+            {
+                BackColor = backgroundColor,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            splashScreen.Controls.Add(displayImage);
+
+            splashScreen.Controls.Add(new Label(
+                0,
+                170,
+                displayScreen.Width,
+                font8x12.Height)
+            {
+                Text = $"Cultivar v1.0",
+                TextColor = Color.White,
+                Font = font8x12,
+                ScaleFactor = ScaleFactor.X2,
+                HorizontalAlignment = HorizontalAlignment.Center,
+            });
+
+            splashScreen.IsVisible = false;
+        }
+
+        private void LoadDataScreen()
+        {
+            dataScreen = new AbsoluteLayout(displayScreen);
 
             LoadStatusBar();
 
@@ -69,8 +124,9 @@ namespace Cultivar_HMI
             LoadWaterStatus();
 
             LoadHeaterStatus();
-        }
 
+            dataScreen.IsVisible = false;
+        }
         private void LoadStatusBar()
         {
             int boxX = 0;
@@ -80,27 +136,26 @@ namespace Cultivar_HMI
 
             StatusLabel = new Label(boxX + 5, boxY, boxWidth, boxHeight)
             {
-                Text = "Connected",
+                Text = "-",
                 Font = font12X20,
                 TextColor = foregroundColor,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            screen.Controls.Add(StatusLabel);
+            dataScreen.Controls.Add(StatusLabel);
 
             wifi = new Picture(286, boxY + 5, imgWifiFade.Width, imgWifiFade.Height, imgWifiFade);
-            screen.Controls.Add(wifi);
+            dataScreen.Controls.Add(wifi);
 
             cloud = new Picture(252, boxY + 5, imgCloudFade.Width, imgCloudFade.Height, imgCloudFade);
-            screen.Controls.Add(cloud);
+            dataScreen.Controls.Add(cloud);
 
             sync = new Picture(226, boxY + 5, imgSyncFade.Width, imgSyncFade.Height, imgSyncFade);
-            screen.Controls.Add(sync);
+            dataScreen.Controls.Add(sync);
         }
-
         private void LoadCounter()
         {
-            screen.Controls.Add(new Box(160, 5, 60, 21)
+            dataScreen.Controls.Add(new Box(160, 5, 60, 21)
             {
                 ForeColor = Color.FromHex("082936")
             });
@@ -111,9 +166,8 @@ namespace Cultivar_HMI
                 TextColor = foregroundColor,
                 HorizontalAlignment = HorizontalAlignment.Center,
             };
-            screen.Controls.Add(CounterLabel);
+            dataScreen.Controls.Add(CounterLabel);
         }
-
         private void LoadTemperatureIndicator()
         {
             int boxX = 0;
@@ -121,12 +175,12 @@ namespace Cultivar_HMI
             int boxWidth = 320;
             int boxHeight = 42;
 
-            screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
+            dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
             {
                 ForeColor = temperatureColor
             });
 
-            screen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
+            dataScreen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
             {
                 Text = "Temperature",
                 Font = font16x24,
@@ -143,9 +197,8 @@ namespace Cultivar_HMI
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            screen.Controls.Add(TemperatureLabel);
+            dataScreen.Controls.Add(TemperatureLabel);
         }
-
         private void LoadHumidityIndicator()
         {
             int boxX = 0;
@@ -153,12 +206,12 @@ namespace Cultivar_HMI
             int boxWidth = 320;
             int boxHeight = 42;
 
-            screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
+            dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
             {
                 ForeColor = humidityColor
             });
 
-            screen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
+            dataScreen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
             {
                 Text = "Humidity",
                 Font = font16x24,
@@ -175,9 +228,8 @@ namespace Cultivar_HMI
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            screen.Controls.Add(HumidityLabel);
+            dataScreen.Controls.Add(HumidityLabel);
         }
-
         private void LoadSoilMoistureIndicator()
         {
             int boxX = 0;
@@ -185,12 +237,12 @@ namespace Cultivar_HMI
             int boxWidth = 320;
             int boxHeight = 42;
 
-            screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
+            dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
             {
                 ForeColor = soilMoistureColor
             });
 
-            screen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
+            dataScreen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
             {
                 Text = "Soil Moisture",
                 Font = font16x24,
@@ -207,9 +259,8 @@ namespace Cultivar_HMI
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center
             };
-            screen.Controls.Add(SoilMoistureLabel);
+            dataScreen.Controls.Add(SoilMoistureLabel);
         }
-
         private void LoadLightsStatus()
         {
             int boxX = 0;
@@ -221,14 +272,14 @@ namespace Cultivar_HMI
             {
                 ForeColor = inactiveColor,
             };
-            screen.Controls.Add(lightsCircle);
+            dataScreen.Controls.Add(lightsCircle);
 
-            screen.Controls.Add(new Circle(135, 173, 4)
+            dataScreen.Controls.Add(new Circle(135, 173, 4)
             {
                 ForeColor = Color.FromHex("DCDCDC"),
             });
 
-            screen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
+            dataScreen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
             {
                 Text = "Lights",
                 Font = font16x24,
@@ -237,7 +288,6 @@ namespace Cultivar_HMI
                 VerticalAlignment = VerticalAlignment.Center
             });
         }
-
         private void LoadVentsStatus()
         {
             int boxX = 160;
@@ -245,7 +295,7 @@ namespace Cultivar_HMI
             int boxWidth = 160;
             int boxHeight = 42;
 
-            screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
+            dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
             {
                 ForeColor = Color.FromHex("082936")
             });
@@ -254,14 +304,14 @@ namespace Cultivar_HMI
             {
                 ForeColor = inactiveColor,
             };
-            screen.Controls.Add(ventsCircle);
+            dataScreen.Controls.Add(ventsCircle);
 
-            screen.Controls.Add(new Circle(295, 173, 4)
+            dataScreen.Controls.Add(new Circle(295, 173, 4)
             {
                 ForeColor = Color.FromHex("DCDCDC"),
             });
 
-            screen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
+            dataScreen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
             {
                 Text = "Vents",
                 Font = font16x24,
@@ -270,7 +320,6 @@ namespace Cultivar_HMI
                 VerticalAlignment = VerticalAlignment.Center
             });
         }
-
         private void LoadWaterStatus()
         {
             int boxX = 0;
@@ -278,7 +327,7 @@ namespace Cultivar_HMI
             int boxWidth = 160;
             int boxHeight = 42;
 
-            screen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
+            dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
             {
                 ForeColor = Color.FromHex("082936")
             });
@@ -287,14 +336,14 @@ namespace Cultivar_HMI
             {
                 ForeColor = inactiveColor,
             };
-            screen.Controls.Add(waterCircle);
+            dataScreen.Controls.Add(waterCircle);
 
-            screen.Controls.Add(new Circle(135, 215, 4)
+            dataScreen.Controls.Add(new Circle(135, 215, 4)
             {
                 ForeColor = Color.FromHex("DCDCDC")
             });
 
-            screen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
+            dataScreen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
             {
                 Text = "Water",
                 Font = font16x24,
@@ -303,7 +352,6 @@ namespace Cultivar_HMI
                 VerticalAlignment = VerticalAlignment.Center
             });
         }
-
         private void LoadHeaterStatus()
         {
             int boxX = 160;
@@ -315,14 +363,14 @@ namespace Cultivar_HMI
             {
                 ForeColor = inactiveColor,
             };
-            screen.Controls.Add(heaterCircle);
+            dataScreen.Controls.Add(heaterCircle);
 
-            screen.Controls.Add(new Circle(295, 215, 4)
+            dataScreen.Controls.Add(new Circle(295, 215, 4)
             {
                 ForeColor = Color.FromHex("DCDCDC"),
             });
 
-            screen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
+            dataScreen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
             {
                 Text = "Heater",
                 Font = font16x24,
@@ -332,64 +380,153 @@ namespace Cultivar_HMI
             });
         }
 
+        private void LoadOTAUpdateScreen()
+        {
+            updateScreen = new AbsoluteLayout(displayScreen);
+
+            var logo = Image.LoadFromResource("Cultivar_HMI.Resources.img_meadow.bmp");
+            var displayImage = new Picture(95, 33, logo.Width, logo.Height, logo)
+            {
+                BackColor = backgroundColor,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            updateScreen.Controls.Add(displayImage);
+
+            updateScreen.Controls.Add(new Label(0, 135, updateScreen.Width, font16x24.Height)
+            {
+                Text = $"Cultivar v{MeadowApp.VERSION:N1}",
+                TextColor = Color.White,
+                Font = font16x24,
+                HorizontalAlignment = HorizontalAlignment.Center
+            });
+
+            status = new Label(0, 175, updateScreen.Width, font12x16.Height)
+            {
+                Text = "Updating...",
+                TextColor = Color.White,
+                Font = font12x16,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            updateScreen.Controls.Add(status);
+
+            progressBar = new ProgressBar(90, 205, 140, 16)
+            {
+                BackColor = Color.Black,
+                ValueColor = Color.FromHex("0B3749"),
+                BorderColor = Color.FromHex("0B3749"),
+                IsVisible = true
+            };
+            updateScreen.Controls.Add(progressBar);
+
+            progressValue = new Label(90, 206, 140, 16)
+            {
+                Text = "0%",
+                TextColor = Color.White,
+                Font = font12x16,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                IsVisible = true
+            };
+            updateScreen.Controls.Add(progressValue);
+
+            updateScreen.IsVisible = false;
+        }
+
+        public void ShowSplashScreen()
+        {
+            dataScreen.IsVisible = false;
+            splashScreen.IsVisible = true;
+        }
+        public void ShowDataScreen()
+        {
+            splashScreen.IsVisible = false;
+            dataScreen.IsVisible = true;
+        }
+        public void ShowUpdateScreen()
+        {
+            dataScreen.IsVisible = false;
+            updateScreen.IsVisible = true;
+        }
+
+        public async Task StartConnectingWiFiAnimation()
+        {
+            connectivityToken = new CancellationTokenSource();
+
+            bool alternateImg = false;
+
+            while (!connectivityToken.IsCancellationRequested)
+            {
+                alternateImg = !alternateImg;
+                UpdateConnectionStatus(alternateImg);
+
+                await Task.Delay(500);
+            }
+        }
+        public async Task StartConnectingCloudAnimation()
+        {
+            cloudToken = new CancellationTokenSource();
+
+            bool alternateImg = false;
+
+            while (!cloudToken.IsCancellationRequested)
+            {
+                alternateImg = !alternateImg;
+                UpdateCloudStatus(alternateImg);
+
+                await Task.Delay(500);
+            }
+        }
+
         public void UpdateConnectionStatus(bool connected)
         {
             wifi.Image = connected ? imgWifi : imgWifiFade;
         }
-
         public void UpdateCloudStatus(bool IsConnected)
         {
             cloud.Image = IsConnected ? imgCloud : imgCloudFade;
         }
-
         public void UpdateSync(bool on)
         {
             sync.Image = on ? imgSync : imgSyncFade;
         }
-
         public void UpdateStatus(string status)
         {
             StatusLabel.Text = status;
         }
-
         public void UpdateLights(bool on)
         {
             lightsCircle.ForeColor = on
                 ? activeColor
                 : inactiveColor;
         }
-
         public void UpdateVents(bool on)
         {
             ventsCircle.ForeColor = on
                 ? activeColor
                 : inactiveColor;
         }
-
         public void UpdateWater(bool on)
         {
             waterCircle.ForeColor = on
                 ? activeColor
                 : inactiveColor;
         }
-
         public void UpdateHeater(bool on)
         {
             heaterCircle.ForeColor = on
                 ? activeColor
                 : inactiveColor;
         }
-
         public void UpdateReadings(int logId, double temp, double humidity, double moisture)
         {
-            screen.BeginUpdate();
+            displayScreen.BeginUpdate();
 
             CounterLabel.Text = $"{logId:D6}";
             TemperatureLabel.Text = $"{temp.ToString("N0")}°C";
             HumidityLabel.Text = $"{humidity.ToString("N0")}%";
             SoilMoistureLabel.Text = $"{moisture.ToString("N0")}%";
 
-            screen.EndUpdate();
+            displayScreen.EndUpdate();
         }
 
         public async Task Run()

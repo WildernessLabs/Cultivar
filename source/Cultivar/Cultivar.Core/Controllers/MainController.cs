@@ -15,6 +15,8 @@ namespace Cultivar.Controllers;
 
 public class MainController
 {
+    public static double VERSION { get; set; } = 1.2;
+
     private int TIMEZONE_OFFSET = -7;
 
     private int logId = 0;
@@ -50,6 +52,9 @@ public class MainController
             displayController = new DisplayController(display, isSimulator
                 ? RotationType.Normal
                 : RotationType._270Degrees);
+            displayController.ShowSplashScreen();
+            Thread.Sleep(3000);
+            displayController.ShowDataScreen();
         }
 
         //if (Hardware.Speaker is { } speaker)
