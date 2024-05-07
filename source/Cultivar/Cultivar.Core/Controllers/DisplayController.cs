@@ -14,6 +14,7 @@ public class DisplayController
     private CancellationTokenSource connectivityToken;
     private CancellationTokenSource cloudToken;
 
+    private readonly Image imgLogo = Image.LoadFromResource("Cultivar.Assets.img_meadow.bmp");
     private readonly Image imgWifi = Image.LoadFromResource("Cultivar.Assets.img-wifi.bmp");
     private readonly Image imgSync = Image.LoadFromResource("Cultivar.Assets.img-sync.bmp");
     private readonly Image imgCloud = Image.LoadFromResource("Cultivar.Assets.img-cloud.bmp");
@@ -30,9 +31,9 @@ public class DisplayController
     private readonly Color activeColor = Color.FromHex("14B069");
     private readonly Color inactiveColor = Color.FromHex("FF3535");
 
-    private readonly Font12x20 font12X20 = new Font12x20();
     private readonly Font8x12 font8x12 = new Font8x12();
     private readonly Font12x16 font12x16 = new Font12x16();
+    private readonly Font12x20 font12X20 = new Font12x20();
     private readonly Font16x24 font16x24 = new Font16x24();
 
     private readonly DisplayScreen displayScreen;
@@ -40,7 +41,6 @@ public class DisplayController
     private AbsoluteLayout splashScreen;
 
     private AbsoluteLayout dataScreen;
-
     private Label statusLabel;
     private Picture wifi;
     private Picture cloud;
@@ -75,17 +75,17 @@ public class DisplayController
         displayScreen.Controls.Add(splashScreen!, dataScreen!, updateScreen!);
     }
 
+    // Splash Screen
     private void LoadSplashScreen()
     {
         splashScreen = new AbsoluteLayout(displayScreen);
 
-        var logo = Image.LoadFromResource("Cultivar.Assets.img_meadow.bmp");
         var displayImage = new Picture(
             0,
             displayScreen.Height / 4,
             displayScreen.Width,
-            logo.Height,
-            logo)
+            imgLogo.Height,
+            imgLogo)
         {
             BackColor = backgroundColor,
             HorizontalAlignment = HorizontalAlignment.Center,
@@ -108,7 +108,13 @@ public class DisplayController
 
         splashScreen.IsVisible = false;
     }
+    public void ShowSplashScreen()
+    {
+        dataScreen.IsVisible = false;
+        splashScreen.IsVisible = true;
+    }
 
+    // Data Screen
     private void LoadDataScreen()
     {
         dataScreen = new AbsoluteLayout(displayScreen);
@@ -385,98 +391,6 @@ public class DisplayController
             VerticalAlignment = VerticalAlignment.Center
         });
     }
-
-    private void LoadOTAUpdateScreen()
-    {
-        updateScreen = new AbsoluteLayout(displayScreen);
-
-        var logo = Image.LoadFromResource("Cultivar.Assets.img_meadow.bmp");
-        var displayImage = new Picture(95, 33, logo.Width, logo.Height, logo)
-        {
-            BackColor = backgroundColor,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-        };
-        updateScreen.Controls.Add(displayImage);
-
-        updateScreen.Controls.Add(new Label(0, 135, updateScreen.Width, font16x24.Height)
-        {
-            Text = $"Cultivar v{MainController.VERSION:N1}",
-            TextColor = Color.White,
-            Font = font16x24,
-            HorizontalAlignment = HorizontalAlignment.Center
-        });
-
-        cloudStatus = new Label(0, 175, updateScreen.Width, font12x16.Height)
-        {
-            Text = "Updating...",
-            TextColor = Color.White,
-            Font = font12x16,
-            HorizontalAlignment = HorizontalAlignment.Center
-        };
-        updateScreen.Controls.Add(cloudStatus);
-
-        progressBar = new ProgressBar(90, 205, 140, 16)
-        {
-            BackColor = Color.Black,
-            ValueColor = Color.FromHex("0B3749"),
-            BorderColor = Color.FromHex("0B3749"),
-            IsVisible = true
-        };
-        updateScreen.Controls.Add(progressBar);
-
-        progressValue = new Label(90, 206, 140, 16)
-        {
-            Text = "0%",
-            TextColor = Color.White,
-            Font = font12x16,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            IsVisible = true
-        };
-        updateScreen.Controls.Add(progressValue);
-
-        updateScreen.IsVisible = false;
-    }
-
-    public void UpdateDownloadProgress(int progress)
-    {
-        if (!progressBar.IsVisible)
-        {
-            progressBar.IsVisible = true;
-            progressValue.IsVisible = true;
-        }
-
-        progressBar.Value = progress;
-        progressValue.Text = $"{progress}%";
-
-        if (progress == 100)
-        {
-            UpdateCloudStatus("Download Complete");
-            Thread.Sleep(TimeSpan.FromSeconds(3));
-            UpdateCloudStatus(string.Empty);
-        }
-    }
-    public void UpdateCloudStatus(string status)
-    {
-        cloudStatus.Text = status;
-    }
-
-    public void ShowSplashScreen()
-    {
-        dataScreen.IsVisible = false;
-        splashScreen.IsVisible = true;
-    }
-    public void ShowDataScreen()
-    {
-        splashScreen.IsVisible = false;
-        dataScreen.IsVisible = true;
-    }
-    public void ShowUpdateScreen()
-    {
-        dataScreen.IsVisible = false;
-        updateScreen.IsVisible = true;
-    }
-
     public async Task StartConnectingWiFiAnimation()
     {
         connectivityToken = new CancellationTokenSource();
@@ -505,21 +419,6 @@ public class DisplayController
             await Task.Delay(500);
         }
     }
-
-    public void UpdateConnectionStatus(bool connected, bool stopAnimation = false)
-    {
-        if (stopAnimation) { connectivityToken.Cancel(); }
-
-        wifi.Image = connected ? imgWifi : imgWifiFade;
-    }
-
-    public void UpdateCloudStatus(bool IsConnected, bool stopAnimation = false)
-    {
-        if (stopAnimation) { cloudToken.Cancel(); }
-
-        cloud.Image = IsConnected ? imgCloud : imgCloudFade;
-    }
-
     public void UpdateConnectionStatus(bool connected)
     {
         wifi.Image = connected ? imgWifi : imgWifiFade;
@@ -570,5 +469,101 @@ public class DisplayController
         soilMoistureLabel.Text = $"{moisture.ToString("N0")}%";
 
         displayScreen.EndUpdate();
+    }
+    public void ShowDataScreen()
+    {
+        splashScreen.IsVisible = false;
+        dataScreen.IsVisible = true;
+    }
+
+    // OTA Update Screen
+    private void LoadOTAUpdateScreen()
+    {
+        updateScreen = new AbsoluteLayout(displayScreen);
+
+        var displayImage = new Picture(95, 33, imgLogo.Width, imgLogo.Height, imgLogo)
+        {
+            BackColor = backgroundColor,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        updateScreen.Controls.Add(displayImage);
+
+        updateScreen.Controls.Add(new Label(0, 135, updateScreen.Width, font16x24.Height)
+        {
+            Text = $"Cultivar v{MainController.VERSION:N1}",
+            TextColor = Color.White,
+            Font = font16x24,
+            HorizontalAlignment = HorizontalAlignment.Center
+        });
+
+        cloudStatus = new Label(0, 175, updateScreen.Width, font12x16.Height)
+        {
+            Text = "Updating...",
+            TextColor = Color.White,
+            Font = font12x16,
+            HorizontalAlignment = HorizontalAlignment.Center
+        };
+        updateScreen.Controls.Add(cloudStatus);
+
+        progressBar = new ProgressBar(90, 205, 140, 16)
+        {
+            BackColor = Color.Black,
+            ValueColor = Color.FromHex("0B3749"),
+            BorderColor = Color.FromHex("0B3749"),
+            IsVisible = true
+        };
+        updateScreen.Controls.Add(progressBar);
+
+        progressValue = new Label(90, 206, 140, 16)
+        {
+            Text = "0%",
+            TextColor = Color.White,
+            Font = font12x16,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            IsVisible = true
+        };
+        updateScreen.Controls.Add(progressValue);
+
+        updateScreen.IsVisible = false;
+    }
+    public void UpdateDownloadProgress(int progress)
+    {
+        if (!progressBar.IsVisible)
+        {
+            progressBar.IsVisible = true;
+            progressValue.IsVisible = true;
+        }
+
+        progressBar.Value = progress;
+        progressValue.Text = $"{progress}%";
+
+        if (progress == 100)
+        {
+            UpdateCloudStatus("Download Complete");
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+            UpdateCloudStatus(string.Empty);
+        }
+    }
+    public void UpdateCloudStatus(string status)
+    {
+        cloudStatus.Text = status;
+    }
+    public void UpdateConnectionStatus(bool connected, bool stopAnimation = false)
+    {
+        if (stopAnimation) { connectivityToken.Cancel(); }
+
+        wifi.Image = connected ? imgWifi : imgWifiFade;
+    }
+    public void UpdateCloudStatus(bool IsConnected, bool stopAnimation = false)
+    {
+        if (stopAnimation) { cloudToken.Cancel(); }
+
+        cloud.Image = IsConnected ? imgCloud : imgCloudFade;
+    }
+    public void ShowUpdateScreen()
+    {
+        dataScreen.IsVisible = false;
+        updateScreen.IsVisible = true;
     }
 }

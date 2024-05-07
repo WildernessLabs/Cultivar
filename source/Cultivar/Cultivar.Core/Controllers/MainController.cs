@@ -16,7 +16,7 @@ namespace Cultivar.Controllers;
 
 public class MainController
 {
-    public static double VERSION { get; set; } = 1.2;
+    public static double VERSION { get; set; } = 1.4;
 
     private int TIMEZONE_OFFSET = -7;
 
