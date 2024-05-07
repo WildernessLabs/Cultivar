@@ -6,7 +6,8 @@ Device:
     # Name of the device on the network.
     Name: Cultivar
 
-    ReservedPins: B15;B14;A3
+    # Pins for Cell Module
+#    ReservedPins: B15;B14;A3
 
 Coprocessor:
 

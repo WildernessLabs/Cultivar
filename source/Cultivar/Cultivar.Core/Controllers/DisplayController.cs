@@ -3,6 +3,7 @@ using Meadow;
 using Meadow.Foundation.Graphics;
 using Meadow.Foundation.Graphics.MicroLayout;
 using Meadow.Peripherals.Displays;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -434,6 +435,29 @@ public class DisplayController
         updateScreen.Controls.Add(progressValue);
 
         updateScreen.IsVisible = false;
+    }
+
+    public void UpdateDownloadProgress(int progress)
+    {
+        if (!progressBar.IsVisible)
+        {
+            progressBar.IsVisible = true;
+            progressValue.IsVisible = true;
+        }
+
+        progressBar.Value = progress;
+        progressValue.Text = $"{progress}%";
+
+        if (progress == 100)
+        {
+            UpdateStatus("Download Complete");
+
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+
+            UpdateStatus(string.Empty);
+            progressBar.IsVisible = false;
+            progressValue.IsVisible = false;
+        }
     }
 
     public void ShowSplashScreen()
