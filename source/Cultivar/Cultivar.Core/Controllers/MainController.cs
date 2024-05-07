@@ -33,7 +33,6 @@ public class MainController
     private INetworkAdapter? network;
 
     private DisplayController displayController;
-    //private MicroAudio audio;
 
     private CloudLogger cloudLogger;
 
@@ -139,7 +138,7 @@ public class MainController
 
     private void OnUpdateStateChanged(object sender, UpdateState e)
     {
-        displayController.UpdateStatus($"{e}");
+        displayController.UpdateCloudStatus($"{FormatStatusMessage(e)}");
     }
 
     private void OnUpdateProgress(IUpdateService updateService, UpdateInfo info)
@@ -152,7 +151,8 @@ public class MainController
     private async void OnUpdateAvailable(IUpdateService updateService, UpdateInfo info)
     {
         _ = hardware.RgbLed.StartBlink(Color.Magenta);
-        displayController.UpdateStatus("Update available!");
+        displayController.ShowUpdateScreen();
+        displayController.UpdateCloudStatus("Update available!");
 
         await Task.Delay(5000);
         updateService.RetrieveUpdate(info);
@@ -161,7 +161,7 @@ public class MainController
     private async void OnUpdateRetrieved(IUpdateService updateService, UpdateInfo info)
     {
         _ = hardware.RgbLed.StartBlink(Color.Cyan);
-        displayController.UpdateStatus("Update retrieved!");
+        displayController.UpdateCloudStatus("Update retrieved!");
 
         await Task.Delay(5000);
         updateService.ApplyUpdate(info);
@@ -443,5 +443,21 @@ public class MainController
         _ = StartUpdating(updateInterval);
 
         return Task.CompletedTask;
+    }
+
+    private string FormatStatusMessage(UpdateState state)
+    {
+        string message = string.Empty;
+
+        switch (state)
+        {
+            case UpdateState.Dead: message = "Failed"; break;
+            case UpdateState.Disconnected: message = "Disconnected"; break;
+            case UpdateState.Connected: message = "Connected!"; break;
+            case UpdateState.DownloadingFile: message = "Downloading File..."; break;
+            case UpdateState.UpdateInProgress: message = "Update In Progress..."; break;
+        }
+
+        return message;
     }
 }

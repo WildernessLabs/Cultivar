@@ -40,21 +40,22 @@ public class DisplayController
     private AbsoluteLayout splashScreen;
 
     private AbsoluteLayout dataScreen;
-    private Label StatusLabel;
-    private Label CounterLabel;
-    private Label TemperatureLabel;
-    private Label HumidityLabel;
-    private Label SoilMoistureLabel;
+
+    private Label statusLabel;
     private Picture wifi;
     private Picture cloud;
     private Picture sync;
+    private Label counterLabel;
+    private Label temperatureLabel;
+    private Label humidityLabel;
+    private Label soilMoistureLabel;
     private Circle lightsCircle;
     private Circle ventsCircle;
     private Circle waterCircle;
     private Circle heaterCircle;
 
     private AbsoluteLayout updateScreen;
-    private Label status;
+    private Label cloudStatus;
     private Label progressValue;
     private ProgressBar progressBar;
 
@@ -98,7 +99,7 @@ public class DisplayController
             displayScreen.Width,
             font8x12.Height)
         {
-            Text = $"Cultivar v1.0",
+            Text = $"Cultivar v{MainController.VERSION}",
             TextColor = Color.White,
             Font = font8x12,
             ScaleFactor = ScaleFactor.X2,
@@ -139,7 +140,7 @@ public class DisplayController
         int boxWidth = 320;
         int boxHeight = 30;
 
-        StatusLabel = new Label(boxX + 5, boxY, boxWidth, boxHeight)
+        statusLabel = new Label(boxX + 5, boxY, boxWidth, boxHeight)
         {
             Text = "-",
             Font = font12X20,
@@ -147,7 +148,7 @@ public class DisplayController
             HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment = VerticalAlignment.Center
         };
-        dataScreen.Controls.Add(StatusLabel);
+        dataScreen.Controls.Add(statusLabel);
 
         wifi = new Picture(286, boxY + 5, imgWifiFade.Width, imgWifiFade.Height, imgWifiFade);
         dataScreen.Controls.Add(wifi);
@@ -164,14 +165,14 @@ public class DisplayController
         {
             ForeColor = Color.FromHex("082936")
         });
-        CounterLabel = new Label(160, 8, 60, 18)
+        counterLabel = new Label(160, 8, 60, 18)
         {
             Text = "000000",
             Font = font8x12,
             TextColor = foregroundColor,
             HorizontalAlignment = HorizontalAlignment.Center,
         };
-        dataScreen.Controls.Add(CounterLabel);
+        dataScreen.Controls.Add(counterLabel);
     }
     private void LoadTemperatureIndicator()
     {
@@ -194,7 +195,7 @@ public class DisplayController
             VerticalAlignment = VerticalAlignment.Center
         });
 
-        TemperatureLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
+        temperatureLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "0",
             Font = font16x24,
@@ -202,7 +203,7 @@ public class DisplayController
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center
         };
-        dataScreen.Controls.Add(TemperatureLabel);
+        dataScreen.Controls.Add(temperatureLabel);
     }
     private void LoadHumidityIndicator()
     {
@@ -225,7 +226,7 @@ public class DisplayController
             VerticalAlignment = VerticalAlignment.Center
         });
 
-        HumidityLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
+        humidityLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "0",
             Font = font16x24,
@@ -233,7 +234,7 @@ public class DisplayController
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center
         };
-        dataScreen.Controls.Add(HumidityLabel);
+        dataScreen.Controls.Add(humidityLabel);
     }
     private void LoadSoilMoistureIndicator()
     {
@@ -256,7 +257,7 @@ public class DisplayController
             VerticalAlignment = VerticalAlignment.Center
         });
 
-        SoilMoistureLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
+        soilMoistureLabel = new Label(boxX + 5, boxY + 2, boxWidth - 10, boxHeight)
         {
             Text = "0",
             Font = font16x24,
@@ -264,7 +265,7 @@ public class DisplayController
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Center
         };
-        dataScreen.Controls.Add(SoilMoistureLabel);
+        dataScreen.Controls.Add(soilMoistureLabel);
     }
     private void LoadLightsStatus()
     {
@@ -406,14 +407,14 @@ public class DisplayController
             HorizontalAlignment = HorizontalAlignment.Center
         });
 
-        status = new Label(0, 175, updateScreen.Width, font12x16.Height)
+        cloudStatus = new Label(0, 175, updateScreen.Width, font12x16.Height)
         {
             Text = "Updating...",
             TextColor = Color.White,
             Font = font12x16,
             HorizontalAlignment = HorizontalAlignment.Center
         };
-        updateScreen.Controls.Add(status);
+        updateScreen.Controls.Add(cloudStatus);
 
         progressBar = new ProgressBar(90, 205, 140, 16)
         {
@@ -450,14 +451,14 @@ public class DisplayController
 
         if (progress == 100)
         {
-            UpdateStatus("Download Complete");
-
+            UpdateCloudStatus("Download Complete");
             Thread.Sleep(TimeSpan.FromSeconds(3));
-
-            UpdateStatus(string.Empty);
-            progressBar.IsVisible = false;
-            progressValue.IsVisible = false;
+            UpdateCloudStatus(string.Empty);
         }
+    }
+    public void UpdateCloudStatus(string status)
+    {
+        cloudStatus.Text = status;
     }
 
     public void ShowSplashScreen()
@@ -533,7 +534,7 @@ public class DisplayController
     }
     public void UpdateStatus(string status)
     {
-        StatusLabel.Text = status;
+        statusLabel.Text = status;
     }
     public void UpdateLights(bool on)
     {
@@ -563,10 +564,10 @@ public class DisplayController
     {
         displayScreen.BeginUpdate();
 
-        CounterLabel.Text = $"{logId:D6}";
-        TemperatureLabel.Text = $"{temp.ToString("N0")}°C";
-        HumidityLabel.Text = $"{humidity.ToString("N0")}%";
-        SoilMoistureLabel.Text = $"{moisture.ToString("N0")}%";
+        counterLabel.Text = $"{logId:D6}";
+        temperatureLabel.Text = $"{temp.ToString("N0")}°C";
+        humidityLabel.Text = $"{humidity.ToString("N0")}%";
+        soilMoistureLabel.Text = $"{moisture.ToString("N0")}%";
 
         displayScreen.EndUpdate();
     }
