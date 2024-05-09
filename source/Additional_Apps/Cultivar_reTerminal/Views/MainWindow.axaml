@@ -4,7 +4,6 @@
     xmlns:vm="using:Cultivar_reTerminal.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:oxy="clr-namespace:OxyPlot.Avalonia;assembly=OxyPlot.Avalonia"
     mc:Ignorable="d" 
     d:DesignWidth="1280" 
     d:DesignHeight="720"
@@ -610,7 +609,7 @@
             CornerRadius="5"
             BoxShadow="-5 5 20 #80000000"
             Margin="7,14,14,7">
-            <oxy:Plot
+            <!--<oxy:Plot
                 Title="Greenhouse Atmospheric Logs"
                 TitleFontSize="25"
                 Background="Transparent"
@@ -689,7 +688,7 @@
                         DataFieldX="Time"
                         DataFieldY="Value" />
                 </oxy:Plot.Series>
-            </oxy:Plot>
+            </oxy:Plot>-->
         </Border>
     </Grid>
 </Window>

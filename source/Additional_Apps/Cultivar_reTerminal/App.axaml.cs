@@ -8,15 +8,9 @@ namespace Cultivar_reTerminal
 {
     public partial class App : Application
     {
-        public App()
-        {
-            RegisterServices();
-        }
-
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-            base.Initialize();
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -26,7 +20,7 @@ namespace Cultivar_reTerminal
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = new MainWindowViewModel(),
-                    WindowState = Avalonia.Controls.WindowState.FullScreen
+                    //WindowState = Avalonia.Controls.WindowState.FullScreen
                 };
             }
 
