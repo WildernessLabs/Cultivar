@@ -26,7 +26,7 @@ namespace Cultivar_reTerminal
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = new MainWindowViewModel(),
-                    WindowState = Avalonia.Controls.WindowState.FullScreen
+                    //WindowState = Avalonia.Controls.WindowState.FullScreen
                 };
             }
 

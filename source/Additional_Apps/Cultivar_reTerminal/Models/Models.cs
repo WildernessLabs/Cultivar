@@ -51,4 +51,21 @@ namespace Cultivar_reTerminal.Models
         public bool isSuccessful { get; set; }
         public object errorMessage { get; set; }
     }
+
+    public class Pnl
+    {
+        public DateTime Time { get; set; }
+        public double Value { get; set; }
+
+        public Pnl(DateTime time, double value)
+        {
+            Time = time;
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0:HH:mm} {1:0.0}", this.Time, this.Value);
+        }
+    }
 }
