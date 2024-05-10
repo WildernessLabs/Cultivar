@@ -17,8 +17,8 @@ namespace Cultivar_reTerminal.Models
     public class MeasurementData
     {
         public double TemperatureCelsius { get; set; }
-        public double HumidityPercentage { get; set; }
-        public double PressureMillibar { get; set; }
+        public double HumidityPercent { get; set; }
+        public double SoilMoistureDouble { get; set; }
     }
 
     public class Record

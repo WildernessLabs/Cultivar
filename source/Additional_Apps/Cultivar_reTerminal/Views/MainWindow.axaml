@@ -12,7 +12,7 @@
     Icon="/Assets/avalonia-logo.ico"
     Title="Meadow in Avalonia">
 
-    <Grid Background="#F3F7F8">
+    <Grid Background="#10485E">
         <Grid.Styles>
             <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="Background" Value="Transparent" />
@@ -611,7 +611,7 @@
             BoxShadow="-5 5 20 #80000000"
             Margin="7,14,14,7">
             <oxy:Plot
-                Title="Greenhouse Atmospheric Logs"
+                Title="Cultivar Logs"
                 TitleColor="#555"
                 TitleFontSize="25"
                 Background="Transparent"
@@ -632,7 +632,7 @@
                         MajorGridlineColor="#EEE"
                         MinorGridlineStyle="None" />-->
                     <oxy:DateTimeAxis 
-                        Title="Time (last 10 seconds)"
+                        Title="Time"
                         TitleColor="#555"
                         TitleFontSize="25"
                         IntervalType="Minutes" 
@@ -684,6 +684,9 @@
                     <oxy:LineSeries
                         Color="#EBA77F"
                         StrokeThickness="5"
+                        MarkerType="Circle"
+                        MarkerFill="#EBA77F"
+                        MarkerSize="6"
                         ItemsSource="{Binding TemperatureLogs}"
                         YAxisKey="Primary"
                         DataFieldX="Time"
@@ -693,6 +696,9 @@
                     <oxy:LineSeries
                         Color="#71C3E4"
                         StrokeThickness="5"
+                        MarkerType="Circle"
+                        MarkerFill="#71C3E4"
+                        MarkerSize="6"
                         ItemsSource="{Binding HumidityLogs}"
                         YAxisKey="Secondary"
                         DataFieldX="Time"
@@ -702,6 +708,9 @@
                     <oxy:LineSeries
                         Color="#B7C085"
                         StrokeThickness="5"
+                        MarkerType="Circle"
+                        MarkerFill="#B7C085"
+                        MarkerSize="6"
                         ItemsSource="{Binding SoilMoistureLogs}"
                         YAxisKey="Secondary"
                         DataFieldX="Time"

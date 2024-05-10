@@ -21,7 +21,9 @@ namespace Cultivar_reTerminal.Client
                     client.DefaultRequestHeaders.Add("Authorization", $"apikey {Secrets.API_KEY}");
                     client.Timeout = new TimeSpan(0, 5, 0);
 
-                    HttpResponseMessage response = await client.GetAsync($"{Secrets.MEADOW_CLOUD_URL}/api/orgs/{Secrets.ORGANIZATION_ID}/search/source:event deviceId:{Secrets.DEVICE_ID} eventId:110 size:100");
+                    HttpResponseMessage response = await client.GetAsync($"" +
+                        $"{Secrets.MEADOW_CLOUD_URL}/api/orgs/{Secrets.ORGANIZATION_ID}/search/source:event " +
+                        $"deviceId:{Secrets.DEVICE_ID} eventId:110 size:20 sortby:timestamp sortorder:desc");
 
                     if (response.IsSuccessStatusCode)
                     {
