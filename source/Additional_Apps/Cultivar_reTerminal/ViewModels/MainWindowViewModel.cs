@@ -185,11 +185,11 @@ namespace Cultivar_reTerminal.ViewModels
                     HumidityLogs.Clear();
                     SoilMoistureLogs.Clear();
 
-                    foreach (var reading in sensorReadings.TakeLast(10))
+                    foreach (var reading in sensorReadings.Take(10))
                     {
-                        TemperatureLogs.Add(new Pnl(reading.record.timestamp.ToLocalTime(), reading.record.measurements.TemperatureCelsius));
-                        HumidityLogs.Add(new Pnl(reading.record.timestamp.ToLocalTime(), reading.record.measurements.HumidityPercent));
-                        SoilMoistureLogs.Add(new Pnl(reading.record.timestamp.ToLocalTime(), reading.record.measurements.SoilMoistureDouble));
+                        TemperatureLogs.Add(new Pnl(reading.record.timestamp.AddHours(TIMEZONE_OFFSET), reading.record.measurements.TemperatureCelsius));
+                        HumidityLogs.Add(new Pnl(reading.record.timestamp.AddHours(TIMEZONE_OFFSET), reading.record.measurements.HumidityPercent));
+                        SoilMoistureLogs.Add(new Pnl(reading.record.timestamp.AddHours(TIMEZONE_OFFSET), reading.record.measurements.SoilMoistureDouble));
                     }
 
                     CurrentTemperature = $"{TemperatureLogs[0].Value:N1}°C";
