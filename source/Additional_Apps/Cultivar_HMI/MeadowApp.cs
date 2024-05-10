@@ -13,11 +13,14 @@ public class MeadowApp : App<Desktop>
     {
         Resolver.Log.Info("Initialize...");
 
-        Device.Display!.Resize(320, 240, 2);
+        Device.Display!.Resize(320, 240, 3);
         displayController = new DisplayController(Device.Display, Meadow.Peripherals.Displays.RotationType.Normal);
-        displayController.ShowSplashScreen();
-        Thread.Sleep(3000);
+
+        //displayController.ShowSplashScreen();
+
         displayController.ShowDataScreen();
+
+        //displayController.ShowUpdateScreen();
 
         _ = displayController.Run();
     }
