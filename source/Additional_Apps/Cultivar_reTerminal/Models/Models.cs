@@ -17,8 +17,8 @@ namespace Cultivar_reTerminal.Models
     public class MeasurementData
     {
         public double TemperatureCelsius { get; set; }
-        public double HumidityPercentage { get; set; }
-        public double PressureMillibar { get; set; }
+        public double HumidityPercent { get; set; }
+        public double SoilMoistureDouble { get; set; }
     }
 
     public class Record
@@ -50,5 +50,22 @@ namespace Cultivar_reTerminal.Models
         public Data data { get; set; }
         public bool isSuccessful { get; set; }
         public object errorMessage { get; set; }
+    }
+
+    public class Pnl
+    {
+        public DateTime Time { get; set; }
+        public double Value { get; set; }
+
+        public Pnl(DateTime time, double value)
+        {
+            Time = time;
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0:HH:mm} {1:0.0}", this.Time, this.Value);
+        }
     }
 }

@@ -1,9 +1,8 @@
 <Application 
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="Cultivar_reTerminal.App"
-    RequestedThemeVariant="Default">
-    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    xmlns:local="using:Cultivar_reTerminal"
+    x:Class="Cultivar_reTerminal.App">
     
     <Application.Styles>
         <FluentTheme />

@@ -6,6 +6,7 @@ using Meadow.Hardware;
 using Meadow.Logging;
 using Meadow.Peripherals.Displays;
 using Meadow.Peripherals.Relays;
+using Meadow.Update;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -15,6 +16,8 @@ namespace Cultivar.Controllers;
 
 public class MainController
 {
+    public static double VERSION { get; set; } = 1.4;
+
     private int TIMEZONE_OFFSET = -7;
 
     private int logId = 0;
@@ -30,7 +33,6 @@ public class MainController
     private INetworkAdapter? network;
 
     private DisplayController displayController;
-    //private MicroAudio audio;
 
     private CloudLogger cloudLogger;
 
@@ -50,13 +52,10 @@ public class MainController
             displayController = new DisplayController(display, isSimulator
                 ? RotationType.Normal
                 : RotationType._270Degrees);
+            displayController.ShowSplashScreen();
+            Thread.Sleep(3000);
+            displayController.ShowDataScreen();
         }
-
-        //if (Hardware.Speaker is { } speaker)
-        //{
-        //    speaker.SetVolume(0.5f);
-        //    audio = new MicroAudio(speaker);
-        //}
 
         if (networkAdapter != null)
         {
@@ -102,7 +101,6 @@ public class MainController
         {
             Resolver.Log.Info($"NETWORK: Joined network - IP Address: {networkAdapter.IpAddress}");
             displayController.UpdateConnectionStatus(true, true);
-            //_ = audio?.PlaySystemSound(SystemSoundEffect.Chime);
         };
 
         network.NetworkDisconnected += (sender, args) =>
@@ -118,6 +116,13 @@ public class MainController
 
         displayController?.UpdateStatus(Resolver.UpdateService.State.ToString());
 
+        var updateService = Resolver.UpdateService;
+        updateService.ClearUpdates(); // uncomment to clear persisted info
+        updateService.StateChanged += OnUpdateStateChanged;
+        updateService.RetrieveProgress += OnUpdateProgress;
+        updateService.UpdateAvailable += OnUpdateAvailable;
+        updateService.UpdateRetrieved += OnUpdateRetrieved;
+
         Resolver.MeadowCloudService.ConnectionStateChanged += (sender, state) =>
         {
             if (state == CloudConnectionState.Connected)
@@ -131,6 +136,37 @@ public class MainController
         };
     }
 
+    private void OnUpdateStateChanged(object sender, UpdateState e)
+    {
+        displayController.UpdateCloudStatus($"{FormatStatusMessage(e)}");
+    }
+
+    private void OnUpdateProgress(IUpdateService updateService, UpdateInfo info)
+    {
+        short percentage = (short)(((double)info.DownloadProgress / info.FileSize) * 100);
+
+        displayController.UpdateDownloadProgress(percentage);
+    }
+
+    private async void OnUpdateAvailable(IUpdateService updateService, UpdateInfo info)
+    {
+        _ = hardware.RgbLed.StartBlink(Color.Magenta);
+        displayController.ShowUpdateScreen();
+        displayController.UpdateCloudStatus("Update available!");
+
+        await Task.Delay(5000);
+        updateService.RetrieveUpdate(info);
+    }
+
+    private async void OnUpdateRetrieved(IUpdateService updateService, UpdateInfo info)
+    {
+        _ = hardware.RgbLed.StartBlink(Color.Cyan);
+        displayController.UpdateCloudStatus("Update retrieved!");
+
+        await Task.Delay(5000);
+        updateService.ApplyUpdate(info);
+    }
+
     private void SubscribeToCommands()
     {
         Resolver.CommandService?.Subscribe<Fan>(c =>
@@ -140,8 +176,8 @@ public class MainController
             if (hardware.VentFan != null)
             {
                 hardware.VentFan.State = c.IsOn
-                    ? Meadow.Peripherals.Relays.RelayState.Closed
-                    : Meadow.Peripherals.Relays.RelayState.Open; ;
+                    ? RelayState.Closed
+                    : RelayState.Open;
             }
         });
         Resolver.CommandService?.Subscribe<Heater>(c =>
@@ -151,8 +187,8 @@ public class MainController
             if (hardware.Heater != null)
             {
                 hardware.Heater.State = c.IsOn
-                    ? Meadow.Peripherals.Relays.RelayState.Closed
-                    : Meadow.Peripherals.Relays.RelayState.Open; ;
+                    ? RelayState.Closed
+                    : RelayState.Open;
             }
         });
         Resolver.CommandService?.Subscribe<Lights>(c =>
@@ -162,8 +198,8 @@ public class MainController
             if (hardware.Lights != null)
             {
                 hardware.Lights.State = c.IsOn
-                    ? Meadow.Peripherals.Relays.RelayState.Closed
-                    : Meadow.Peripherals.Relays.RelayState.Open; ;
+                    ? RelayState.Closed
+                    : RelayState.Open;
             }
         });
         Resolver.CommandService?.Subscribe<Irrigation>(c =>
@@ -173,8 +209,8 @@ public class MainController
             if (hardware.IrrigationLines != null)
             {
                 hardware.IrrigationLines.State = c.IsOn
-                    ? Meadow.Peripherals.Relays.RelayState.Closed
-                    : Meadow.Peripherals.Relays.RelayState.Open; ;
+                    ? RelayState.Closed
+                    : RelayState.Open;
             }
         });
     }
@@ -404,10 +440,24 @@ public class MainController
 
     public Task Run()
     {
-        //_ = audio.PlaySystemSound(SystemSoundEffect.Fanfare);
-
         _ = StartUpdating(updateInterval);
 
         return Task.CompletedTask;
+    }
+
+    private string FormatStatusMessage(UpdateState state)
+    {
+        string message = string.Empty;
+
+        switch (state)
+        {
+            case UpdateState.Dead: message = "Failed"; break;
+            case UpdateState.Disconnected: message = "Disconnected"; break;
+            case UpdateState.Connected: message = "Connected!"; break;
+            case UpdateState.DownloadingFile: message = "Downloading File..."; break;
+            case UpdateState.UpdateInProgress: message = "Update In Progress..."; break;
+        }
+
+        return message;
     }
 }

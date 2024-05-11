@@ -5,19 +5,24 @@ namespace Cultivar_HMI;
 
 public class MeadowApp : App<Desktop>
 {
-    private SilkDisplay display;
+    public static double VERSION { get; set; } = 1.2;
+
     private DisplayController displayController;
 
-    public override Task Initialize()
+    public override async Task Initialize()
     {
         Resolver.Log.Info("Initialize...");
 
-        display = new SilkDisplay(320, 240);
-        displayController = new DisplayController(display);
+        Device.Display!.Resize(320, 240, 3);
+        displayController = new DisplayController(Device.Display, Meadow.Peripherals.Displays.RotationType.Normal);
+
+        //displayController.ShowSplashScreen();
+
+        displayController.ShowDataScreen();
+
+        //displayController.ShowUpdateScreen();
 
         _ = displayController.Run();
-
-        return Task.CompletedTask;
     }
 
     public override Task Run()
@@ -38,10 +43,5 @@ public class MeadowApp : App<Desktop>
         }
         MeadowOS.TerminateRun();
         System.Environment.Exit(0);
-    }
-
-    public static async Task Main(string[] args)
-    {
-        await MeadowOS.Start(args);
     }
 }
