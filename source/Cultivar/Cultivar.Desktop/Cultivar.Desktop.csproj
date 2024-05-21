@@ -10,4 +10,10 @@
       <ProjectReference Include="..\..\..\..\Meadow.Core\source\implementations\desktop\Meadow.Desktop\Meadow.Desktop.csproj" />
       <ProjectReference Include="..\Cultivar.Core\Cultivar.Core.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Update="app.config.yaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>
