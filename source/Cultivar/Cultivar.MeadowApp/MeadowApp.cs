@@ -2,10 +2,10 @@
 using Cultivar.Hardware;
 using Meadow;
 using Meadow.Devices;
+using Meadow.Devices.Esp32.MessagePayloads;
 using Meadow.Hardware;
 using Meadow.Logging;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,6 +22,23 @@ public class MeadowApp : App<F7CoreComputeV2>
     {
         Resolver.Log.Info("Initialize hardware...");
 
+        var reliabilityService = Resolver.Services.Get<IReliabilityService>();
+        reliabilityService.MeadowSystemError += OnMeadowSystemError;
+
+        if (reliabilityService.LastBootWasFromCrash)
+        {
+            Resolver.Log.Info("Booting after a crash!");
+
+            Resolver.Log.Info("Crash report:");
+            foreach (var r in reliabilityService.GetCrashData())
+            {
+                Resolver.Log.Info(r);
+            }
+
+            Resolver.Log.Info("Clearing crash data...");
+            reliabilityService.ClearCrashData();
+        }
+
         Resolver.MeadowCloudService.SendLog(LogLevel.Information, "Cultivar started");
         Resolver.MeadowCloudService.ErrorOccurred += MeadowCloudService_ErrorOccurred;
 
@@ -33,9 +50,26 @@ public class MeadowApp : App<F7CoreComputeV2>
         return base.Initialize();
     }
 
-    public override void OnBootFromCrash(IEnumerable<string> crashReports)
+    private void OnMeadowSystemError(MeadowSystemErrorInfo error, bool recommendReset, out bool forceReset)
     {
-        Resolver.MeadowCloudService.SendLog(LogLevel.Information, "Cultivar restarted after crash");
+        if (error is Esp32SystemErrorInfo espError)
+        {
+            Resolver.Log.Warn($"The ESP32 has had an error ({espError.StatusCode}).");
+        }
+        else
+        {
+            Resolver.Log.Info($"We've had a system error: {error}");
+        }
+
+        if (recommendReset)
+        {
+            Resolver.Log.Warn($"Meadow is recommending a device reset");
+        }
+
+        forceReset = recommendReset;
+
+        // override the reset recommendation
+        //forceReset = false;
     }
 
     private void MeadowCloudService_ErrorOccurred(object sender, Exception e)
