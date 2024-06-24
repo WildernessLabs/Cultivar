@@ -57,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Logging.LogProviders
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Avalonia", "..\..\Meadow.Core\source\ui\Meadow.Avalonia\Meadow.Avalonia.csproj", "{CA8F3D7C-1DBD-4470-8B20-3DD5C0812E9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Simulation", "..\..\Meadow.Core\source\implementations\simulation\Meadow.Simulation\Meadow.Simulation.csproj", "{6498BFEF-23F3-446F-AE4F-EAA8345E8D30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Simulation", "..\..\Meadow.Core\Source\implementations\simulation\Meadow.Simulation\Meadow.Simulation.csproj", "{6498BFEF-23F3-446F-AE4F-EAA8345E8D30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.ProjectLab", "..\..\Meadow.ProjectLab\Source\Meadow.ProjectLab\Meadow.ProjectLab.csproj", "{7DC04323-9FDC-4A0D-955A-BCD5057F0253}"
 EndProject
@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ICs.IOExpanders.Mcp23xxx", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ICs.IOExpanders.Sc16is7x2", "..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\ICs.IOExpanders.Sc16is7x2\Driver\ICs.IOExpanders.Sc16is7x2.csproj", "{1F0AA3EA-998E-4988-A7D2-2F041E99C3F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.F7", "..\..\Meadow.Core\source\implementations\f7\Meadow.F7\Meadow.F7.csproj", "{8D88B090-11B6-49E5-A918-B4E57E25C5B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.F7", "..\..\Meadow.Core\Source\implementations\f7\Meadow.F7\Meadow.F7.csproj", "{8D88B090-11B6-49E5-A918-B4E57E25C5B5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTTnet", "..\..\MQTTnet\Source\MQTTnet\MQTTnet.csproj", "{B53085A6-8434-4179-A6E6-0CE66A43E8AD}"
 EndProject
@@ -81,7 +81,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Displays.TextDisplayMenu", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amqp", "..\..\amqpnetlite\src\Amqp.csproj", "{879E8F05-78EA-47AD-9334-0F6344DDFB24}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Windows", "..\..\Meadow.Core\source\implementations\windows\Meadow.Windows\Meadow.Windows.csproj", "{C58716BC-99CD-4B58-A854-17653014CA99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Windows", "..\..\Meadow.Core\Source\implementations\windows\Meadow.Windows\Meadow.Windows.csproj", "{C58716BC-99CD-4B58-A854-17653014CA99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Displays.WinForms", "..\..\Meadow.Foundation\Source\Meadow.Foundation.Peripherals\Displays.WinForms\Driver\Displays.WinForms.csproj", "{2B36D2E9-B90A-4E1C-B2D1-2C156E0D6240}"
 EndProject
@@ -91,11 +91,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Displays.Silk", "..\..\Mead
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Foundation.Core", "..\..\Meadow.Foundation\Source\Meadow.Foundation.Core\Meadow.Foundation.Core.csproj", "{4B86D740-84AA-4CD0-9949-D12621F8AE7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Desktop", "..\..\Meadow.Core\source\implementations\desktop\Meadow.Desktop\Meadow.Desktop.csproj", "{67736FE6-3817-49ED-BEC3-CC82BC653094}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Desktop", "..\..\Meadow.Core\Source\implementations\desktop\Meadow.Desktop\Meadow.Desktop.csproj", "{67736FE6-3817-49ED-BEC3-CC82BC653094}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Mac", "..\..\Meadow.Core\source\implementations\mac\Meadow.Mac\Meadow.Mac.csproj", "{80E36C78-05EE-4D27-8F49-D5D39C56E61C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Mac", "..\..\Meadow.Core\Source\implementations\mac\Meadow.Mac\Meadow.Mac.csproj", "{80E36C78-05EE-4D27-8F49-D5D39C56E61C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Linux", "..\..\Meadow.Core\source\implementations\linux\Meadow.Linux\Meadow.Linux.csproj", "{33273799-5EF3-4BB0-BDDF-D6B18B982CA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Linux", "..\..\Meadow.Core\Source\implementations\linux\Meadow.Linux\Meadow.Linux.csproj", "{33273799-5EF3-4BB0-BDDF-D6B18B982CA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cultivar.Desktop", "Cultivar\Cultivar.Desktop\Cultivar.Desktop.csproj", "{475A099C-D9B0-4918-9C0D-197BB29BA731}"
 EndProject
