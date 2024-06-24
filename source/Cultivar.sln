@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Logging", "..\..\Mea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Contracts", "..\..\Meadow.Contracts\Source\Meadow.Contracts\Meadow.Contracts.csproj", "{FF230861-1816-4884-8CE5-165AAFB5659E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Core", "..\..\Meadow.Core\source\Meadow.Core\Meadow.Core.csproj", "{9F4A9CB1-F81F-43A1-A8CB-6E5444A5D62A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Core", "..\..\Meadow.Core\Source\Meadow.Core\Meadow.Core.csproj", "{9F4A9CB1-F81F-43A1-A8CB-6E5444A5D62A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Modbus", "..\..\Meadow.Modbus\src\Meadow.Modbus\Meadow.Modbus.csproj", "{34367357-F93B-46EB-8878-2414E92189AE}"
 EndProject
@@ -55,7 +55,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Relays.ElectromagneticRelay
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Logging.LogProviders", "..\..\Meadow.Logging\Source\Meadow.Logging.LogProviders\Driver\Meadow.Logging.LogProviders.csproj", "{DB337FAC-0647-4126-9658-51419D1FC0CE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Avalonia", "..\..\Meadow.Core\source\ui\Meadow.Avalonia\Meadow.Avalonia.csproj", "{CA8F3D7C-1DBD-4470-8B20-3DD5C0812E9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Avalonia", "..\..\Meadow.Core\Source\ui\Meadow.Avalonia\Meadow.Avalonia.csproj", "{CA8F3D7C-1DBD-4470-8B20-3DD5C0812E9F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meadow.Simulation", "..\..\Meadow.Core\Source\implementations\simulation\Meadow.Simulation\Meadow.Simulation.csproj", "{6498BFEF-23F3-446F-AE4F-EAA8345E8D30}"
 EndProject
