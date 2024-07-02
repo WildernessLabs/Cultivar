@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Cultivar_AzureIotHub
 {
-    public class MeadowApp : App<F7CoreComputeV2>
+    public class MeadowApp : ProjectLabCoreComputeApp
     {
-        protected IotHubManager iotHubManager { get; set; }
+        protected IotHubManager IotHubManager { get; set; }
 
         protected bool IsLightOn { get; set; }
 
@@ -19,13 +19,11 @@ namespace Cultivar_AzureIotHub
 
         protected bool IsVentilationOn { get; set; }
 
-        protected IProjectLabHardware projectLab { get; set; }
-
         public override Task Initialize()
         {
             Resolver.Log.Info("Initialize...");
 
-            var wifi = Device.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
+            var wifi = Hardware.ComputeModule.NetworkAdapters.Primary<IWiFiNetworkAdapter>();
             wifi.NetworkConnected += NetworkConnected;
 
             return base.Initialize();
@@ -33,8 +31,8 @@ namespace Cultivar_AzureIotHub
 
         private async Task EnvironmentalSensorUpdated()
         {
-            var temperatureTask = projectLab.TemperatureSensor?.Read();
-            var humidityTask = projectLab.HumiditySensor?.Read();
+            var temperatureTask = Hardware.TemperatureSensor?.Read();
+            var humidityTask = Hardware.HumiditySensor?.Read();
 
             await Task.WhenAll(temperatureTask, humidityTask);
 
@@ -58,17 +56,15 @@ namespace Cultivar_AzureIotHub
                 $"IsSprinklerOn: {IsSprinklerOn}, " +
                 $"IsVentilationOn: {IsVentilationOn}");
 
-            iotHubManager.SendEnvironmentalReading(model);
+            IotHubManager.SendEnvironmentalReading(model);
         }
 
         private async void NetworkConnected(INetworkAdapter sender, NetworkConnectionEventArgs args)
         {
             Resolver.Log.Info("NetworkConnected...");
 
-            iotHubManager = new IotHubManager();
-            await iotHubManager.Initialize();
-
-            projectLab = ProjectLab.Create();
+            IotHubManager = new IotHubManager();
+            await IotHubManager.Initialize();
 
             while (true)
             {

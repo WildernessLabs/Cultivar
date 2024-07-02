@@ -27,31 +27,31 @@ public class ProductionBetaHardware : IGreenhouseHardware
 
     public IRelay? Lights { get; protected set; }
 
-    protected IProjectLabHardware projectLab { get; set; }
+    public IProjectLabHardware ProjectLab { get; }
 
-    public ITemperatureSensor? TemperatureSensor => projectLab.TemperatureSensor;
+    public ITemperatureSensor? TemperatureSensor => ProjectLab.TemperatureSensor;
 
-    public IHumiditySensor? HumiditySensor => projectLab.HumiditySensor;
+    public IHumiditySensor? HumiditySensor => ProjectLab.HumiditySensor;
 
-    public IToneGenerator? Speaker => projectLab.Speaker;
+    public IToneGenerator? Speaker => ProjectLab.Speaker;
 
-    public IRgbPwmLed? RgbLed => projectLab.RgbLed;
+    public IRgbPwmLed? RgbLed => ProjectLab.RgbLed;
 
-    public IButton? LeftButton => projectLab.LeftButton;
+    public IButton? LeftButton => ProjectLab.LeftButton;
 
-    public IButton? RightButton => projectLab.RightButton;
+    public IButton? RightButton => ProjectLab.RightButton;
 
-    public IButton? UpButton => projectLab.UpButton;
+    public IButton? UpButton => ProjectLab.UpButton;
 
-    public IButton? DownButton => projectLab.DownButton;
+    public IButton? DownButton => ProjectLab.DownButton;
 
-    public IPixelDisplay? Display => projectLab.Display;
+    public IPixelDisplay? Display => ProjectLab.Display;
 
     public IMoistureSensor MoistureSensor { get; set; }
 
-    public ProductionBetaHardware()
+    public ProductionBetaHardware(IProjectLabHardware projectLab)
     {
-        projectLab = ProjectLab.Create();
+        ProjectLab = projectLab;
 
         Resolver.Log.Info($"Running on ProjectLab Hardware {projectLab.RevisionString}");
 
