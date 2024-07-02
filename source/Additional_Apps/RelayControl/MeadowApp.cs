@@ -12,27 +12,24 @@ using System.Threading.Tasks;
 
 namespace RelayControl
 {
-    // Change F7FeatherV2 to F7FeatherV1 for V1.x boards
-    public class MeadowApp : App<F7CoreComputeV2>
+    // Change ProjectLabCoreComputeApp to ProjectLabFeatherApp for V1.x boards
+    public class MeadowApp : ProjectLabCoreComputeApp
     {
-        IProjectLabHardware projectLab;
-        readonly DisplayScreen screen;
-        RelayControlScreen _menu;
-
-        TextDisplayMenu relayMenu;
-        ElectromagneticRelayModule relayModule;
+        private readonly DisplayScreen screen;
+        private RelayControlScreen _menu;
+        private TextDisplayMenu relayMenu;
+        private ElectromagneticRelayModule relayModule;
 
         public override Task Initialize()
         {
             // create the project lab hardware
             Resolver.Log.Info("Loading project lab hardware...");
-            projectLab = ProjectLab.Create();
 
             //screen = new DisplayScreen(projectLab.Display, RotationType._270Degrees);
 
             // instantiate the relay board
             Resolver.Log.Info("Loading relay board...");
-            relayModule = new ElectromagneticRelayModule(projectLab.Qwiic.I2cBus, 0x25);
+            relayModule = new ElectromagneticRelayModule(Hardware.Qwiic.I2cBus, 0x25);
 
             // load our relay text display menu
             LoadTextDisplayRelayMenuScreen();
@@ -40,7 +37,7 @@ namespace RelayControl
             return base.Initialize();
         }
 
-        void LoadTextDisplayRelayMenuScreen()
+        private void LoadTextDisplayRelayMenuScreen()
         {
             // loading from JSON
             Resolver.Log.Info("Loading menu...");
@@ -49,7 +46,7 @@ namespace RelayControl
 
             // create the graphics canvas (MicroGraphics) and set a font
             // this creates an ITextDisplay compatible object
-            var graphicsCanvas = new MicroGraphics(projectLab.Display)
+            var graphicsCanvas = new MicroGraphics(Hardware.Display)
             {
                 CurrentFont = new Font12x20()
             };
@@ -65,22 +62,22 @@ namespace RelayControl
 
             // setup the button handlers to drive the menu
             Resolver.Log.Info("Setting up button handlers.");
-            projectLab.DownButton.Clicked += (s, e) =>
+            Hardware.DownButton.Clicked += (s, e) =>
             {
                 Resolver.Log.Info("Down Clicked.");
                 relayMenu.Next();
             };
-            projectLab.RightButton.Clicked += (s, e) =>
+            Hardware.RightButton.Clicked += (s, e) =>
             {
                 Resolver.Log.Info("Right Clicked.");
                 relayMenu.Select();
             };
-            projectLab.UpButton.Clicked += (s, e) =>
+            Hardware.UpButton.Clicked += (s, e) =>
             {
                 Resolver.Log.Info("Up Clicked.");
                 relayMenu.Previous();
             };
-            projectLab.LeftButton.Clicked += (s, e) =>
+            Hardware.LeftButton.Clicked += (s, e) =>
             {
                 Resolver.Log.Info("Left Clicked.");
                 relayMenu.Back();
@@ -119,7 +116,7 @@ namespace RelayControl
             Resolver.Log.Info("menu selected: " + e.Command);
         }
 
-        void ShowMicroLayoutMenuScreen()
+        private void ShowMicroLayoutMenuScreen()
         {
             var menuItems = new string[]
                 {
@@ -133,11 +130,11 @@ namespace RelayControl
 
             _menu = new RelayControlScreen(screen);
 
-            projectLab.UpButton.Clicked += (s, e) => _menu.Up();
-            projectLab.DownButton.Clicked += (s, e) => _menu.Down();
+            Hardware.UpButton.Clicked += (s, e) => _menu.Up();
+            Hardware.DownButton.Clicked += (s, e) => _menu.Down();
         }
 
-        public async override Task Run()
+        public override async Task Run()
         {
             //SplashScreen.Show(screen);
 
@@ -158,7 +155,7 @@ namespace RelayControl
             return;
         }
 
-        byte[] LoadResource(string filename)
+        private byte[] LoadResource(string filename)
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = $"RelayControl.{filename}";

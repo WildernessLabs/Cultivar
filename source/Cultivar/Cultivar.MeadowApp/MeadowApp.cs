@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cultivar.MeadowApp;
 
-public class MeadowApp : App<F7CoreComputeV2>
+public class MeadowApp : ProjectLabCoreComputeApp
 {
     private MainController mainController;
     //private int WatchdogUptimeMaxHours = 1;
@@ -42,8 +42,8 @@ public class MeadowApp : App<F7CoreComputeV2>
         Resolver.MeadowCloudService.SendLog(LogLevel.Information, "Cultivar started");
         Resolver.MeadowCloudService.ErrorOccurred += MeadowCloudService_ErrorOccurred;
 
-        var greenhouseHardware = new ProductionBetaHardware();
-        var networkAdapter = Device.NetworkAdapters.Primary<INetworkAdapter>();
+        var greenhouseHardware = new ProductionBetaHardware(Hardware);
+        var networkAdapter = Hardware.ComputeModule.NetworkAdapters.Primary<INetworkAdapter>();
 
         mainController = new MainController(greenhouseHardware, networkAdapter!);
 
@@ -94,7 +94,7 @@ public class MeadowApp : App<F7CoreComputeV2>
         var pettingInterval = TimeSpan.FromSeconds(20); // should be well less than the timeout
 
         // Enable the watchdog for 30 second intervals (max is ~32s)
-        Device.WatchdogEnable(watchdogTimeout);
+        Hardware.ComputeModule.WatchdogEnable(watchdogTimeout);
         // calculate the number of times we need to pet the watchdog.
         //WatchdogUptimePetCountMax = ((WatchdogUptimeMaxHours * 60 * 60) / 30);
         // Start the thread that resets the counter.
@@ -104,7 +104,7 @@ public class MeadowApp : App<F7CoreComputeV2>
     private void StartPettingWatchdog(TimeSpan pettingInterval)
     {
         // Just for good measure, let's reset the watchdog to begin with.
-        Device.WatchdogReset();
+        Hardware.ComputeModule.WatchdogReset();
         // Start a thread that restarts it.
         Thread t = new Thread(async () =>
         {
@@ -113,7 +113,7 @@ public class MeadowApp : App<F7CoreComputeV2>
                 // if (WatchdogCount <= WatchdogUptimePetCountMax)
                 // {
                 Thread.Sleep(pettingInterval);
-                Device.WatchdogReset();
+                Hardware.ComputeModule.WatchdogReset();
                 //}
                 // else
                 // {

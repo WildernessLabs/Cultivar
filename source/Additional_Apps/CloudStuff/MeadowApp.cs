@@ -8,30 +8,27 @@ using System.Threading.Tasks;
 
 namespace MeadowApp
 {
-    // Change F7FeatherV2 to F7FeatherV1 for V1.x boards
-    public class MeadowApp : App<F7CoreComputeV2>
+    // Change ProjectLabCoreComputeApp to ProjectLabFeatherApp for V1.x boards
+    public class MeadowApp : ProjectLabCoreComputeApp
     {
         private DisplayController displayController;
-        private IProjectLabHardware projLab;
 
         public override Task Initialize()
         {
             Resolver.Log.Info("Initialize...");
 
-            projLab = ProjectLab.Create();
-
             var cloudLogger = new CloudLogger();
             Resolver.Log.AddProvider(cloudLogger);
             Resolver.Services.Add(cloudLogger);
 
-            if (projLab.Display is { } display)
+            if (Hardware.Display is { } display)
             {
                 Resolver.Log.Trace("Creating DisplayController");
                 displayController = new DisplayController(display);
                 Resolver.Log.Trace("DisplayController up");
             }
 
-            if (projLab.TemperatureSensor is { } temperature)
+            if (Hardware.TemperatureSensor is { } temperature)
             {
                 temperature.Updated += TemperatureUpdated; ;
                 temperature.StartUpdating(TimeSpan.FromMinutes(1));
