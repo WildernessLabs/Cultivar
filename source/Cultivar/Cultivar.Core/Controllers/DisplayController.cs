@@ -169,7 +169,7 @@ public class DisplayController
     {
         dataScreen.Controls.Add(new Box(160, 5, 60, 21)
         {
-            ForeColor = Color.FromHex("082936")
+            ForegroundColor = Color.FromHex("082936")
         });
         counterLabel = new Label(160, 8, 60, 18)
         {
@@ -189,7 +189,7 @@ public class DisplayController
 
         dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
-            ForeColor = temperatureColor
+            ForegroundColor = temperatureColor
         });
 
         dataScreen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
@@ -220,7 +220,7 @@ public class DisplayController
 
         dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
-            ForeColor = humidityColor
+            ForegroundColor = humidityColor
         });
 
         dataScreen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
@@ -251,7 +251,7 @@ public class DisplayController
 
         dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
-            ForeColor = soilMoistureColor
+            ForegroundColor = soilMoistureColor
         });
 
         dataScreen.Controls.Add(new Label(boxX + 5, boxY, boxWidth - 10, boxHeight)
@@ -282,13 +282,13 @@ public class DisplayController
 
         lightsCircle = new Circle(139, 177, 12)
         {
-            ForeColor = inactiveColor,
+            ForegroundColor = inactiveColor,
         };
         dataScreen.Controls.Add(lightsCircle);
 
         dataScreen.Controls.Add(new Circle(135, 173, 4)
         {
-            ForeColor = Color.FromHex("DCDCDC"),
+            ForegroundColor = Color.FromHex("DCDCDC"),
         });
 
         dataScreen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
@@ -309,18 +309,18 @@ public class DisplayController
 
         dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
-            ForeColor = Color.FromHex("082936")
+            ForegroundColor = Color.FromHex("082936")
         });
 
         ventsCircle = new Circle(299, 177, 12)
         {
-            ForeColor = inactiveColor,
+            ForegroundColor = inactiveColor,
         };
         dataScreen.Controls.Add(ventsCircle);
 
         dataScreen.Controls.Add(new Circle(295, 173, 4)
         {
-            ForeColor = Color.FromHex("DCDCDC"),
+            ForegroundColor = Color.FromHex("DCDCDC"),
         });
 
         dataScreen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
@@ -341,18 +341,18 @@ public class DisplayController
 
         dataScreen.Controls.Add(new Box(boxX, boxY, boxWidth, boxHeight)
         {
-            ForeColor = Color.FromHex("082936")
+            ForegroundColor = Color.FromHex("082936")
         });
 
         waterCircle = new Circle(139, 219, 12)
         {
-            ForeColor = inactiveColor,
+            ForegroundColor = inactiveColor,
         };
         dataScreen.Controls.Add(waterCircle);
 
         dataScreen.Controls.Add(new Circle(135, 215, 4)
         {
-            ForeColor = Color.FromHex("DCDCDC")
+            ForegroundColor = Color.FromHex("DCDCDC")
         });
 
         dataScreen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
@@ -373,13 +373,13 @@ public class DisplayController
 
         heaterCircle = new Circle(299, 219, 12)
         {
-            ForeColor = inactiveColor,
+            ForegroundColor = inactiveColor,
         };
         dataScreen.Controls.Add(heaterCircle);
 
         dataScreen.Controls.Add(new Circle(295, 215, 4)
         {
-            ForeColor = Color.FromHex("DCDCDC"),
+            ForegroundColor = Color.FromHex("DCDCDC"),
         });
 
         dataScreen.Controls.Add(new Label(boxX + 10, boxY + 2, boxWidth - 10, boxHeight)
@@ -437,25 +437,25 @@ public class DisplayController
     }
     public void UpdateLights(bool on)
     {
-        lightsCircle.ForeColor = on
+        lightsCircle.ForegroundColor = on
             ? activeColor
             : inactiveColor;
     }
     public void UpdateVents(bool on)
     {
-        ventsCircle.ForeColor = on
+        ventsCircle.ForegroundColor = on
             ? activeColor
             : inactiveColor;
     }
     public void UpdateWater(bool on)
     {
-        waterCircle.ForeColor = on
+        waterCircle.ForegroundColor = on
             ? activeColor
             : inactiveColor;
     }
     public void UpdateHeater(bool on)
     {
-        heaterCircle.ForeColor = on
+        heaterCircle.ForegroundColor = on
             ? activeColor
             : inactiveColor;
     }
