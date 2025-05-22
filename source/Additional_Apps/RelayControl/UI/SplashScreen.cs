@@ -21,7 +21,7 @@ namespace RelayControl.UI
             screen.Controls.Add(
                 new Box(0, 0, screen.Width, screen.Height)
                 {
-                    ForeColor = Color.White
+                    ForegroundColor = Color.White
                 },
                 new Label(15, 20, 290, 40)
                 {

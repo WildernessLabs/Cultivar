@@ -1,6 +1,7 @@
 ﻿using Meadow;
 using Meadow.Devices;
 using Meadow.Logging;
+using Meadow.Peripherals.Sensors;
 using MeadowApp.Commands;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace MeadowApp
                 Resolver.Log.Trace("DisplayController up");
             }
 
-            if (Hardware.TemperatureSensor is { } temperature)
+            if (Hardware.TemperatureSensor is ISamplingTemperatureSensor temperature)
             {
                 temperature.Updated += TemperatureUpdated; ;
                 temperature.StartUpdating(TimeSpan.FromMinutes(1));
